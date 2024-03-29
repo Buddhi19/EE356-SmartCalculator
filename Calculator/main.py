@@ -25,8 +25,19 @@ img_proceed = img_proceed/255.0
 img_proceed = img_proceed.unsqueeze(0)
 img_proceed = img_proceed.unsqueeze(0)
 
+#display img_proceed
+plt.imshow(img_proceed[0][0], cmap="gray")
+plt.show()
+
+
 attention, prediction = for_test(img_proceed)
 
-print(prediction)
-print("end")
+prediction_text = ""
 
+for i in range(attention.shape[0]):
+	if prediction[i] == "<eol>":
+		continue
+	else:
+		prediction_text += prediction[i]
+
+print(prediction_text)
