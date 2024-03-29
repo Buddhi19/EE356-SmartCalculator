@@ -14,7 +14,7 @@ from PIL import Image
 from numpy import *
 
 gpu=[0]
-dictionaries=['../dictionary.txt']
+dictionaries=['./dictionary.txt']
 hidden_size = 256
 batch_size_t = 1
 maxlen = 100
