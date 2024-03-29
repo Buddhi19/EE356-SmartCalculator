@@ -20,3 +20,13 @@ def resize( w_box, h_box, pil_image):
 
 img_test = Image.open("./test_images/test1.png").convert("L")
 
+img_proceed = torch.from_numpy(np.array(img_test)).type(torch.FloatTensor)
+img_proceed = img_proceed/255.0
+img_proceed = img_proceed.unsqueeze(0)
+img_proceed = img_proceed.unsqueeze(0)
+
+attention, prediction = for_test(img_proceed)
+
+print(prediction)
+print("end")
+

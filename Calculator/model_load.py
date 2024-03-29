@@ -38,88 +38,95 @@ for kk, vv in worddicts.items():
 
 def for_test(x_t):
 
-	h_mask_t = []
-	w_mask_t = []
-	encoder = densenet121()
-	attn_decoder1 = AttnDecoderRNN(hidden_size,112,dropout_p=0.5)
+        h_mask_t = []
+        w_mask_t = []
+        encoder = densenet121()
+        attn_decoder1 = AttnDecoderRNN(hidden_size,112,dropout_p=0.5)
 
-	encoder = torch.nn.DataParallel(encoder, device_ids=gpu)
-	attn_decoder1 = torch.nn.DataParallel(attn_decoder1, device_ids=gpu)
-	encoder = encoder.cuda()
-	attn_decoder1 = attn_decoder1.cuda()
+        encoder = torch.nn.DataParallel(encoder, device_ids=gpu)
+        attn_decoder1 = torch.nn.DataParallel(attn_decoder1, device_ids=gpu)
 
-	encoder.load_state_dict(torch.load('../model/encoder_lr0.00001_BN_te1_d05_SGD_bs8_mask_conv_bn_b.pkl'))
-	attn_decoder1.load_state_dict(torch.load('../model/attn_decoder_lr0.00001_BN_te1_d05_SGD_bs8_mask_conv_bn_b.pkl'))
+        # this is only for codespace
+        # device = torch.device("cpu")
+        # encoder = encoder.to(device)
+        # attn_decoder1 = attn_decoder1.to(device)
 
-	encoder.eval()
-	attn_decoder1.eval()
+        encoder = encoder.cuda()
+        attn_decoder1 = attn_decoder1.cuda()
 
-	x_t = Variable(x_t.cuda())
-	x_mask = torch.ones(x_t.size()[0],x_t.size()[1],x_t.size()[2],x_t.size()[3]).cuda()
-	x_t = torch.cat((x_t,x_mask),dim=1)
-	x_real_high = x_t.size()[2]
-	x_real_width = x_t.size()[3]
-	h_mask_t.append(int(x_real_high))
-	w_mask_t.append(int(x_real_width))
-	x_real = x_t[0][0].view(x_real_high,x_real_width)
-	output_highfeature_t = encoder(x_t)
+        print(sys.argv)  ## current_location
 
-	x_mean_t = torch.mean(output_highfeature_t)
-	x_mean_t = float(x_mean_t)
-	output_area_t1 = output_highfeature_t.size()
-	output_area_t = output_area_t1[3]
-	dense_input = output_area_t1[2]
+        encoder.load_state_dict(torch.load('./model/encoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
+        attn_decoder1.load_state_dict(torch.load('./model/attn_decoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
 
-	decoder_input_t = torch.LongTensor([111]*batch_size_t)
-	decoder_input_t = decoder_input_t.cuda()
+        encoder.eval()
+        attn_decoder1.eval()
 
-	decoder_hidden_t = torch.randn(batch_size_t, 1, hidden_size).cuda()
-	# nn.init.xavier_uniform_(decoder_hidden_t)
-	decoder_hidden_t = decoder_hidden_t * x_mean_t
-	decoder_hidden_t = torch.tanh(decoder_hidden_t)
+        x_t = Variable(x_t.cuda())
+        x_mask = torch.ones(x_t.size()[0],x_t.size()[1],x_t.size()[2],x_t.size()[3]).cuda()
+        x_t = torch.cat((x_t,x_mask),dim=1)
+        x_real_high = x_t.size()[2]
+        x_real_width = x_t.size()[3]
+        h_mask_t.append(int(x_real_high))
+        w_mask_t.append(int(x_real_width))
+        x_real = x_t[0][0].view(x_real_high,x_real_width)
+        output_highfeature_t = encoder(x_t)
 
-	prediction = torch.zeros(batch_size_t,maxlen)
-	#label = torch.zeros(batch_size_t,maxlen)
-	prediction_sub = []
-	label_sub = []
-	decoder_attention_t = torch.zeros(batch_size_t,1,dense_input,output_area_t).cuda()
-	attention_sum_t = torch.zeros(batch_size_t,1,dense_input,output_area_t).cuda()
-	decoder_attention_t_cat = []
+        x_mean_t = torch.mean(output_highfeature_t)
+        x_mean_t = float(x_mean_t)
+        output_area_t1 = output_highfeature_t.size()
+        output_area_t = output_area_t1[3]
+        dense_input = output_area_t1[2]
 
+        decoder_input_t = torch.LongTensor([111]*batch_size_t)
+        decoder_input_t = decoder_input_t.cuda()
 
-	for i in range(maxlen):
-	    decoder_output, decoder_hidden_t, decoder_attention_t, attention_sum_t = attn_decoder1(decoder_input_t,
-	                                                                                     decoder_hidden_t,
-	                                                                                     output_highfeature_t,
-	                                                                                     output_area_t,
-	                                                                                     attention_sum_t,
-	                                                                                     decoder_attention_t,dense_input,batch_size_t,h_mask_t,w_mask_t,gpu)
+        decoder_hidden_t = torch.randn(batch_size_t, 1, hidden_size).cuda()
+        # nn.init.xavier_uniform_(decoder_hidden_t)
+        decoder_hidden_t = decoder_hidden_t * x_mean_t
+        decoder_hidden_t = torch.tanh(decoder_hidden_t)
 
-	    
-	    decoder_attention_t_cat.append(decoder_attention_t[0].data.cpu().numpy())
-	    topv,topi = torch.max(decoder_output,2)
-	    if torch.sum(topi)==0:
-	        break
-	    decoder_input_t = topi
-	    decoder_input_t = decoder_input_t.view(batch_size_t)
+        prediction = torch.zeros(batch_size_t,maxlen)
+        #label = torch.zeros(batch_size_t,maxlen)
+        prediction_sub = []
+        label_sub = []
+        decoder_attention_t = torch.zeros(batch_size_t,1,dense_input,output_area_t).cuda()
+        attention_sum_t = torch.zeros(batch_size_t,1,dense_input,output_area_t).cuda()
+        decoder_attention_t_cat = []
 
-	    # prediction
-	    prediction[:,i] = decoder_input_t
+        print("debug")
 
+        for i in range(maxlen):
+            decoder_output, decoder_hidden_t, decoder_attention_t, attention_sum_t = attn_decoder1(decoder_input_t,
+                                                                                            decoder_hidden_t, output_highfeature_t,
+                                                                                            output_area_t, attention_sum_t,
+                                                                                            decoder_attention_t,dense_input,batch_size_t,h_mask_t,w_mask_t,gpu)
+            
+            decoder_attention_t_cat.append(decoder_attention_t[0].data.cpu().numpy())
+            
+            topv,topi = torch.max(decoder_output,2)
+            if torch.sum(topi)==0:
+                break
+            decoder_input_t = topi
+            decoder_input_t = decoder_input_t.view(batch_size_t)
 
-	k = numpy.array(decoder_attention_t_cat)
-	x_real = numpy.array(x_real.cpu().data)
-
-	prediction = prediction[0]
-
-	prediction_real = []
-	for ir in range(len(prediction)):
-		if int(prediction[ir]) ==0:
-			break
-		prediction_real.append(worddicts_r[int(prediction[ir])])
-	prediction_real.append('<eol>')
+            # prediction
+            prediction[:,i] = decoder_input_t
 
 
-	prediction_real_show = numpy.array(prediction_real)
+        k = numpy.array(decoder_attention_t_cat)
+        x_real = numpy.array(x_real.cpu().data)
 
-	return k,prediction_real_show
+        prediction = prediction[0]
+
+        prediction_real = []
+        for ir in range(len(prediction)):
+            if int(prediction[ir]) ==0:
+                break
+            prediction_real.append(worddicts_r[int(prediction[ir])])
+        prediction_real.append('<eol>')
+
+
+        prediction_real_show = numpy.array(prediction_real)
+
+        return k,prediction_real_show
