@@ -18,7 +18,12 @@ def resize( w_box, h_box, pil_image):
 	height = int(h*factor)    
 	return pil_image.resize((width, height), Image.ANTIALIAS)  
 
-img_test = Image.open("./test_images/test1.png").convert("L")
+img_test = Image.open("./test_images/test2.png").convert("L")
+
+img_test = np.invert(img_test)
+
+plt.imshow(img_test, cmap="gray")
+plt.show()
 
 img_proceed = torch.from_numpy(np.array(img_test)).type(torch.FloatTensor)
 img_proceed = img_proceed/255.0
