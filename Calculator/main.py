@@ -95,7 +95,7 @@ def predict_expressions(img):
 
 
 def run_for_std_scenario():
-	img_test = cv2.imread("./test_images/test8.png")
+	img_test = cv2.imread("./test_images/test3.png")
 	img_test = pre_process(img_test)
 
 	EXPRESSIONS = Expressions(img_test)
