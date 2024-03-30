@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from model_load import for_test
 from PIL import Image, ImageTk
 import cv2
+import imutils
 
 
 def imresize(im,sz):
@@ -19,49 +20,90 @@ def resize( w_box, h_box, pil_image):
 	height = int(h*factor)    
 	return pil_image.resize((width, height), Image.ANTIALIAS)  
 
+# img_test = Image.open("./test_images/test3.png").convert("L")
 
-class contours:
-	def __init__(self,img:np.array):
+img_test = cv2.imread("./test_images/test3.png")
+
+def pre_process(img_test):
+	"""
+	preprocess the img -> set a black background
+	expressions in white
+	"""
+	img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2GRAY)
+	_, img_test = cv2.threshold(img_test, 85, 255, cv2.THRESH_BINARY)
+	img_test = cv2.bitwise_not(img_test)
+
+
+	plt.imshow(img_test,cmap="gray")
+	plt.show()
+	return img_test
+
+def model_eligible_format(img_test):
+	"""
+	make the img_test eligible for the model
+	"""
+	img_proceed = torch.from_numpy(np.array(img_test)).type(torch.FloatTensor)
+	img_proceed = img_proceed/255.0
+	img_proceed = img_proceed.unsqueeze(0)
+	img_proceed = img_proceed.unsqueeze(0)
+
+	return img_proceed
+
+class expressions:
+	def __init__(self,img):
 		self.img = img
+		self.expressions = []
 
-	def preprocess(self):
-		self.gray = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-		self.blur = cv2.GaussianBlur(self.gray, (3,3), 0)
-		self.bw = cv2.threshold(self.blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+	def draw_contours(self,img):
+		"""
+		find different expressions or select the expression 
+		written area
+		"""
+		kernel = np.ones((5,5),np.uint8)
 
-	def plot_img(self):
-		plt.imshow(self.img)
+		dilation = cv2.dilate(img, kernel, iterations = 16)
+
+		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=3.0]
+
+		im2 = img.copy()
+		print(contours)
+		for cnt in contours:
+			im2 = img.copy()
+			x, y, w, h = cv2.boundingRect(cnt)
+			
+			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 12)
+			cropped = im2[y:y + h, x:x + w]
+			self.expressions.append(cropped)
+
+		plt.imshow(im2,cmap="gray")
 		plt.show()
 
-img_test = Image.open("./test_images/test3.png").convert("L")
+		return
 
-IMAGE = contours(img_test)
-IMAGE.preprocess()
-IMAGE.plot_img()
 
-img_test = np.invert(img_test)
 
-plt.imshow(img_test, cmap="gray")
-plt.show()
 
-img_proceed = torch.from_numpy(np.array(img_test)).type(torch.FloatTensor)
-img_proceed = img_proceed/255.0
-img_proceed = img_proceed.unsqueeze(0)
-img_proceed = img_proceed.unsqueeze(0)
+img_test = pre_process(img_test)
+draw_contours(img_test)
+img_proceed = model_eligible_format(img_test)
 
 #display img_proceed
 plt.imshow(img_proceed[0][0], cmap="gray")
 plt.show()
 
+def predict(img_proceed):
+	attention, prediction = for_test(img_proceed)
 
-attention, prediction = for_test(img_proceed)
+	prediction_text = ""
 
-prediction_text = ""
+	for i in range(attention.shape[0]):
+		if prediction[i] == "<eol>":
+			continue
+		else:
+			prediction_text += prediction[i]
 
-for i in range(attention.shape[0]):
-	if prediction[i] == "<eol>":
-		continue
-	else:
-		prediction_text += prediction[i]
+	print(prediction_text)
 
-print(prediction_text)
+# predict(img_proceed)
