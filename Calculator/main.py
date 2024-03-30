@@ -22,7 +22,7 @@ def resize( w_box, h_box, pil_image):
 
 # img_test = Image.open("./test_images/test3.png").convert("L")
 
-img_test = cv2.imread("./test_images/test3.png")
+img_test = cv2.imread("./test_images/test1.png")
 
 def pre_process(img_test):
 	"""
@@ -49,51 +49,59 @@ def model_eligible_format(img_test):
 
 	return img_proceed
 
-class expressions:
+class Expressions:
 	def __init__(self,img):
 		self.img = img
 		self.expressions = []
 
-	def draw_contours(self,img):
+	def draw_contours(self):
 		"""
 		find different expressions or select the expression 
 		written area
 		"""
 		kernel = np.ones((5,5),np.uint8)
 
-		dilation = cv2.dilate(img, kernel, iterations = 16)
+		dilation = cv2.dilate(self.img, kernel, iterations = 16)
 
 		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=3.0]
 
-		im2 = img.copy()
+		im2 = self.img.copy()
 		print(contours)
 		for cnt in contours:
-			im2 = img.copy()
+			im2 = self.img.copy()
 			x, y, w, h = cv2.boundingRect(cnt)
 			
 			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 12)
 			cropped = im2[y:y + h, x:x + w]
 			self.expressions.append(cropped)
-
-		plt.imshow(im2,cmap="gray")
-		plt.show()
-
+		
 		return
 
+		
+		
+	def get_expressions(self):
+		for image in self.expressions:
+			plt.imshow(image,cmap="gray")
+			plt.show()
 
+		return self.expressions
 
 
 img_test = pre_process(img_test)
-draw_contours(img_test)
-img_proceed = model_eligible_format(img_test)
 
-#display img_proceed
-plt.imshow(img_proceed[0][0], cmap="gray")
-plt.show()
+EXPRESSIONS = Expressions(img_test)
+EXPRESSIONS.draw_contours()
+images = EXPRESSIONS.get_expressions()
 
-def predict(img_proceed):
+def predict_expressions(img):
+	img_proceed = model_eligible_format(img)
+
+	#display img_proceed
+	plt.imshow(img_proceed[0][0], cmap="gray")
+	plt.show()
+
 	attention, prediction = for_test(img_proceed)
 
 	prediction_text = ""
@@ -106,4 +114,5 @@ def predict(img_proceed):
 
 	print(prediction_text)
 
-# predict(img_proceed)
+for image in images:
+	predict_expressions(image)
