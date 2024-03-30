@@ -22,7 +22,7 @@ def resize( w_box, h_box, pil_image):
 
 # img_test = Image.open("./test_images/test3.png").convert("L")
 
-img_test = cv2.imread("./test_images/test1.png")
+img_test = cv2.imread("./test_images/test3.png")
 
 def pre_process(img_test):
 	"""
@@ -61,11 +61,11 @@ class Expressions:
 		"""
 		kernel = np.ones((5,5),np.uint8)
 
-		dilation = cv2.dilate(self.img, kernel, iterations = 16)
+		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
 
 		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=3.0]
+		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=2.0]
 
 		im2 = self.img.copy()
 		print(contours)
