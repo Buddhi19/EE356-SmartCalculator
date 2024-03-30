@@ -7,23 +7,6 @@ import cv2
 import imutils
 
 
-def imresize(im,sz):
-    pil_im = Image.fromarray(im)
-    return np.array(pil_im.resize(sz))
-
-def resize( w_box, h_box, pil_image): 
-	w, h = pil_image.size 
-	f1 = 1.0*w_box/w 
-	f2 = 1.0*h_box/h    
-	factor = min([f1, f2])   
-	width = int(w*factor)    
-	height = int(h*factor)    
-	return pil_image.resize((width, height), Image.ANTIALIAS)  
-
-# img_test = Image.open("./test_images/test3.png").convert("L")
-
-img_test = cv2.imread("./test_images/test3.png")
-
 def pre_process(img_test):
 	"""
 	preprocess the img -> set a black background
@@ -59,7 +42,7 @@ class Expressions:
 		find different expressions or select the expression 
 		written area
 		"""
-		kernel = np.ones((5,5),np.uint8)
+		kernel = np.ones((10,10),np.uint8)
 
 		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
 
@@ -73,32 +56,28 @@ class Expressions:
 			im2 = self.img.copy()
 			x, y, w, h = cv2.boundingRect(cnt)
 			
-			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 12)
+			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 1)
 			cropped = im2[y:y + h, x:x + w]
 			self.expressions.append(cropped)
 		
 		return
-
-		
-		
+	
 	def get_expressions(self):
+		"""
+		Get all expression containing images
+		"""
 		for image in self.expressions:
 			plt.imshow(image,cmap="gray")
 			plt.show()
 
 		return self.expressions
 
-
-img_test = pre_process(img_test)
-
-EXPRESSIONS = Expressions(img_test)
-EXPRESSIONS.draw_contours()
-images = EXPRESSIONS.get_expressions()
-
 def predict_expressions(img):
+	"""
+	predicting expressions
+	"""
 	img_proceed = model_eligible_format(img)
 
-	#display img_proceed
 	plt.imshow(img_proceed[0][0], cmap="gray")
 	plt.show()
 
@@ -114,5 +93,26 @@ def predict_expressions(img):
 
 	print(prediction_text)
 
-for image in images:
-	predict_expressions(image)
+
+def run_for_std_scenario():
+	img_test = cv2.imread("./test_images/test8.png")
+	img_test = pre_process(img_test)
+
+	EXPRESSIONS = Expressions(img_test)
+	EXPRESSIONS.draw_contours()
+	images = EXPRESSIONS.get_expressions()
+
+	for image in images:
+		cv2.imwrite("./results/result_1.png",image)
+		image = Image.open("./results/result_1.png").convert("L")
+		predict_expressions(image)
+
+def run_for_training_scenario():
+	img_test = Image.open("./results/result_1.png").convert("L")
+	predict_expressions(img_test)
+
+# run_for_training_scenario()
+run_for_std_scenario()
+
+
+
