@@ -13,7 +13,7 @@ def pre_process(img_test):
 	expressions in white
 	"""
 	img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2GRAY)
-	_, img_test = cv2.threshold(img_test, 85, 255, cv2.THRESH_BINARY)
+	_, img_test = cv2.threshold(img_test, 155, 255, cv2.THRESH_BINARY) # 85
 	img_test = cv2.bitwise_not(img_test)
 
 
@@ -42,9 +42,11 @@ class Expressions:
 		find different expressions or select the expression 
 		written area
 		"""
-		kernel = np.ones((10,10),np.uint8)
+		kernel = np.ones((5,5),np.uint8)  #10,10
 
 		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
+
+		# dilation = cv2.morphologyEx(self.img, cv2.MORPH_OPEN, kernel)
 
 		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -56,7 +58,7 @@ class Expressions:
 			im2 = self.img.copy()
 			x, y, w, h = cv2.boundingRect(cnt)
 			
-			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 1)
+			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 			cropped = im2[y:y + h, x:x + w]
 			self.expressions.append(cropped)
 		
@@ -95,7 +97,7 @@ def predict_expressions(img):
 
 
 def run_for_std_scenario():
-	img_test = cv2.imread("./test_images/test3.png")
+	img_test = cv2.imread("./test_images/test8.png")
 	img_test = pre_process(img_test)
 
 	EXPRESSIONS = Expressions(img_test)
@@ -103,8 +105,8 @@ def run_for_std_scenario():
 	images = EXPRESSIONS.get_expressions()
 
 	for image in images:
-		cv2.imwrite("./results/result_1.png",image)
-		image = Image.open("./results/result_1.png").convert("L")
+		cv2.imwrite("./results/result_1.bmp",image)
+		image = Image.open("./results/result_1.bmp").convert("L")
 		predict_expressions(image)
 
 def run_for_training_scenario():
