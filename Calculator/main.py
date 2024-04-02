@@ -13,7 +13,7 @@ def pre_process(img_test):
 	expressions in white
 	"""
 	img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2GRAY)
-	_, img_test = cv2.threshold(img_test, 155, 255, cv2.THRESH_BINARY) # 85
+	_, img_test = cv2.threshold(img_test, 150, 255, cv2.THRESH_BINARY) # 85 # 155
 	img_test = cv2.bitwise_not(img_test)
 
 
@@ -42,7 +42,7 @@ class Expressions:
 		find different expressions or select the expression 
 		written area
 		"""
-		kernel = np.ones((5,5),np.uint8)  #10,10
+		kernel = np.ones((10,4),np.uint8)  #10,10
 
 		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
 
@@ -50,7 +50,7 @@ class Expressions:
 
 		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=2.0]
+		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=1.0]
 
 		im2 = self.img.copy()
 		print(contours)
@@ -97,7 +97,7 @@ def predict_expressions(img):
 
 
 def run_for_std_scenario():
-	img_test = cv2.imread("./test_images/test8.png")
+	img_test = cv2.imread("./test_images/test10.png")
 	img_test = pre_process(img_test)
 
 	EXPRESSIONS = Expressions(img_test)
