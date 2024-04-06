@@ -1,1 +1,1 @@
-# EE356-CalculatorPen
+# Smart Pen
