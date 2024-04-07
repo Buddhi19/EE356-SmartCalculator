@@ -19,7 +19,6 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
-  pinMode(4, OUTPUT);
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -125,8 +124,5 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(4, HIGH);
   delay(10000);
-  digitalWrite(4, LOW);
-  delay(1000);
 }
