@@ -5,7 +5,7 @@
 | Task | Description |
 |-------------|----------|
 | Image to Latex Model | 50% |
-| Latex Calculator | |
+| Latex Calculator | Completed Numerical Calculations |
 | Communicator | Started |
 | Graphing Calculator| Started |
 | Matrix Identification | |
