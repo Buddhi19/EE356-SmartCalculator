@@ -35,7 +35,7 @@ class Cal(formatter):
         return (self.convert_to_latex(sp.simplify(ans)))
     
 
-if __name__ == '__main__':
-    exp = r"\frac{d}{dx}x^2+x"
-    cal = Cal()
-    print(cal.differentiator(exp))
+# if __name__ == '__main__':
+#     exp = r"\frac{d}{dx}x^2+x"
+#     cal = Cal()
+#     print(cal.differentiator(exp))
