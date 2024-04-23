@@ -13,7 +13,7 @@ def pre_process(img_test):
 	expressions in white
 	"""
 	img_test = cv2.cvtColor(img_test, cv2.COLOR_BGR2GRAY)
-	_, img_test = cv2.threshold(img_test, 150, 255, cv2.THRESH_BINARY) # 85 # 155
+	_, img_test = cv2.threshold(img_test, 85, 255, cv2.THRESH_BINARY) # 85 # 155
 	img_test = cv2.bitwise_not(img_test)
 
 
@@ -42,7 +42,7 @@ class Expressions:
 		find different expressions or select the expression 
 		written area
 		"""
-		kernel = np.ones((10,4),np.uint8)  #10,10
+		kernel = np.ones((10,10),np.uint8)  #10,10
 
 		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
 
