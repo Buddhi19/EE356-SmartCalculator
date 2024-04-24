@@ -18,7 +18,7 @@ def fit(image):
     labels = helpers.get_labels()
 
     try:
-        model = load_model(config.package_path + '/ann_models/model/model_11-07-2020_23-54-57.h5')
+        model = load_model(config.package_path + '\\ann_models\\model\\model_11-07-2020_23-14-47.h5')
 
         prediction = model.predict(image)
         index = np.argmax(prediction)

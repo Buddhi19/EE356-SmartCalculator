@@ -3,16 +3,12 @@ import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-mathreader_dir = os.path.join(current_dir,'..','..','Libs','mathreader')
-
-sys.path.append(mathreader_dir)
-
 import mathreader
 from mathreader.api import *
 from mathreader.image_processing import preprocessing, postprocessing
 from mathreader.config import Configuration
 from mathreader.helpers.exceptions import *
-import cv2 as cv
+import cv2
 import numpy as np
 from PIL import ImageGrab
 import imutils
@@ -25,8 +21,12 @@ class Extractor:
         expression = ""
         hme_recognizer = HME_Recognizer()
         print(f"location {sys.argv}")
-        
-        images = ["11.png"]
+    
+        arr = os.listdir(os.path.join(current_dir))
+        images = []
+        for i in arr:
+            if i.endswith('.png') or i.endswith('.jpg'):
+                images.append(os.path.join(current_dir, i))
 
         cv2.imshow("test", cv2.imread(images[0]))
         cv2.waitKey(0)

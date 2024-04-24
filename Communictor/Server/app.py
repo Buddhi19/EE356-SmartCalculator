@@ -13,7 +13,9 @@ def hello_world():
 @app.route('/json1', methods=['GET','POST'])
 def handle_data():
     data = request.json
-    print(data)
+    f = open("fromNodeMCU.txt", "w")
+    f.write(json.dumps(data))
+    f.close()
     return jsonify(data)
 
 @app.route('/json2', methods=['GET','POST'])

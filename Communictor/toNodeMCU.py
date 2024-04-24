@@ -1,6 +1,16 @@
-f = open("Server/toNodeMCU.txt", "w")
+def sendToNodeMCU(data:str):
+    """
+    writes data on txt file to send to NodeMCU
+    """
+    f = open("Server/toNodeMCU.txt", "w")
+    f.write(data)
+    f.close()
 
-# Write the data to the file
-
-f.write("you are doing great!")
-f.close()
+def getFromNodeMCU()->str:
+    """
+    reads data from txt file
+    """
+    f = open("Server/fromNodeMCU.txt", "r")
+    data = f.read()
+    f.close()
+    return data

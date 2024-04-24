@@ -10,7 +10,7 @@ output = "camera.png"
 # not checked
 def get_image_and_save(ip_address:str):
     """
-    download image from webserver and 
+    download image from web server and 
     save it as camera.png
     """
     url = ip_address+"/cam-hi.jpg" 
