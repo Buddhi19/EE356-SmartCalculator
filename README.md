@@ -19,6 +19,4 @@
 
 # Important
 
-|SPI Configuration |
-|------------------|
-| ESP32 |
+ESP webserver.ino able to save a file on sd card but still cannot share the file with ESP32
