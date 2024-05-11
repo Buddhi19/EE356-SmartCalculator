@@ -1,31 +1,97 @@
 #include "esp_camera.h"
+#include "Arduino.h"
+#include "FS.h"                // SD Card ESP32
+#include "SD_MMC.h"            // SD Card ESP32
+#include "soc/soc.h"           // Disable brownour problems
+#include "soc/rtc_cntl_reg.h"  // Disable brownour problems
+#include "driver/rtc_io.h"
+#include <EEPROM.h>            // read and write from flash memory
 #include <SPI.h>
-#include <WiFi.h>
-#define CAMERA_MODEL_AI_THINKER // Has PSRAM
 
-#include "camera_pins.h"
+// define the number of bytes you want to access
+#define EEPROM_SIZE 1
 
-#define VSPI_MISO 19
-#define VSPI_MOSI 23
-#define VSPI_SCLK 18
-#define VSPI_SS   5
-#define RESET     15
+// Pin definition for CAMERA_MODEL_AI_THINKER
+#define PWDN_GPIO_NUM     32
+#define RESET_GPIO_NUM    -1
+#define XCLK_GPIO_NUM      0
+#define SIOD_GPIO_NUM     26
+#define SIOC_GPIO_NUM     27
+
+#define Y9_GPIO_NUM       35
+#define Y8_GPIO_NUM       34
+#define Y7_GPIO_NUM       39
+#define Y6_GPIO_NUM       36
+#define Y5_GPIO_NUM       21
+#define Y4_GPIO_NUM       19
+#define Y3_GPIO_NUM       18
+#define Y2_GPIO_NUM        5
+#define VSYNC_GPIO_NUM    25
+#define HREF_GPIO_NUM     23
+#define PCLK_GPIO_NUM     22
+
+int pictureNumber = 0;
+
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels) {
+  Serial.printf("Listing directory: %s\n", dirname);
+
+  File root = fs.open(dirname);
+  if (!root) {
+    Serial.println("Failed to open directory");
+    return;
+  }
+  if (!root.isDirectory()) {
+    Serial.println("Not a directory");
+    return;
+  }
+
+  File file = root.openNextFile();
+  while (file) {
+    if (file.isDirectory()) {
+      Serial.print("  DIR : ");
+      Serial.println(file.name());
+      if (levels) {
+        listDir(fs, file.path(), levels - 1);
+      }
+    } else {
+      Serial.print("  FILE: ");
+      Serial.print(file.name());
+      Serial.print("  SIZE: ");
+      Serial.println(file.size());
+    }
+    file = root.openNextFile();
+  }
+}
+
+void readFile(fs::FS &fs, const char *path) {
+  Serial.printf("Reading file: %s\n", path);
+
+  File file = fs.open(path);
+  if (!file) {
+    Serial.println("Failed to open file for reading");
+    return;
+  }
+
+  // Serial.print("Read from file: ");
+  // while (file.available()) {
+  //   Serial.write(file.read());
+  // }
+  while (file.available()) {
+    byte buffer[320*240]; // Adjust buffer size as needed
+    size_t bytesRead = file.read(buffer, sizeof(buffer));
+    if (bytesRead > 0) {
+      SPI.transfer(buffer, bytesRead);
+    }
+  file.close();
+}
 
 void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
+ 
   Serial.begin(115200);
-
-  // Initialize SPI
-  SPI.begin(VSPI_SCLK, VSPI_MISO, VSPI_MOSI, VSPI_SS);
-  SPI.setFrequency(40000000); // Set SPI clock frequency
-  pinMode(RESET, OUTPUT);
-
-  // Reset camera
-  digitalWrite(RESET, LOW);
-  delay(100);
-  digitalWrite(RESET, HIGH);
-  delay(1000); // Delay to allow camera to initialize
-
-  // Initialize camera
+  //Serial.setDebugOutput(true);
+  //Serial.println();
+  
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
@@ -46,38 +112,77 @@ void setup() {
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
-  config.frame_size = FRAMESIZE_QVGA;
-  config.jpeg_quality = 10;
-  config.fb_count = 1;
-
-  // Initialize camera with the specified configuration
+  config.pixel_format = PIXFORMAT_JPEG; 
+  
+  if(psramFound()){
+    config.frame_size = FRAMESIZE_UXGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
+    config.jpeg_quality = 10;
+    config.fb_count = 2;
+  } else {
+    config.frame_size = FRAMESIZE_SVGA;
+    config.jpeg_quality = 12;
+    config.fb_count = 1;
+  }
+  
+  // Init Camera
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {
     Serial.printf("Camera init failed with error 0x%x", err);
     return;
   }
+  rtc_gpio_hold_dis(GPIO_NUM_4);
+  //Serial.println("Starting SD Card");
+  if(!SD_MMC.begin()){
+    Serial.println("SD Card Mount Failed");
+    return;
+  }
+  
+  uint8_t cardType = SD_MMC.cardType();
+  if(cardType == CARD_NONE){
+    Serial.println("No SD Card attached");
+    return;
+  }
+  
+  listDir(SD_MMC, "/", 0);
+  // readFile(SD_MMC,"/picture.jpg");
 }
 
 void loop() {
+  // Take Picture with Camera
   camera_fb_t * fb = NULL;
-  fb = esp_camera_fb_get();
-  if (!fb) {
+  fb = esp_camera_fb_get();  
+  if(!fb) {
     Serial.println("Camera capture failed");
     return;
   }
+  // initialize EEPROM with predefined size
+  EEPROM.begin(EEPROM_SIZE);
+  pictureNumber = EEPROM.read(0);
 
-  for (size_t i = 0; i < fb->len; i++) {
-    SPI.transfer(fb->buf[i]);
-    Serial.print(fb->buf[i]);
-    Serial.print("newline");
+  // Path where new picture will be saved in SD Card
+  String path = "/picture.jpg";
+
+  fs::FS &fs = SD_MMC; 
+  Serial.printf("Picture file name: %s\n", path.c_str());
+  
+  File file = fs.open(path.c_str(), FILE_WRITE);
+  if(!file){
+    Serial.println("Failed to open file in writing mode");
+  } 
+  else {
+    file.write(fb->buf, fb->len); // payload (image), payload length
+    Serial.printf("Saved file to path: %s\n", path.c_str());
+    EEPROM.write(0, pictureNumber);
+    EEPROM.commit();
   }
-  Serial.print("\n");
-  Serial.println("Done transferring\n\n\n\n");
+  file.close();
+  esp_camera_fb_return(fb); 
+  
+  // Turns off the ESP32-CAM white on-board LED (flash) connected to GPIO 4
+  // pinMode(4, OUTPUT);
+  // digitalWrite(4, LOW);
+  // rtc_gpio_hold_en(GPIO_NUM_4);
+  readFile(SD_MMC,"/picture.jpg");
 
-
-  esp_camera_fb_return(fb);
-
-  SPI.endTransaction();
-  delay(1000);
+  delay(2000);
 }
