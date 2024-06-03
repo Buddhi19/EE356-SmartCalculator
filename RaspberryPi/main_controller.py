@@ -9,22 +9,25 @@ class Calculator:
             "0": "0", "1": "1", "2": "2", "3": "3", "4": "4",
             "5": "5", "6": "6", "7": "7", "8": "8", "9": "9",
             "+": "+", "-": "-", "*": "*", "/": "/", "(": "(",
-            ")": ")", "=": "=", ".": ".", "x": "x",
+            ")": ")", "=": "=", ".": ".", "x": "x","y": "y","z": "z",
             "sin": "S", "cos": "C", "tan": "T", "AC": "AC",
             "DEL": "DEL", "log": "L", "ln": "E", "sqrt": "R",
-            "^": "^", "pi": "p", "e": "e"
+            "^": "^", "pi": "p", "e": "e",
+            "arcsine": "aS", "arccos": "aC", "arctan": "aT"
         }
         self.mappings = {
-            "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(", "p":"pi"
+            "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(", "p":"pi",
+            "aS":"asin(", "aC":"acos(", "aT":"atan("
         }
-        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R"]
+        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT"]
 
         self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt"]
 
         self.degrees = True
 
         self.mappings_for_degrees = {
-            "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*"
+            "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*",
+            "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(",
         }
 
     def update_pointer(self):
@@ -80,7 +83,7 @@ class Calculator:
                 self.pointer = 0
             return
 
-        else:
+        elif key in self.keys:
             print("line", self.pointer, self.result, key)
             if self.pointer !=0 and key in self.functions:
                 if self.result[self.pointer-1] not in self.operations:
@@ -89,7 +92,9 @@ class Calculator:
                     return
             self.result = self.result[:self.pointer] + self.keys[key] + self.result[self.pointer:]
             self.pointer += 1
-
+        
+        else:
+            return
 
 if __name__ == "__main__":
     Cal = Calculator()
