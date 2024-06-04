@@ -19,9 +19,9 @@ class Calculator:
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(", "p":"pi",
             "aS":"asin(", "aC":"acos(", "aT":"atan("
         }
-        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT"]
+        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT","="]
 
-        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt"]
+        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z"]
 
         self.degrees = True
 
