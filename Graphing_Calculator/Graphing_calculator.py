@@ -27,6 +27,6 @@ def plot_and_save(exp:str):
     plt.title(exp)
     plt.savefig('result.png')
 
-# if __name__ == '__main__':
-#     exp = r"\frac{1}{1 + e^{-x}}"
-#     plot_and_save(exp)
+if __name__ == '__main__':
+    exp = r"y=\frac{1}{1 + e^{-x}}"
+    plot_and_save(exp)

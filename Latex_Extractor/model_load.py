@@ -1,5 +1,6 @@
 import sys
-sys.path.append(r"../")
+import os
+sys.path.append(os.path.dirname(__file__))
 import torch
 import math
 import torch.nn as nn
@@ -7,14 +8,16 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import numpy
 import torch.utils.data as data
-from MODEL_1.data_iterator import dataIterator
+from data_iterator import dataIterator
 from Attention_RNN import AttnDecoderRNN
 from Densenet_torchvision import densenet121
 from PIL import Image
 from numpy import *
 
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\Latex_Extractor"
+
 gpu=[0]
-dictionaries=['./dictionary.txt']
+dictionaries=[parent_dir+'\\dictionary.txt']
 hidden_size = 256
 batch_size_t = 1
 maxlen = 100
@@ -30,6 +33,8 @@ def load_dict(dictFile):
     print('total words/phones',len(lexicon))
     return lexicon
 
+
+print(os.listdir())
 worddicts = load_dict(dictionaries[0])
 worddicts_r = [None] * len(worddicts)
 for kk, vv in worddicts.items():
@@ -56,8 +61,8 @@ def for_test(x_t):
 
         print(sys.argv)  ## current_location
 
-        encoder.load_state_dict(torch.load('./model/encoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
-        attn_decoder1.load_state_dict(torch.load('./model/attn_decoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
+        encoder.load_state_dict(torch.load(parent_dir+'\\model\\encoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
+        attn_decoder1.load_state_dict(torch.load(parent_dir+'\\model\\attn_decoder_lr0.00001_GN_te1_d05_SGD_bs6_mask_conv_bn_b_xavier.pkl'))
 
         encoder.eval()
         attn_decoder1.eval()
