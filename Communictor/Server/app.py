@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import time
 import json
+from main import process_image
 
 app = Flask(__name__)
 
@@ -18,16 +19,18 @@ def handle_data():
     f.close()
     return jsonify(data)
 
-@app.route('/json2', methods=['GET','POST'])
-def send_data():
-    f = open("toNodeMCU.txt", "r")
-    data_to_send = f.read()
-    f.close()
-    if data_to_send:
-        send_data = {"data": data_to_send}
-        return jsonify(send_data)
-    else:
-        return ""
+@app.route('/image', methods=['GET','POST'])
+def image_route():
+    if 'file' not in request.files:
+        return jsonify({"error":"No file part"})
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error":"No selected file"})
+    if not file:
+        return jsonify({"error":"No file part"})
+    file.save("img.png")
+    result = process_image("img.png")
+    return jsonify({"result":result})
 
 if __name__ == '__main__':
     app.run(host=host_url,port=80)
