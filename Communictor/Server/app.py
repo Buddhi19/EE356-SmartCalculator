@@ -1,15 +1,15 @@
 from flask import Flask, request, jsonify
 import time
 import json
-from main import process_image
+from main import process_image, calculate_expression
 
 app = Flask(__name__)
 
-host_url = '192.168.1.4'
+host_url = '192.168.8.100'
 
 @app.route("/")
 def hello_world():
-    return "<p>Routes: </p> <p> /json1 : Receive json from ESP </p> <p> /json2 : Post json to ESP </p>"
+    return "<p>Routes: </p> <p> /json1 : Image from raspberry pi </p>"
 
 @app.route('/json1', methods=['GET','POST'])
 def handle_data():
@@ -30,7 +30,11 @@ def image_route():
         return jsonify({"error":"No file part"})
     file.save("img.png")
     result = process_image("img.png")
-    return jsonify({"result":result})
+    try:
+        ans = calculate_expression(result)
+    except:
+        ans = ["Error in processing the image"]
+    return jsonify({"result":ans})
 
 if __name__ == '__main__':
     app.run(host=host_url,port=80)

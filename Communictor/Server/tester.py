@@ -2,7 +2,7 @@
 import requests
 
 def send_image_to_server(img_location):
-    url = "http://192.168.1.4:80/image"
+    url = "http://192.168.8.100:80/image"
     files = {'file': open(img_location, 'rb')}
     response = requests.post(url, files=files)
 

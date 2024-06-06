@@ -12,3 +12,14 @@ def process_image(img_location):
     img = cv2.imread(img_location)
     cv2.imshow("img",img)
     return(I2T.run_for_std_scenario(img))
+
+
+def calculate_expression(expression):
+    if not expression:
+        return []
+    cal = Cal()
+    ans = []
+    for exp in expression:
+        ans.append(cal.do_nothing(exp))
+
+    return ans
