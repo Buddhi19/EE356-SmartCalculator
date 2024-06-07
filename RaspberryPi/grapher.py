@@ -48,33 +48,34 @@ class Grapher(Calculator):
                     equation = f + "-" + g
                     solve_z = sp.solve(equation, z)[0]
 
-                    x_vals = np.linspace(-self.range, self.range, 100)
-                    y_vals = np.linspace(-self.range, self.range, 100)
-                    x_vals, y_vals = np.meshgrid(x_vals, y_vals)
-                    z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
-                    fig = plt.figure()
-                    ax = fig.add_subplot(111, projection='3d')
-                    ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
-                    ax.set_xlabel("x-axis")
-                    ax.set_ylabel("y-axis")
-                    ax.set_zlabel("z-axis")
-                    plt.show()
-                    return
+                    # x_vals = np.linspace(-self.range, self.range, 100)
+                    # y_vals = np.linspace(-self.range, self.range, 100)
+                    # x_vals, y_vals = np.meshgrid(x_vals, y_vals)
+                    # z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
+                    # fig = plt.figure()
+                    # ax = fig.add_subplot(111, projection='3d')
+                    # ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
+                    # ax.set_xlabel("x-axis")
+                    # ax.set_ylabel("y-axis")
+                    # ax.set_zlabel("z-axis")
+                    # plt.show()
+
+                    return {"3D":solve_z}
                 else:
                     f, g = self.result.split("=")
                     equation = f + "-" + g
                     print(equation)
                     solve_y = sp.solve(equation, y)[0]
-                    x_vals = np.linspace(-self.range, self.range, 100)
-                    y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
-                    plt.plot(x_vals, y_vals)
-                    plt.xlabel("x-axis")
-                    plt.ylabel("y-axis")
-                    plt.show()
-                    return
+                    # x_vals = np.linspace(-self.range, self.range, 100)
+                    # y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
+                    # plt.plot(x_vals, y_vals)
+                    # plt.xlabel("x-axis")
+                    # plt.ylabel("y-axis")
+                    # plt.show()
+                    return {"2D":solve_y}
             except:
                 self.result = "Error in the input"
-                return
+                return {"Error":self.result}
             
         elif key == "left":
             if self.pointer > 0:
