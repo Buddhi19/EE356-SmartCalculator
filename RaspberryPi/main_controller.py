@@ -38,9 +38,11 @@ class Calculator:
             self.result = ""
             self.pointer = 0
         elif key == "DEL":
-            if len(self.result) > 0:
+            if len(self.result) > 0 and self.pointer > 0:
                 self.result = self.result[:self.pointer-1] + self.result[self.pointer:]
                 self.pointer -= 1
+                return
+            elif len(self.result) > 0 and self.pointer == 0:
                 return
             else:
                 self.result = ""
@@ -59,7 +61,8 @@ class Calculator:
                 self.result += ")" * (open_brackets - close_brackets)
             if self.result == "":
                 return
-            print(self.result)
+            indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
+            print(indicator)
             try:
                 self.result = str(sp.sympify(self.result).evalf())
             except ZeroDivisionError:
@@ -69,6 +72,7 @@ class Calculator:
             except:
                 self.result = "Error"
             print(self.result)
+            return self.result
 
         elif key == "left":
             if self.pointer > 0:
@@ -101,7 +105,8 @@ if __name__ == "__main__":
     while True:
         key = input("Enter key: ")
         Cal.user_input(key)
-        print(Cal.result, Cal.pointer)
+        indicator = Cal.result[:Cal.pointer]+"|"+Cal.result[Cal.pointer:]
+        print(indicator)
 
         
 

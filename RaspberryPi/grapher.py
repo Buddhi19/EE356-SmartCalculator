@@ -26,51 +26,68 @@ class Grapher(Calculator):
                 self.result = ""
                 self.pointer = 0
         elif key == "plot":
-            if not self.degrees:
-                for key in self.mappings_for_degrees.keys():
-                    self.result = self.result.replace(key, self.mappings_for_degrees[key])
-            else:
-                for key in self.mappings.keys():
-                    self.result = self.result.replace(key, self.mappings[key])
+            try:
+                if not self.degrees:
+                    for key in self.mappings_for_degrees.keys():
+                        self.result = self.result.replace(key, self.mappings_for_degrees[key])
+                else:
+                    for key in self.mappings.keys():
+                        self.result = self.result.replace(key, self.mappings[key])
+                    
+                open_brackets = self.result.count("(")
+                close_brackets = self.result.count(")")
+                if open_brackets > close_brackets:
+                    self.result += ")" * (open_brackets - close_brackets)
+                if self.result == "":
+                    return
                 
-            open_brackets = self.result.count("(")
-            close_brackets = self.result.count(")")
-            if open_brackets > close_brackets:
-                self.result += ")" * (open_brackets - close_brackets)
-            if self.result == "":
+                from sympy.abc import x, y, z
+
+                if "z" in self.result:
+                    f, g = self.result.split("=")
+                    equation = f + "-" + g
+                    solve_z = sp.solve(equation, z)[0]
+
+                    x_vals = np.linspace(-self.range, self.range, 100)
+                    y_vals = np.linspace(-self.range, self.range, 100)
+                    x_vals, y_vals = np.meshgrid(x_vals, y_vals)
+                    z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
+                    fig = plt.figure()
+                    ax = fig.add_subplot(111, projection='3d')
+                    ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
+                    ax.set_xlabel("x-axis")
+                    ax.set_ylabel("y-axis")
+                    ax.set_zlabel("z-axis")
+                    plt.show()
+                    return
+                else:
+                    f, g = self.result.split("=")
+                    equation = f + "-" + g
+                    print(equation)
+                    solve_y = sp.solve(equation, y)[0]
+                    x_vals = np.linspace(-self.range, self.range, 100)
+                    y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
+                    plt.plot(x_vals, y_vals)
+                    plt.xlabel("x-axis")
+                    plt.ylabel("y-axis")
+                    plt.show()
+                    return
+            except:
+                self.result = "Error in the input"
                 return
             
-            from sympy.abc import x, y, z
-
-            if "z" in self.result:
-                f, g = self.result.split("=")
-                equation = f + "-" + g
-                solve_z = sp.solve(equation, z)[0]
-
-                x_vals = np.linspace(-self.range, self.range, 100)
-                y_vals = np.linspace(-self.range, self.range, 100)
-                x_vals, y_vals = np.meshgrid(x_vals, y_vals)
-                z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
-                fig = plt.figure()
-                ax = fig.add_subplot(111, projection='3d')
-                ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
-                ax.set_xlabel("x-axis")
-                ax.set_ylabel("y-axis")
-                ax.set_zlabel("z-axis")
-                plt.show()
-                return
-            else:
-                f, g = self.result.split("=")
-                equation = f + "-" + g
-                print(equation)
-                solve_y = sp.solve(equation, y)[0]
-                x_vals = np.linspace(-self.range, self.range, 100)
-                y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
-                plt.plot(x_vals, y_vals)
-                plt.xlabel("x-axis")
-                plt.ylabel("y-axis")
-                plt.show()
-                return
+        elif key == "left":
+            if self.pointer > 0:
+                self.pointer -= 1
+            if self.pointer == 0:
+                self.pointer = len(self.result)
+            return
+        elif key == "right":
+            if self.pointer < len(self.result):
+                self.pointer += 1
+            if self.pointer == len(self.result):
+                self.pointer = 0
+            return
 
         elif key in self.keys:
             if self.pointer !=0 and key in self.functions:
@@ -93,5 +110,6 @@ if __name__ == "__main__":
     while True:
         key = input("Enter key: ")
         grapher.user_input(key)
-        print(grapher.result)
+        indicator = grapher.result[:grapher.pointer]+"|"+grapher.result[grapher.pointer:]
+        print(indicator)
         

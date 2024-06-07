@@ -66,6 +66,12 @@ class Cal(formatter):
         ans = re(ans) + im(ans)*I
         return (self.convert_to_latex(ans))
 
+    def do_nothing(self,expression:str):
+        """
+        do nothing
+        """
+        return expression
+
 if __name__ == '__main__':
     exp = r"\frac{1}{1+j}"
     cal = Cal()
