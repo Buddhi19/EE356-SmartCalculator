@@ -11,27 +11,26 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import matplotlib.pyplot as plt
 
 class Graph_GUI(tk.Frame):
-    def __init__(self,parent,controller):
+    def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         self.display_var = tk.StringVar()
-        # self.wm_attributes("-fullscreen", "True")
         self.create_widgets()
         self.Graph = Grapher()
-        
+
     def create_widgets(self):
         entry = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20), justify='right', state='readonly')
         entry.grid(row=0, column=0, columnspan=8, sticky="nsew")
-        
+
         buttons = [
             'left', 'right', '', 'MODE', 'DEL', 'AC', '', '',
             'x', 'y', 'z', '∫', '∂', 'd/dx', 'x!', 'log',
             '7', '8', '9', '/', 'sin', 'cos', 'tan', 'hyp',
             '4', '5', '6', '*', 'ln', '(', ')', '√',
-            '1', '2', '3', '-', 'x²', 'x⁻¹', 'pi', 'nCr',
+            '1', '2', '3', '-', '^', 'x⁻¹', 'pi', 'nCr',
             '0', '.', '±', '+', 'plot', 'EXP', 'x10^x', '='
         ]
-        
+
         row = 1
         col = 0
         for button in buttons:
@@ -43,7 +42,7 @@ class Graph_GUI(tk.Frame):
             if col == 8:
                 col = 0
                 row += 1
-                
+
         for i in range(6):
             self.grid_rowconfigure(i, weight=1)
         for i in range(8):
@@ -57,36 +56,30 @@ class Graph_GUI(tk.Frame):
                 self.display_var.set(self.Graph.showing_exp)
                 return
             if "2D" in data:
-                self.show_frame("Graph_Frame2D", data["2D"])
+                self.controller.show_frame("Graph_Frame2D", data["2D"])
+            elif "3D" in data:
+                self.controller.show_frame("Graph_Frame3D", data["3D"])
+            return
         self.Graph.user_input(text)
         self.display_var.set(self.Graph.showing_exp)
 
-    def show_frame(self, name, data):
-        if self.current_frame:
-            self.frames[self.current_frame].grid_remove()
-        self.current_frame = name
-        self.frames[name].grid()
-
 class Graph_Frame2D(tk.Frame):
-    def __init__(self,parent,controller,data):
+    def __init__(self, parent, controller, data):
         super().__init__(parent)
         self.controller = controller
-        self.config(bg="black",width=600,height=800)
-        self.wm_attributes("-fullscreen", "True")
+        self.config(bg="black", width=600, height=800)
         self.x = data[0]
         self.y = data[1]
         self._create_widgets_2D()
 
     def _create_widgets_2D(self):
-        # Create a frame for the plot and toolbar
         frame = ttk.Frame(self)
         frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Create a Matplotlib figure
-        self.fig = Figure(figsize=(5, 4), dpi=100,facecolor="black")
+        self.fig = Figure(figsize=(5, 4), dpi=100, facecolor="black")
         self.ax = self.fig.add_subplot(111)
         
-        self.ax.plot(self.x,self.y)
+        self.ax.plot(self.x, self.y)
 
         self.ax.set_facecolor("black")
         self.ax.spines['bottom'].set_color('white')
@@ -96,50 +89,41 @@ class Graph_Frame2D(tk.Frame):
         self.ax.yaxis.label.set_color('white')
         self.ax.xaxis.label.set_color('white')
 
-        # Embed the Matplotlib figure in the Tkinter canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Add the Matplotlib toolbar
         toolbar_frame = ttk.Frame(self)
         toolbar_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
         toolbar = NavigationToolbar2Tk(self.canvas, toolbar_frame)
         toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Create a button to update the plot
-        self.update_button = ttk.Button(self, text="Update Plot", command=self.change_plot)
+        self.update_button = ttk.Button(self, text="Close", command=self.close)
         self.update_button.pack(side=tk.BOTTOM)
 
-    def change_plot(self):
-        # Update the plot with new data
-        self.destroy()
-
     def close(self):
-        self.destroy()
+        self.pack_forget()
+        self.controller.show_frame("Graph_GUI")
 
 class Graph_Frame3D(tk.Frame):
-    def __init__(self,parent,controller,data):
+    def __init__(self, parent, controller, data):
         super().__init__(parent)
         self.controller = controller
-        self.config(bg="black",width=600,height=800)
-        self.wm_attributes("-fullscreen", "True")
+        self.config(bg="black", width=600, height=800)
         self.x = data[0]    
         self.y = data[1]
         self.z = data[2]
         self._create_widgets_3D()
 
     def _create_widgets_3D(self):
-        # Create a frame for the plot and toolbar
         frame = ttk.Frame(self)
         frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Create a Matplotlib figure
         self.fig = plt.figure(figsize=(5, 4), dpi=100, facecolor="black")
         self.ax = self.fig.add_subplot(111, projection='3d')
         
-        self.ax.plot(self.x,self.y,self.z)
+        self.ax.plot_surface(self.x, self.y, self.z, cmap="viridis")
 
         self.ax.set_facecolor("black")
         self.ax.spines['bottom'].set_color('white')
@@ -156,27 +140,23 @@ class Graph_Frame3D(tk.Frame):
         self.ax.yaxis.pane.fill = False
         self.ax.zaxis.pane.fill = False
 
-        # Embed the Matplotlib figure in the Tkinter canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         plt.close()
 
-        # Add the Matplotlib toolbar
         toolbar_frame = ttk.Frame(self)
         toolbar_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=False)
         toolbar = NavigationToolbar2Tk(self.canvas, toolbar_frame)
         toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        # Create a button to update the plot
-        self.update_button = ttk.Button(self, text="Close", command=self.change_plot, width=10)
+        self.update_button = ttk.Button(self, text="Close", command=self.close)
         self.update_button.pack(side=tk.BOTTOM)
 
-    def change_plot(self):
-        # Update the plot with new data
-        self.destroy()
-
+    def close(self):
+        self.pack_forget()
+        self.controller.show_frame("Graph_GUI")
 
 
 if __name__ == "__main__":

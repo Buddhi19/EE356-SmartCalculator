@@ -41,14 +41,20 @@ class MainApplication(tk.Tk):
         # Show the home page initially
         self.show_frame("Calculator_Frame")
 
-    def add_frame(self, frame_class):
-        frame = frame_class(self.container, self)
+    def add_frame(self, frame_class, data=None):
+        if data:
+            frame = frame_class(self.container, self, data)
+        else:
+            frame = frame_class(self.container, self)
         self.frames[frame_class.__name__] = frame
         frame.grid(row=0, column=0, sticky="nsew")
 
-    def show_frame(self, name):
+    def show_frame(self, name, data=None):
         if self.current_frame:
             self.frames[self.current_frame].grid_remove()
+        if data:
+            frame_class = globals()[name]
+            self.add_frame(frame_class, data)
         self.current_frame = name
         self.frames[name].grid()
 
