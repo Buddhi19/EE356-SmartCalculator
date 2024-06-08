@@ -19,6 +19,14 @@ class StartPage(tk.Frame):
                                     command=lambda: self.controller.show_frame("Graph_GUI"))
         graphing_button.pack(pady=10)
 
+        write_to_solve = tk.Button(self, text="Write to Solve",
+                                    command=lambda: self.controller.show_frame("WriteToSolve"))
+        write_to_solve.pack(pady=10)
+
+        take_a_photo_to_solve = tk.Button(self, text="Take a Photo to Solve",
+                                        command=lambda: self.controller.show_frame("TakePhotoToSolve"))
+        take_a_photo_to_solve.pack(pady=10)
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Standalone Calculator")
