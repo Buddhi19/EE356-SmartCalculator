@@ -5,7 +5,7 @@ from main import process_image, calculate_expression
 
 app = Flask(__name__)
 
-host_url = '192.168.8.100'
+host_url = '192.168.8.101'
 
 @app.route("/")
 def hello_world():

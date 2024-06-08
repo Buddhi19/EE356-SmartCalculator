@@ -12,18 +12,22 @@ class Grapher(Calculator):
         self.range = 10
         self.pointer = 0
         self.result = ""
+        self.showing_exp = "|"
 
     def user_input(self, key):
         if key == "AC":
             self.result = ""
+            self.showing_exp = "|"
             self.pointer = 0
         elif key == "DEL":
             if len(self.result) > 0:
                 self.result = self.result[:self.pointer-1] + self.result[self.pointer:]
                 self.pointer -= 1
+                self.convert_to_understandable()
                 return
             else:
                 self.result = ""
+                self.showing_exp = "|"
                 self.pointer = 0
         elif key == "plot":
             try:
@@ -39,6 +43,7 @@ class Grapher(Calculator):
                 if open_brackets > close_brackets:
                     self.result += ")" * (open_brackets - close_brackets)
                 if self.result == "":
+                    self.showing_exp = "|"
                     return
                 
                 from sympy.abc import x, y, z
@@ -48,10 +53,10 @@ class Grapher(Calculator):
                     equation = f + "-" + g
                     solve_z = sp.solve(equation, z)[0]
 
-                    # x_vals = np.linspace(-self.range, self.range, 100)
-                    # y_vals = np.linspace(-self.range, self.range, 100)
-                    # x_vals, y_vals = np.meshgrid(x_vals, y_vals)
-                    # z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
+                    x_vals = np.linspace(-self.range, self.range, 100)
+                    y_vals = np.linspace(-self.range, self.range, 100)
+                    x_vals, y_vals = np.meshgrid(x_vals, y_vals)
+                    z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
                     # fig = plt.figure()
                     # ax = fig.add_subplot(111, projection='3d')
                     # ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
@@ -59,22 +64,22 @@ class Grapher(Calculator):
                     # ax.set_ylabel("y-axis")
                     # ax.set_zlabel("z-axis")
                     # plt.show()
-
-                    return {"3D":solve_z}
+                    return {"3D":[x_vals, y_vals, z_vals]}
                 else:
                     f, g = self.result.split("=")
                     equation = f + "-" + g
                     print(equation)
                     solve_y = sp.solve(equation, y)[0]
-                    # x_vals = np.linspace(-self.range, self.range, 100)
-                    # y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
+                    x_vals = np.linspace(-self.range, self.range, 100)
+                    y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
                     # plt.plot(x_vals, y_vals)
                     # plt.xlabel("x-axis")
                     # plt.ylabel("y-axis")
                     # plt.show()
-                    return {"2D":solve_y}
+                    return {"2D":[x_vals, y_vals]}
             except:
                 self.result = "Error in the input"
+                self.showing_exp = self.result
                 return {"Error":self.result}
             
         elif key == "left":
@@ -82,12 +87,14 @@ class Grapher(Calculator):
                 self.pointer -= 1
             if self.pointer == 0:
                 self.pointer = len(self.result)
+            self.convert_to_understandable()
             return
         elif key == "right":
             if self.pointer < len(self.result):
                 self.pointer += 1
             if self.pointer == len(self.result):
                 self.pointer = 0
+            self.convert_to_understandable()
             return
 
         elif key in self.keys:
@@ -95,12 +102,18 @@ class Grapher(Calculator):
                 if self.result[self.pointer-1] not in self.operations:
                     self.result = self.result[:self.pointer] +"*"+ self.keys[key] + self.result[self.pointer:]
                     self.pointer += 2
+                    self.convert_to_understandable()
                     return
             self.result = self.result[:self.pointer] + self.keys[key] + self.result[self.pointer:]
             self.pointer += 1
-
-        else:
+            self.convert_to_understandable()
             return
+        else:
+            self.convert_to_understandable()
+            return
+        
+    def convert_to_understandable(self):
+        return super().convert_to_understandable()
         
     
 

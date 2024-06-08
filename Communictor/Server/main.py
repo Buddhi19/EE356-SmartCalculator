@@ -11,6 +11,7 @@ def process_image(img_location):
     I2T = Image2Text()
     img = cv2.imread(img_location)
     cv2.imshow("img",img)
+    cv2.waitKey(0)
     return(I2T.run_for_std_scenario(img))
 
 

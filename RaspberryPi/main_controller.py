@@ -5,6 +5,7 @@ class Calculator:
         self.prev_expression = ""
         self.pointer = len(self.prev_expression)
         self.result = ""
+        self.showing_exp = "|"
         self.keys = {
             "0": "0", "1": "1", "2": "2", "3": "3", "4": "4",
             "5": "5", "6": "6", "7": "7", "8": "8", "9": "9",
@@ -28,6 +29,7 @@ class Calculator:
         self.mappings_for_degrees = {
             "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*",
             "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(",
+            
         }
 
     def update_pointer(self):
@@ -36,17 +38,20 @@ class Calculator:
     def user_input(self,key):
         if key == "AC":
             self.result = ""
+            self.showing_exp = "|"
             self.pointer = 0
         elif key == "DEL":
             if len(self.result) > 0 and self.pointer > 0:
                 self.result = self.result[:self.pointer-1] + self.result[self.pointer:]
                 self.pointer -= 1
+                self.convert_to_understandable()
                 return
             elif len(self.result) > 0 and self.pointer == 0:
                 return
             else:
                 self.result = ""
                 self.pointer = 0
+                self.showing_exp = "|"
         elif key == "=":
             if self.degrees:
                 for key in self.mappings_for_degrees.keys():
@@ -60,9 +65,9 @@ class Calculator:
             if open_brackets > close_brackets:
                 self.result += ")" * (open_brackets - close_brackets)
             if self.result == "":
+                self.showing_exp = "|"
                 return
             indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
-            print(indicator)
             try:
                 self.result = str(sp.sympify(self.result).evalf())
             except ZeroDivisionError:
@@ -72,6 +77,7 @@ class Calculator:
             except:
                 self.result = "Error"
             print(self.result)
+            self.showing_exp = self.result
             return self.result
 
         elif key == "left":
@@ -79,12 +85,14 @@ class Calculator:
                 self.pointer -= 1
             if self.pointer == 0:
                 self.pointer = len(self.result)
+            self.convert_to_understandable()
             return
         elif key == "right":
             if self.pointer < len(self.result):
                 self.pointer += 1
             if self.pointer == len(self.result):
                 self.pointer = 0
+            self.convert_to_understandable()
             return
 
         elif key in self.keys:
@@ -93,12 +101,23 @@ class Calculator:
                 if self.result[self.pointer-1] not in self.operations:
                     self.result = self.result[:self.pointer] +"*"+ self.keys[key] + self.result[self.pointer:]
                     self.pointer += 2
+                    self.convert_to_understandable()
                     return
             self.result = self.result[:self.pointer] + self.keys[key] + self.result[self.pointer:]
             self.pointer += 1
-        
+            self.convert_to_understandable()
+            return
         else:
             return
+        
+    def convert_to_understandable(self):
+        for_show = self.result
+        for_show = for_show[:self.pointer]+"|"+for_show[self.pointer:]
+        for key in self.mappings.keys():
+            if key in for_show:
+                for_show = for_show.replace(key, self.mappings[key])
+        for_show = for_show.replace("*","\u00D7")
+        self.showing_exp = for_show
 
 if __name__ == "__main__":
     Cal = Calculator()
