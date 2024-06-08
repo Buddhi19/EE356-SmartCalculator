@@ -4,6 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
+from GUI.start_gui import StartPage
 from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 
@@ -16,17 +17,6 @@ class MainApplication(tk.Tk):
         menubar = tk.Menu(self)
         self.config(menu=menubar)
 
-        # Create File menu with Quit option
-        file_menu = tk.Menu(menubar, tearoff=False)
-        menubar.add_cascade(label="File", menu=file_menu)
-        file_menu.add_command(label="Quit", command=self.quit)
-
-        # Create View menu to switch between frames
-        view_menu = tk.Menu(menubar, tearoff=False)
-        menubar.add_cascade(label="View", menu=view_menu)
-        view_menu.add_command(label="Calculator", command=lambda: self.show_frame("Calculator_Frame"))
-        view_menu.add_command(label="Grapher", command=lambda: self.show_frame("Graph_GUI"))
-
         # Initialize container to hold different frames
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -35,11 +25,11 @@ class MainApplication(tk.Tk):
         self.current_frame = None
 
         # Add frames to the application
+        self.add_frame(StartPage)
         self.add_frame(Calculator_Frame)
         self.add_frame(Graph_GUI)
 
-        # Show the home page initially
-        self.show_frame("Calculator_Frame")
+        self.show_frame("StartPage")
 
     def add_frame(self, frame_class, data=None):
         if data:
@@ -50,11 +40,19 @@ class MainApplication(tk.Tk):
         frame.grid(row=0, column=0, sticky="nsew")
 
     def show_frame(self, name, data=None):
+        print(f"Switching to frame: {name}")
         if self.current_frame:
             self.frames[self.current_frame].grid_remove()
         if data:
             frame_class = globals()[name]
-            self.add_frame(frame_class, data)
+            frame = frame_class(self.container, self, data)
+            self.frames[name] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
+        else:
+            frame_class = globals()[name]
+            frame = frame_class(self.container, self)
+            self.frames[name] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
         self.current_frame = name
         self.frames[name].grid()
 

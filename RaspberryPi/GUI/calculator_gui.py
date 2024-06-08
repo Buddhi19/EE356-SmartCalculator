@@ -16,14 +16,15 @@ class Calculator_Frame(tk.Frame):
         # self.wm_attributes("-fullscreen", "True")
         self.create_widgets()
         self.Cal = Calculator()
+        self.MODE = "calculator"
         
     def create_widgets(self):
         entry = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20), justify='right', state='readonly')
         entry.grid(row=0, column=0, columnspan=8, sticky="nsew")
         
         buttons = [
-            'left', 'right', '', 'MODE', 'DEL', 'AC', '', '',
-            'x', 'y', 'z', '∫', '∂', 'd/dx', 'x!', 'log',
+            'left', 'right', '', 'MODE', 'DEL', 'AC', 'i',
+            'x', 'y', 'z', 'x!', 'log',
             '7', '8', '9', '/', 'sin', 'cos', 'tan', 'hyp',
             '4', '5', '6', '*', 'ln', '(', ')', '√',
             '1', '2', '3', '-', '^', 'x⁻¹', 'pi', 'nCr',
@@ -46,11 +47,43 @@ class Calculator_Frame(tk.Frame):
             self.grid_rowconfigure(i, weight=1)
         for i in range(8):
             self.grid_columnconfigure(i, weight=1)
+
+        back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
+        back_button.grid(row=7, column=0, columnspan=8, sticky="nsew")
         
     def on_click(self, event):
         text = event.widget.cget("text")
-        self.Cal.user_input(text)
-        self.display_var.set(self.Cal.showing_exp)
+        if text == "MODE":
+            ModeSelectionPopup(self, self.set_mode)
+        else:
+            self.Cal.user_input(text)
+            self.display_var.set(self.Cal.showing_exp)
+
+    def set_mode(self, mode):
+        print(f"Selected Mode: {mode}")
+        self.MODE = mode
+
+class ModeSelectionPopup(tk.Toplevel):
+    def __init__(self, parent, callback):
+        super().__init__(parent)
+        self.callback = callback
+
+        self.overrideredirect(True)
+        self.mode_list = [
+            "Calculate", "Complex", "Equation", "Matrix"
+            # Add more modes as needed
+        ]
+
+        self.create_mode_buttons()
+        
+    def create_mode_buttons(self):
+        for mode in self.mode_list:
+            button = ttk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
+            button.pack(fill=tk.X, padx=5, pady=5)
+
+    def select_mode(self, mode):
+        self.callback(mode)
+        self.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
