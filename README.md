@@ -12,11 +12,7 @@
 | Spreadsheet Calculations | |
 | Camera Module | 50% |
 
-
-## Camera to Computer Data Communication
-
-![cameraflow drawio](https://github.com/Buddhi19/EE356-SmartCalculator/assets/119914594/a831215b-a3d6-4008-bd4d-0d18a6ccdfca)
-
-# Important
-
-ESP webserver.ino able to save a file on sd card but still cannot share the file with ESP32
+# Notes
+- Grapher has some issues with passing data variable
+- Camera should be tested with a flash
+- Onscreen whiteboard yet to be implemented
