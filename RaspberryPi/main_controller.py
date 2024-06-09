@@ -1,5 +1,6 @@
 # This is the raspberry pi main controller script for calculator
 import sympy as sp
+import math
 class Calculator:
     def __init__(self):
         self.prev_expression = ""
@@ -14,23 +15,50 @@ class Calculator:
             "sin": "S", "cos": "C", "tan": "T", "AC": "AC",
             "DEL": "DEL", "log": "L", "ln": "E", "sqrt": "R",
             "^": "^", "pi": "p", "e": "e",
-            "arcsine": "aS", "arccos": "aC", "arctan": "aT"
+            "arcsine": "aS", "arccos": "aC", "arctan": "aT","i":"I"
         }
         self.mappings = {
-            "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(", "p":"pi",
-            "aS":"asin(", "aC":"acos(", "aT":"atan("
+            "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
+            "aS":"asin(", "aC":"acos(", "aT":"atan(","p":"pi", "I":"i"
         }
         self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT","="]
 
-        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z"]
+        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","i"]
 
         self.degrees = True
 
         self.mappings_for_degrees = {
             "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*",
-            "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(",
-            
+            "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(","L":"log(,", "E":"ln(",
+            "R":"sqrt(", "I":"i",
         }
+
+    def safe_eval(self,expression):
+        allowed_names = {
+            'sin': math.sin,
+            'cos': math.cos,
+            'tan': math.tan,
+            'hypot': math.hypot,
+            'log': math.log,
+            'exp': math.exp,
+            'sqrt': math.sqrt,
+            'pi': math.pi,
+            'p': math.pi,
+            'e': math.e,
+            'factorial': math.factorial,
+            'asin': math.asin,
+            'acos': math.acos,
+            'atan': math.atan,
+            'I': 1j,
+            # Add more functions and constants as needed
+        }
+
+        code = compile(expression, "<string>", "eval")
+        for name in code.co_names:
+            if name not in allowed_names:
+                raise NameError(f"Use of '{name}' not allowed")
+
+        return eval(code, {"__builtins__": {}}, allowed_names)
 
     def update_pointer(self):
         self.pointer = len(self.result)
@@ -69,7 +97,9 @@ class Calculator:
                 return
             indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
             try:
-                self.result = str(sp.sympify(self.result).evalf())
+                self.result = str(self.safe_eval(self.result))
+                if "j" in self.result:
+                    self.result = self.result.replace("j","i")
             except ZeroDivisionError:
                 self.result = "Can not divide by zero"
             except SyntaxError:

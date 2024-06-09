@@ -27,6 +27,10 @@ class StartPage(tk.Frame):
                                         command=lambda: self.controller.show_frame("TakePhotoToSolve"))
         take_a_photo_to_solve.pack(pady=10)
 
+        simultaneous_solver = tk.Button(self, text="Simultaneous Solver",
+                                        command=lambda: self.controller.show_frame("Simultaneous_solver_Frame"))
+        simultaneous_solver.pack(pady=10)
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Standalone Calculator")
