@@ -69,8 +69,37 @@ class Calculator_Frame(tk.Frame):
 
     def on_click(self, event):
         text = event.widget.cget("text")
-        self.Cal.user_input(text)
-        self.display_var.set(self.Cal.showing_exp)
+        if text == "MODE":
+            ModeSelectionPopup(self, self.set_mode)
+        else:
+            self.Cal.user_input(text)
+            self.display_var.set(self.Cal.showing_exp)
+
+    def set_mode(self, mode):
+        print(f"Selected Mode: {mode}")
+        self.MODE = mode
+
+class ModeSelectionPopup(tk.Toplevel):
+    def __init__(self, parent, callback):
+        super().__init__(parent)
+        self.callback = callback
+
+        self.overrideredirect(True)
+        self.mode_list = [
+            "Calculate", "Complex", "Equation", "Matrix"
+            # Add more modes as needed
+        ]
+
+        self.create_mode_buttons()
+        
+    def create_mode_buttons(self):
+        for mode in self.mode_list:
+            button = ttk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
+            button.pack(fill=tk.X, padx=5, pady=5)
+
+    def select_mode(self, mode):
+        self.callback(mode)
+        self.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

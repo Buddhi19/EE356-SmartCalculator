@@ -48,6 +48,9 @@ class Graph_GUI(tk.Frame):
         for i in range(8):
             self.grid_columnconfigure(i, weight=1)
 
+        back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
+        back_button.grid(row=7, column=0, columnspan=8, sticky="nsew")
+
     def on_click(self, event):
         text = event.widget.cget("text")
         if text == "plot":
