@@ -14,7 +14,7 @@ class MainApplication(tk.Tk):
 
         # Create a menu bar
         menubar = tk.Menu(self)
-        self.config(menu=menubar)
+        self.config(menu=menubar,bg = "#293C4A")
 
         # Create File menu with Quit option
         file_menu = tk.Menu(menubar, tearoff=False)
