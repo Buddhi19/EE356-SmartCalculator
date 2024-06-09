@@ -16,7 +16,7 @@ class MainApplication(tk.Tk):
 
         # Create a menu bar
         menubar = tk.Menu(self)
-        self.config(menu=menubar)
+        self.config(menu=menubar,bg = "#293C4A")
 
         # Initialize container to hold different frames
         self.container = tk.Frame(self)
