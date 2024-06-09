@@ -48,11 +48,9 @@ class Calculator_Frame(tk.Frame):
                     b = tk.Button(self, text=button, **self.button_params_main, width=5)
                 elif button in special_buttons:
                     b = tk.Button(self, text=button, **self.button_params_other, width=5)
-                elif button != '':
-                    b = tk.Button(self, text=button, **self.button_params, width=5)
                 else:
-                    col += 1
-                    continue
+                    b = tk.Button(self, text=button, **self.button_params, width=5)
+                
 
                 b.grid(row=row, column=col, sticky="nsew")
                 b.bind("<Button-1>", self.on_click)
@@ -66,6 +64,9 @@ class Calculator_Frame(tk.Frame):
             self.grid_rowconfigure(i, weight=1)
         for i in range(9):
             self.grid_columnconfigure(i, weight=1)
+
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
+        back_button.grid(row=8, column=0, columnspan=8, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
