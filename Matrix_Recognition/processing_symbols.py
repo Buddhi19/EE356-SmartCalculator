@@ -14,7 +14,7 @@ class Symbol:
         return f"Symbol: {self.symbol}, Top-left: {self.top_left}, Bottom-right: {self.bottom_right}"
 
 # Example image and coordinates
-image = cv.imread('/mnt/data/image.png')
+image = cv.imread('images/Matrix.png')
 top_left = (10, 20)
 bottom_right = (30, 50)
 symbol = "3"
