@@ -18,7 +18,7 @@ class Calculator_Frame(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=8, padx=10, pady=20, sticky="nsew")
+        entry.grid(row=0, column=0, columnspan=8, padx=0, pady=15, sticky="nsew")
 
 
     def create_widgets(self):
