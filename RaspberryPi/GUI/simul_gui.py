@@ -79,14 +79,14 @@ class Simultaneous_Frame(tk.Toplevel):
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons,row7_buttons]
 
-        arrow_keys = { '←', '→'}
+        self.arrow_keys = { '←':"left", '→':"right"}
         special_buttons = {'DEL', 'AC'}
 
         row = 1
         for row_buttons in buttons_grid:
             col = 0
             for button in row_buttons:
-                if button in arrow_keys:
+                if button in self.arrow_keys:
                     b = tk.Button(self, text=button, **self.button_params_main, width=5)
                 elif button in special_buttons:
                     b = tk.Button(self, text=button, **self.button_params_other, width=5)
@@ -117,6 +117,8 @@ class Simultaneous_Frame(tk.Toplevel):
 
     def on_click(self, event):
         button_text = event.widget.cget("text")
+        if button_text in self.arrow_keys:
+            button_text = self.arrow_keys[button_text]
         if button_text == "Add":
             data = self.solver.user_input(button_text)
             if data:

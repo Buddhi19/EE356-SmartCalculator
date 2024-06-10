@@ -37,14 +37,14 @@ class Calculator_Frame(tk.Frame):
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons, row7_buttons]
 
-        arrow_keys = {'↑', '↓', '←', '→'}
+        self.arrow_keys = {'↑':"up", '↓':"down", '←':"left", '→':"right"}
         special_buttons = {'DEL', 'AC', '='}
 
         row = 1
         for row_buttons in buttons_grid:
             col = 0
             for button in row_buttons:
-                if button in arrow_keys:
+                if button in self.arrow_keys:
                     b = tk.Button(self, text=button, **self.button_params_main, width=5)
                 elif button in special_buttons:
                     b = tk.Button(self, text=button, **self.button_params_other, width=5)
@@ -70,6 +70,8 @@ class Calculator_Frame(tk.Frame):
 
     def on_click(self, event):
         text = event.widget.cget("text")
+        if text in self.arrow_keys:
+            text = self.arrow_keys[text]
         if text == "MODE":
             ModeSelectionPopup(self, self.set_mode)
         else:
