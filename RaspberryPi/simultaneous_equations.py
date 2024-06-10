@@ -30,7 +30,6 @@ class Simul(Calculator):
         self.pointer = 0
         self.result = ""
         self.showing_exp = "|"
-        self.equations = []
 
     def user_input(self, key):
         if key == "AC":
@@ -47,7 +46,7 @@ class Simul(Calculator):
                 self.result = ""
                 self.showing_exp = "|"
                 self.pointer = 0
-        elif key == "plot":
+        elif key == "Add":
             try:
                 if not self.degrees:
                     for key in self.mappings_for_degrees.keys():
@@ -63,8 +62,7 @@ class Simul(Calculator):
                 if self.result == "":
                     self.showing_exp = "|"
                     return
-                self.equations.append(self.result)
-                return
+                return self.result
             except:
                 self.result = "Error in the input"
                 self.showing_exp = self.result
@@ -86,6 +84,7 @@ class Simul(Calculator):
             return
 
         elif key in self.keys:
+            print(self.keys[key])
             if self.pointer !=0 and key in self.functions:
                 if self.result[self.pointer-1] not in self.operations:
                     self.result = self.result[:self.pointer] +"*"+ self.keys[key] + self.result[self.pointer:]
