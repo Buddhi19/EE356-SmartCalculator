@@ -22,7 +22,7 @@ class Graph_GUI(tk.Frame):
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly', style="Custom.TEntry")
         entry.grid(row=0, column=0, columnspan=8, padx=0, pady=15, sticky="nsew")
         
-        # Set the background color of the frame to match the entry box
+        # Set the background color of the frame to match the entry box     
         self.configure(bg="#293C4A")
 
     def create_widgets(self):
@@ -176,7 +176,7 @@ class Graph_Frame3D(tk.Frame):
         toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        self.update_button = ttk.Button(self, text="Close", command=self.close)
+        self.update_button = ttk.Button(self, text="Close", command=self.close, **self.button_params_main)
         self.update_button.pack(side=tk.BOTTOM)
 
     def close(self):
