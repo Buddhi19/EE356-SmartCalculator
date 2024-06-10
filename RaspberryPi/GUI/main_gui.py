@@ -32,8 +32,12 @@ class MainApplication(tk.Tk):
         self.add_frame(Graph_GUI)
         self.add_frame(Simultaneous_solver_Frame)
         self.add_frame(Simultaneous_Frame)
+<<<<<<< Updated upstream
         self.add_frame(PDFReader)
 
+=======
+        self.add_frame(WhiteboardApp)
+>>>>>>> Stashed changes
 
         self.show_frame("StartPage")
 
