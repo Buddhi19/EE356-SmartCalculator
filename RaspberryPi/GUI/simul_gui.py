@@ -37,7 +37,7 @@ class Simultaneous_solver_Frame(tk.Frame):
         ans = self.answer.simultaneous_solver(self.equations)
         print(ans)
         for key in ans:
-            self.equation_list.insert(tk.END, f"{key} = {round(ans[key],4)}")
+            self.equation_list.insert(tk.END, f"{key} = {ans[key]}")
 
     def update_equation_list(self):
         self.equation_list.delete(0, tk.END)
@@ -69,12 +69,12 @@ class Simultaneous_Frame(tk.Toplevel):
         self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 15, 'bold')}
 
         
-        row1_buttons =['mode', '', '←', '→', '', '']
-        row2_buttons =['x', 'y', 'z', 'log', '+', '-']
-        row3_buttons =['sin', 'cos', 'tan', 'ln', '/', '*']
-        row4_buttons =['7', '8', '9', '(', ')', 'hyp']
-        row5_buttons =['4', '5', '6', '^',  'x⁻¹', '\u00B2\u221A']
-        row6_buttons =['1', '2', '3', 'x10^x', 'π', '=']
+        row1_buttons =['←', '→', 'A', 'B', 'C', 'D']
+        row2_buttons =['U', 'V', 'W', 'X', 'Y', 'Z']
+        row3_buttons =['sin', 'cos', 'tan', 'ln', '(', ')']
+        row4_buttons =['7', '8', '9', '/', '*', 'hyp']
+        row5_buttons =['4', '5', '6', '^',  '+', '\u00B2\u221A']
+        row6_buttons =['1', '2', '3','π','-', '=']
         row7_buttons =['0', '.', 'EXP','DEL' , 'AC']
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons,row7_buttons]
