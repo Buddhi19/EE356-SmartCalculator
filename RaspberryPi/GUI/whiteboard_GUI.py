@@ -3,18 +3,18 @@ from PIL import ImageGrab
 import os
 
 class WhiteboardApp(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.parent = parent
-        self.controller = controller
-        self.parent.title("Whiteboard App")
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.master.title("Whiteboard App")
+        self.pack(expand=True, fill=tk.BOTH)
 
         # Canvas for drawing
-        self.canvas = tk.Canvas(root, bg='black', width=800, height=600)
+        self.canvas = tk.Canvas(self, bg='black', width=800, height=600)
         self.canvas.pack(expand=True, fill=tk.BOTH)
 
         # Buttons
-        self.button_frame = tk.Frame(root)
+        self.button_frame = tk.Frame(self)
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.back_button = tk.Button(self.button_frame, text="Back", command=self.back)
@@ -23,10 +23,10 @@ class WhiteboardApp(tk.Frame):
         self.erase_button = tk.Button(self.button_frame, text="Erase", command=self.erase)
         self.erase_button.pack(side=tk.LEFT)
 
-        self.calculate_button = tk.Button(self.button_frame, text="Calculate", command=self.save_as_image)
+        self.calculate_button = tk.Button(self.button_frame, text="Calculate", command=self.calculate)
         self.calculate_button.pack(side=tk.LEFT)
 
-        self.plot_button = tk.Button(self.button_frame, text="Plot", command=self.save_as_image)
+        self.plot_button = tk.Button(self.button_frame, text="Plot", command=self.plot)
         self.plot_button.pack(side=tk.LEFT)
 
         self.canvas.bind("<Button-1>", self.start_draw)
@@ -48,6 +48,8 @@ class WhiteboardApp(tk.Frame):
             self.current_line.append(line)
             self.prev_x = event.x
             self.prev_y = event.y
+        if self.current_line not in self.lines:
+            self.lines.append(self.current_line)
 
     def back(self):
         if self.lines:
@@ -68,23 +70,27 @@ class WhiteboardApp(tk.Frame):
         # Update the canvas to make sure we capture everything
         self.canvas.update()
 
-        # Get the canvas coordinates
-        x = self.canvas.winfo_rootx() + self.canvas.winfo_x()
-        y = self.canvas.winfo_rooty() + self.canvas.winfo_y()
-        w = self.canvas.winfo_width()
-        h = self.canvas.winfo_height()
+        # Get the root coordinates
+        x = self.master.winfo_rootx()
+        y = self.master.winfo_rooty()
+        w = self.master.winfo_width()
+        h = self.master.winfo_height()
 
-        # Capture the canvas content and save as an image
+        print(f"Coordinates: ({x}, {y}, {x + w}, {y + h})")  # Debugging print
+
+        # Capture the root window content and save as an image
         image_path = os.path.join(os.getcwd(), "whiteboard.png")
         ImageGrab.grab(bbox=(x, y, x + w, y + h)).save(image_path)
+        print(f"Image saved at {image_path}")  # Debugging print
 
     def calculate(self):
         self.save_as_image()
 
     def plot(self):
         self.save_as_image()
+        # No additional action needed
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = WhiteboardApp(root, None)
-    root.mainloop()
+    app = WhiteboardApp(master=root)
+    app.mainloop()
