@@ -9,7 +9,7 @@ class WhiteboardApp(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.canvas = tk.Canvas(self, bg="black", width=800, height=600)
+        self.canvas = tk.Canvas(self, bg="black")
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
         self.canvas.bind("<B1-Motion>", self.draw)
