@@ -38,8 +38,6 @@ class PDFReader(tk.Frame):
         back_button = tk.Button(self.controls_frame, text="Back", command=lambda: self.controller.show_frame("StartPage"))
         back_button.pack(side=tk.RIGHT)
         
-        self.canvas = tk.Canvas(self, bg="grey", width=400, height=750)
-        self.canvas.pack(side=tk.TOP, expand=tk.YES, fill=tk.BOTH)
 
     def open_pdf(self):
         pdf_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])

@@ -176,7 +176,7 @@ class Graph_Frame3D(tk.Frame):
         toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        self.update_button = ttk.Button(self, text="Close", command=self.close, **self.button_params_main)
+        self.update_button = ttk.Button(self, text="Close", command=self.close)
         self.update_button.pack(side=tk.BOTTOM)
 
     def close(self):
