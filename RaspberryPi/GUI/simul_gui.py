@@ -1,5 +1,12 @@
+import sys
+import os  
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import tkinter as tk
 from tkinter import ttk
+from simultaneous_equations import Simul
+
 
 class Simultaneous_solver_Frame(tk.Frame):
     def __init__(self, parent, controller):
@@ -15,8 +22,11 @@ class Simultaneous_solver_Frame(tk.Frame):
         add_button = ttk.Button(self, text="Add Equation", command=lambda: self.controller.show_frame("Simultaneous_Frame"))
         add_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        show_button = ttk.Button(self, text="Show Equations", command=self.show_equations)
-        show_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
+        solve_equations_button = ttk.Button(self, text="Solve Equations", command=self.solve_equations)
+        solve_equations_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
+
+        back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
+        back_button.pack(side=tk.RIGHT, fill=tk.X, expand=True) 
 
     def add_equation(self, equation):
         self.equations.append(equation)
@@ -34,6 +44,7 @@ class Simultaneous_Frame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.solver = Simul()
         self.display_var = tk.StringVar()
         self.create_widgets()
     
@@ -98,14 +109,13 @@ class Simultaneous_Frame(tk.Frame):
 
     def on_click(self, event):
         button_text = event.widget.cget("text")
-        current_text = self.display_var.get()
+        if button_text == "add":
+            data = self.solver.user_input(button_text)
+            
+        self.solver.user_input(button_text)
+        self.display_var.set(self.solver.showing_exp)
 
-        if button_text == 'AC':
-            self.display_var.set("")
-        elif button_text == 'DEL':
-            self.display_var.set(current_text[:-1])
-        else:
-            self.display_var.set(current_text + button_text)
+        
 
     def calculate(self):
         # This is a placeholder for the calculation logic.
