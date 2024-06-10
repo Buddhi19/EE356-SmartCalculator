@@ -2,9 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
 
-<<<<<<< Updated upstream
-
-=======
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -12,10 +9,11 @@ class WhiteboardApp(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.canvas = tk.Canvas(self, bg="black", width=800, height=600)
+        self.canvas = tk.Canvas(self, bg="black")
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
         self.canvas.bind("<B1-Motion>", self.draw)
+        self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
 
         self.erase_button = tk.Button(self, text="Erase", command=self.erase)
         self.erase_button.pack(side=tk.LEFT)
@@ -60,10 +58,12 @@ class WhiteboardApp(tk.Frame):
         y1 = y0 + self.canvas.winfo_height()
         ImageGrab.grab().crop((x0, y0, x1, y1)).save(filename)
 
+    def reset_coords(self, event):
+        self.previous_coords = None
+
 # Example usage:
 if __name__ == "__main__":
     root = tk.Tk()
     app = WhiteboardApp(root, None)
     app.pack(fill=tk.BOTH, expand=True)
     root.mainloop()
->>>>>>> Stashed changes
