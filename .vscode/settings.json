@@ -1,8 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./Libs/mathreader"
-    ],
-    "cSpell.words": [
-        "sympy"
-    ]
-}
