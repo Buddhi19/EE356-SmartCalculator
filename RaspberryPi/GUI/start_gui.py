@@ -33,7 +33,7 @@ class StartPage(tk.Frame):
         simultaneous_solver.pack(pady=10)
 
         ebook = tk.Button(self, text="PDFReader",
-                                        command=lambda: self.controller.show_frame("Ebook"),font=("sans-serif", 15, "bold"))
+                                        command=lambda: self.controller.show_frame("PDFReader"),font=("sans-serif", 15, "bold"))
         ebook.pack(pady=10)
 
 if __name__ == "__main__":

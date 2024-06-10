@@ -40,9 +40,8 @@ class WhiteboardApp(tk.Frame):
         self.canvas.delete("all")
 
     def back(self):
-        # Add code to go back to the previous page
-        pass
-
+        self.controller.show_frame("StartPage")
+        
     def calculate(self):
         self.save_whiteboard("calculate.png")
         # Add code for calculations here

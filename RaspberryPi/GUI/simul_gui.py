@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
 from tkinter import ttk
-from simultaneous_equations import Simul
+from simultaneous_equations import Simul,SimultaneousEquations
 
 
 class Simultaneous_solver_Frame(tk.Frame):
@@ -13,16 +13,17 @@ class Simultaneous_solver_Frame(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.equations = []
+        self.answer = SimultaneousEquations()
         self.create_widgets()
 
     def create_widgets(self):
         self.equation_list = tk.Listbox(self)
         self.equation_list.pack(fill=tk.BOTH, expand=True)
 
-        add_button = ttk.Button(self, text="Add Equation", command=lambda: self.controller.show_frame("Simultaneous_Frame"))
+        add_button = ttk.Button(self, text="Add Equation", command=lambda: Simultaneous_Frame(self, self.add_equation))
         add_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        solve_equations_button = ttk.Button(self, text="Solve Equations")
+        solve_equations_button = ttk.Button(self, text="Solve Equations", command=self.solve_equations)
         solve_equations_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
 
         back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
@@ -32,6 +33,12 @@ class Simultaneous_solver_Frame(tk.Frame):
         self.equations.append(equation)
         self.update_equation_list()
 
+    def solve_equations(self):
+        ans = self.answer.simultaneous_solver(self.equations)
+        print(ans)
+        for key in ans:
+            self.equation_list.insert(tk.END, f"{key} = {round(ans[key],4)}")
+
     def update_equation_list(self):
         self.equation_list.delete(0, tk.END)
         for eq in self.equations:
@@ -40,10 +47,10 @@ class Simultaneous_solver_Frame(tk.Frame):
     def show_equations(self):
         self.update_equation_list()
 
-class Simultaneous_Frame(tk.Frame):
-    def __init__(self, parent, controller):
+class Simultaneous_Frame(tk.Toplevel):
+    def __init__(self, parent, callback):
         super().__init__(parent)
-        self.controller = controller
+        self.callback = callback
         self.solver = Simul()
         self.display_var = tk.StringVar()
         self.create_widgets()
@@ -68,7 +75,7 @@ class Simultaneous_Frame(tk.Frame):
         row4_buttons =['7', '8', '9', '(', ')', 'hyp']
         row5_buttons =['4', '5', '6', '^',  'x⁻¹', '\u00B2\u221A']
         row6_buttons =['1', '2', '3', 'x10^x', 'π', '=']
-        row7_buttons =['0', '.', 'EXP', 'plot','DEL' , 'AC']
+        row7_buttons =['0', '.', 'EXP','DEL' , 'AC']
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons,row7_buttons]
 
@@ -101,28 +108,21 @@ class Simultaneous_Frame(tk.Frame):
         for i in range(6):
             self.grid_columnconfigure(i, weight=1)
 
-        back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("Simultaneous_solver_Frame"))
+        back_button = ttk.Button(self, text="Back", command=lambda: self.destroy())
         back_button.grid(row=8, column=0, columnspan=3, sticky="nsew")
 
-        add_button = ttk.Button(self, text="Add", command=self.add_equation)
+        add_button = ttk.Button(self, text="Add")
         add_button.grid(row=8, column=3, columnspan=3, sticky="nsew")
+        add_button.bind("<Button-1>", self.on_click)
 
     def on_click(self, event):
         button_text = event.widget.cget("text")
-        if button_text == "add":
+        if button_text == "Add":
             data = self.solver.user_input(button_text)
-            
+            if data:
+                self.callback(data)
+                self.destroy()
+            else:
+                self.display_var.set(self.solver.showing_exp)
         self.solver.user_input(button_text)
         self.display_var.set(self.solver.showing_exp)
-
-        
-
-    def calculate(self):
-        # This is a placeholder for the calculation logic.
-        pass
-
-    def add_equation(self):
-        equation = self.display_var.get()
-        if equation:
-            self.controller.frames["Simultaneous_solver_Frame"].add_equation(equation)
-            self.display_var.set("")

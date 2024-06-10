@@ -32,7 +32,6 @@ class MainApplication(tk.Tk):
         self.add_frame(Calculator_Frame)
         self.add_frame(Graph_GUI)
         self.add_frame(Simultaneous_solver_Frame)
-        self.add_frame(Simultaneous_Frame)
         self.add_frame(PDFReader)
         self.add_frame(WhiteboardApp)
 
