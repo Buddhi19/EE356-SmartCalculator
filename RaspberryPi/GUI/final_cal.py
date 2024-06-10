@@ -14,8 +14,8 @@ class ScientificCalculator:
                                   bd=5, insertwidth=5, bg='#BBB', justify='right')
         self.text_display.grid(columnspan=5, padx=10, pady=15)
 
-        self.button_params = {'bd': 5, 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 15, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 20, 'bold')}
+        self.button_params = {'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 15, 'bold')}
+        self.button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 20, 'bold')}
         #self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#FFC0CB', 'font': ('sans-serif', 20, 'bold')}
 
         # Configure rows and columns to have equal weight
@@ -125,6 +125,6 @@ class ScientificCalculator:
     def run(self):
         self.tk_calc.mainloop()
 
-# Instantiate the ScientificCalculator class and run the GUI
+# Instantiate the ScientificCalculator class and run the GUSI
 calculator = ScientificCalculator()
 calculator.run()

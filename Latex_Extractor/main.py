@@ -62,7 +62,7 @@ class Image2Text:
 		expressions in white
 		"""
 		img_test = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		_, img_test = cv2.threshold(img_test, 155, 255, cv2.THRESH_BINARY) # 85 # 155
+		_, img_test = cv2.threshold(img_test, 175, 255, cv2.THRESH_BINARY) # 85 # 155
 		img_test = cv2.bitwise_not(img_test)
 
 
@@ -129,7 +129,7 @@ class Image2Text:
 if __name__ == "__main__":
 	# run_for_training_scenario()
 	I2T = Image2Text()
-	img = cv2.imread("./test_images/test12.png")
+	img = cv2.imread("./test_images/image19.png")
 	I2T.run_for_std_scenario(img)
 
 
