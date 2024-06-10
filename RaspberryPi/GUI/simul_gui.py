@@ -22,7 +22,7 @@ class Simultaneous_solver_Frame(tk.Frame):
         add_button = ttk.Button(self, text="Add Equation", command=lambda: self.controller.show_frame("Simultaneous_Frame"))
         add_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        solve_equations_button = ttk.Button(self, text="Solve Equations", command=self.solve_equations)
+        solve_equations_button = ttk.Button(self, text="Solve Equations")
         solve_equations_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
 
         back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
