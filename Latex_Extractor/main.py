@@ -122,15 +122,19 @@ class Image2Text:
 
 		return equations
 
-	def run_for_training_scenario(self):
-		img_test = Image.open("./results/result_1.png").convert("L")
-		self.predict_expressions(img_test)
+	def run_for_training_scenario(self,img):
+		img_test = cv2.bitwise_not(img)
+		cv2.imshow("img",img_test)
+		cv2.waitKey(0)
+		self.run_for_std_scenario(img_test)
 
 if __name__ == "__main__":
 	# run_for_training_scenario()
 	I2T = Image2Text()
-	img = cv2.imread("./test_images/image19.png")
-	I2T.run_for_std_scenario(img)
+	img = cv2.imread(parent_dir+"./test_images/img.png")
+	cv2.imshow("img",img)
+	cv2.waitKey(0)
+	I2T.run_for_training_scenario(img)
 
 
 

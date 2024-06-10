@@ -1,11 +1,18 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
+from whiteboard_solver import post_image
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.mode = "Calculate"
         self.create_widgets()
 
     def create_widgets(self):
@@ -21,13 +28,21 @@ class WhiteboardApp(tk.Frame):
         self.back_button = tk.Button(self, text="Back", command=self.back)
         self.back_button.pack(side=tk.LEFT)
 
-        self.calculate_button = tk.Button(self, text="Calculate", command=self.calculate)
-        self.calculate_button.pack(side=tk.RIGHT)
+        self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode))
+        self.mode_button.pack(side=tk.LEFT)
 
-        self.plot_button = tk.Button(self, text="Plot", command=self.plot)
-        self.plot_button.pack(side=tk.RIGHT)
+        self.solve_button = tk.Button(self, text=self.mode, command=self.solver)
+        self.solve_button.pack(side=tk.RIGHT)
 
         self.previous_coords = None
+
+    def set_mode(self, mode):
+        self.mode = mode
+        print(f"Mode set to: {mode}")
+        self.update_solve_button()
+
+    def update_solve_button(self):
+        self.solve_button.config(text=self.mode)
 
     def draw(self, event):
         if self.previous_coords:
@@ -41,13 +56,11 @@ class WhiteboardApp(tk.Frame):
 
     def back(self):
         self.controller.show_frame("StartPage")
-        
-    def calculate(self):
-        self.save_whiteboard("calculate.png")
-        # Add code for calculations here
 
-    def plot(self):
-        self.save_whiteboard("plot.png")
+    def solver(self):
+        self.save_whiteboard("whiteboard\\whiteboard.png")
+        answer = post_image()
+        AnswerDisplay(self, answer)
         # Add code for plotting here
 
     def save_whiteboard(self, filename):
@@ -59,6 +72,37 @@ class WhiteboardApp(tk.Frame):
 
     def reset_coords(self, event):
         self.previous_coords = None
+
+class ModeSelection_Whiteboard(tk.Toplevel):
+    def __init__(self, parent, callback):
+        super().__init__(parent)
+        self.callback = callback
+        self.mode_list = [
+            "Calculate", "Plot","Transfer Function", "Simultaneous Equations", "Matrix"
+        ]
+        self.create_widgets()
+
+    def create_widgets(self):
+        for mode in self.mode_list:
+            button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
+            button.pack(fill=tk.X, padx=5, pady=5)
+
+    def select_mode(self, mode):
+        self.callback(mode)
+        self.destroy()
+
+class AnswerDisplay(tk.Toplevel):
+    def __init__(self, parent, answer):
+        super().__init__(parent)
+        self.answer = answer
+        self.create_widgets()
+
+    def create_widgets(self):
+        label = tk.Label(self, text=self.answer)
+        label.pack()
+
+        close_button = tk.Button(self, text="Close", command=self.destroy)
+        close_button.pack()
 
 # Example usage:
 if __name__ == "__main__":

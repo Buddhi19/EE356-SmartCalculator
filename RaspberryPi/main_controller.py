@@ -15,7 +15,9 @@ class Calculator:
             "sin": "S", "cos": "C", "tan": "T", "AC": "AC",
             "DEL": "DEL", "log": "L", "ln": "E", "sqrt": "R",
             "^": "^", "pi": "p", "e": "e",
-            "arcsine": "aS", "arccos": "aC", "arctan": "aT","i":"I"
+            "arcsine": "aS", "arccos": "aC", "arctan": "aT","i":"I",
+            "A": "A", "B": "B", "C": "C", "D": "D",
+            "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z",
         }
         self.mappings = {
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
@@ -23,7 +25,8 @@ class Calculator:
         }
         self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT","="]
 
-        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","i"]
+        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","i",
+                          "A", "B", "C", "D", "U", "V", "W", "X", "Y", "Z"]
 
         self.degrees = True
 

@@ -14,6 +14,12 @@ def process_image(img_location):
     cv2.waitKey(0)
     return(I2T.run_for_std_scenario(img))
 
+def process_image_for_whiteboard(img_location):
+    I2T = Image2Text()
+    img = cv2.imread(img_location)
+    cv2.imshow("img",img)
+    cv2.waitKey(0)
+    return(I2T.run_for_training_scenario(img))
 
 def calculate_expression(expression):
     if not expression:
