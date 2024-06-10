@@ -20,7 +20,7 @@ class StartPage(tk.Frame):
         graphing_button.pack(pady=10)
 
         write_to_solve = tk.Button(self, text="Write to Solve",
-                                    command=lambda: self.controller.show_frame("WriteToSolve"))
+                                    command=lambda: self.controller.show_frame("WhiteboardApp"))
         write_to_solve.pack(pady=10)
 
         take_a_photo_to_solve = tk.Button(self, text="Take a Photo to Solve",
