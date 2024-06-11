@@ -33,7 +33,7 @@ class Calculator_Frame(tk.Frame):
         row4_buttons = ['7', '8', '9', 'x^n', 'sin', 'cos', 'tan']
         row5_buttons = ['4', '5', '6','\u00B2\u221A' , 'log', '(', ')']
         row6_buttons = ['1', '2', '3', 'e^x', 'hyp', 'DEL', 'AC']
-        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', 'nCr','long', '=']
+        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', 'nCr','\u2044', '=']
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons, row7_buttons]
 

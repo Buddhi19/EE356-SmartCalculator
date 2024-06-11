@@ -10,6 +10,7 @@ from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 from GUI.pdf_reader_GUI import PDFReader
 from GUI.whiteboard_GUI import WhiteboardApp
+from GUI.controls_gui import TransferFunctionFrame
 
 class MainApplication(tk.Tk):
     def __init__(self):
@@ -34,6 +35,7 @@ class MainApplication(tk.Tk):
         self.add_frame(Simultaneous_solver_Frame)
         self.add_frame(PDFReader)
         self.add_frame(WhiteboardApp)
+        self.add_frame(TransferFunctionFrame)
 
 
         self.show_frame("StartPage")
