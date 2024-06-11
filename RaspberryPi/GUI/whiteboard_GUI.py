@@ -22,16 +22,18 @@ class WhiteboardApp(tk.Frame):
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
 
-        self.erase_button = tk.Button(self, text="Erase", command=self.erase)
+        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
+
+        self.erase_button = tk.Button(self, text="Erase", command=self.erase,**button_params_main)
         self.erase_button.pack(side=tk.LEFT)
 
-        self.back_button = tk.Button(self, text="Back", command=self.back)
+        self.back_button = tk.Button(self, text="Back", command=self.back,**button_params_main)
         self.back_button.pack(side=tk.LEFT)
 
-        self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode))
+        self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode),**button_params_main)
         self.mode_button.pack(side=tk.LEFT)
 
-        self.solve_button = tk.Button(self, text=self.mode, command=self.solver)
+        self.solve_button = tk.Button(self, text=self.mode, command=self.solver,**button_params_main)
         self.solve_button.pack(side=tk.RIGHT)
 
         self.previous_coords = None

@@ -16,26 +16,28 @@ class PDFReader(tk.Frame):
         self.controls_frame = tk.Frame(self)
         self.controls_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.prev_button = tk.Button(self.controls_frame, text="Previous", command=self.show_prev_page)
+        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
+
+        self.prev_button = tk.Button(self.controls_frame, text="Previous", command=self.show_prev_page,**button_params_main)
         self.prev_button.pack(side=tk.LEFT)
 
-        self.next_button = tk.Button(self.controls_frame, text="Next", command=self.show_next_page)
+        self.next_button = tk.Button(self.controls_frame, text="Next", command=self.show_next_page,**button_params_main)
         self.next_button.pack(side=tk.LEFT)
 
-        self.zoom_in_button = tk.Button(self.controls_frame, text="Zoom In", command=self.zoom_in)
+        self.zoom_in_button = tk.Button(self.controls_frame, text="Zoom In", command=self.zoom_in,**button_params_main)
         self.zoom_in_button.pack(side=tk.LEFT)
 
-        self.zoom_out_button = tk.Button(self.controls_frame, text="Zoom Out", command=self.zoom_out)
+        self.zoom_out_button = tk.Button(self.controls_frame, text="Zoom Out", command=self.zoom_out,**button_params_main)
         self.zoom_out_button.pack(side=tk.LEFT)
 
-        self.open_button = tk.Button(self.controls_frame, text="Open PDF", command=self.open_pdf)
+        self.open_button = tk.Button(self.controls_frame, text="Open PDF", command=self.open_pdf,**button_params_main)
         self.open_button.pack(side=tk.RIGHT)
 
-        self.close_button = tk.Button(self.controls_frame, text="Close PDF", command=self.close_pdf)
+        self.close_button = tk.Button(self.controls_frame, text="Close PDF", command=self.close_pdf,**button_params_main)
         self.close_button.pack(side=tk.RIGHT)
         self.close_button.pack_forget()  # Initially hidden
 
-        back_button = tk.Button(self.controls_frame, text="Back", command=lambda: self.controller.show_frame("StartPage"))
+        back_button = tk.Button(self.controls_frame, text="Back", command=lambda: self.controller.show_frame("StartPage"),**button_params_main)
         back_button.pack(side=tk.RIGHT)
         
         self.canvas = tk.Canvas(self)

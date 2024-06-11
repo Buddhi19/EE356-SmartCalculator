@@ -17,17 +17,23 @@ class Simultaneous_solver_Frame(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.equation_list = tk.Listbox(self)
-        self.equation_list.pack(fill=tk.BOTH, expand=True)
 
-        add_button = ttk.Button(self, text="Add Equation", command=lambda: Simultaneous_Frame(self, self.add_equation))
+        self.configure(bg="#293C4A")
+
+        self.equation_list = tk.Listbox(self, bg="#293C4A", fg="#FFF", font=('sans-serif', 15, 'bold'))
+        self.equation_list.pack(fill=tk.BOTH, expand=True)
+        
+
+        button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
+
+        add_button = tk.Button(self, text="Add Equation", command=lambda: Simultaneous_Frame(self, self.add_equation), **button_params_main)
         add_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        solve_equations_button = ttk.Button(self, text="Solve Equations", command=self.solve_equations)
+        solve_equations_button = tk.Button(self, text="Solve Equations", command=self.solve_equations, **button_params_main)
         solve_equations_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
 
-        back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"))
-        back_button.pack(side=tk.RIGHT, fill=tk.X, expand=True) 
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **button_params_main)
+        back_button.pack(side=tk.RIGHT, fill=tk.X, expand=True)
 
     def add_equation(self, equation):
         self.equations.append(equation)
@@ -108,10 +114,10 @@ class Simultaneous_Frame(tk.Toplevel):
         for i in range(6):
             self.grid_columnconfigure(i, weight=1)
 
-        back_button = ttk.Button(self, text="Back", command=lambda: self.destroy())
+        back_button = tk.Button(self, text="Back", command=lambda: self.destroy(),**self.button_params_main)
         back_button.grid(row=8, column=0, columnspan=3, sticky="nsew")
 
-        add_button = ttk.Button(self, text="Add")
+        add_button = tk.Button(self, text="Add",**self.button_params_main)
         add_button.grid(row=8, column=3, columnspan=3, sticky="nsew")
         add_button.bind("<Button-1>", self.on_click)
 
