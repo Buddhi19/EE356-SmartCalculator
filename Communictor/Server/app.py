@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import time
 import json
-from main import process_image, calculate_expression, process_image_for_whiteboard
+from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
 
 app = Flask(__name__)
 
@@ -48,6 +48,14 @@ def image_route_whiteboard():
     file.save("img.png")
     result = process_image_for_whiteboard("img.png")
     return jsonify({"result":result})
+
+@app.route('/generate_bode_plot', methods=['POST'])
+def generate_bode_plot():
+    data = request.json
+    numerator = data.get('numerator')
+    denominator = data.get('denominator')
+    path = save_bode_plot(numerator, denominator)  # Call your function to generate and save the Bode plot
+    return send_file(path, mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(host=host_url,port=80)

@@ -6,6 +6,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import ttk
 from simultaneous_equations import Simul
+from controls_solver import generate_bode_plot
+from PIL import Image, ImageTk
 
 class TransferFunctionFrame(tk.Frame):
     def __init__(self, parent, controller):
@@ -39,7 +41,7 @@ class TransferFunctionFrame(tk.Frame):
         self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator, bg="black", fg="white")
         self.edit_denominator_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", bg="black", fg="white")
+        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", bg="black", fg="white",command=self.bode_plotter)
         self.bode_button.pack(side=tk.LEFT, fill=tk.X, expand=True)        
 
         self.root_locus_button = tk.Button(self.button_frame, text="Root Locus", bg="black", fg="white")
@@ -66,6 +68,13 @@ class TransferFunctionFrame(tk.Frame):
 
     def go_back(self):
         self.controller.show_frame("StartPage")
+
+    def bode_plotter(self):
+        if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
+            return
+        generate_bode_plot(self.numerator, self.denominator)
+        ShowPlots(self, "bode_plot")
+
 
 class EditTransferFunction(tk.Toplevel):
     def __init__(self,parent,callback):
@@ -147,6 +156,26 @@ class EditTransferFunction(tk.Toplevel):
                 self.display_var.set(self.solver.showing_exp)
         self.solver.user_input(button_text)
         self.display_var.set(self.solver.showing_exp)
+
+    
+class ShowPlots(tk.Toplevel):
+    def __init__(self, parent, mode):
+        super().__init__(parent)
+        self.mode = mode
+        self.create_widgets()
+
+    def create_widgets(self):
+        #show image named mode.png
+        img = Image.open(f"{self.mode}.png")
+        img = img.resize((480, 800))
+        img = ImageTk.PhotoImage(img)
+        panel = tk.Label(self, image=img)
+        panel.image = img
+
+        close_button = tk.Button(self, text="Close", command=self.destroy)
+        panel.pack()
+        close_button.pack()
+        
 
 
 if __name__ == "__main__":

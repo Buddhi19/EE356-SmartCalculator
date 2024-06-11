@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname("../../"))
 from Latex_Extractor.main import Image2Text
 from Calculator.main import Cal
 import cv2
+from Controls.main import save_bode_plot
 
 def process_image(img_location):
     I2T = Image2Text()
@@ -30,3 +31,7 @@ def calculate_expression(expression):
         ans.append(cal.do_nothing(exp))
 
     return ans
+
+def save_bode_plot_from_image(numerator,denominator):
+    path = save_bode_plot(numerator,denominator)
+    return path
