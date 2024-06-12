@@ -1,49 +1,12 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 from tkinter import ttk
 import numpy as np
-
-class MainApplication(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Matrix Solver")
-        self.geometry("800x600")
-        self.frames = {}
-
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        self.add_frame(MatrixOperationPage)
-
-    def add_frame(self, frame_class, data=None):
-        if data:
-            frame = frame_class(self.container, self, data)
-        else:
-            frame = frame_class(self.container, self)
-        self.frames[frame_class.__name__] = frame
-        frame.grid(row=0, column=0, sticky="nsew")
-
-    def show_frame(self, name, data=None):
-        print(f"Switching to frame: {name}")
-        if self.current_frame:
-            self.frames[self.current_frame].grid_remove()
-        if data:
-            frame_class = globals()[name]
-            frame = frame_class(self.container, self, data)
-            self.frames[name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-        else:
-            frame_class = globals()[name]
-            frame = frame_class(self.container, self)
-            self.frames[name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-        self.current_frame = name
-        self.frames[name].grid()
-    def show_frame(self, page_name):
-        frame = self.frames[page_name]
-        frame.tkraise()
-
+from matrix_solver import MatrixSolver
 class MatrixInputPage(tk.Toplevel):
     def __init__(self, parent, callback):
         super().__init__(parent)
@@ -170,6 +133,7 @@ class MatrixOperationPage(tk.Frame):
         self.configure(bg="#293C4A")
 
         self.matrices = {name: None for name in ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']}
+        self.solver = MatrixSolver(self.matrices['MatA'], self.matrices['MatB'], self.matrices['MatC'], self.matrices['MatD'], self.matrices['MatE'])
 
         self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
         self.label.pack(pady=20)
@@ -238,7 +202,6 @@ class MatrixOperationPage(tk.Frame):
     def store_matrix(self, name, matrix):
         self.matrices[name] = matrix
         self.update_matrix_buttons()
-        self.controller.show_frame("MatrixOperationPage")
 
     def set_matrix(self, name):
         current_text = self.operation_entry.get()
@@ -253,33 +216,19 @@ class MatrixOperationPage(tk.Frame):
         self.operation_entry.insert(0, new_text)
 
     def perform_operation(self, operation):
-        current_text = self.operation_entry.get()
-        if operation == 'DEL':
-            self.operation_entry.delete(len(current_text) - 1)
-        elif operation == 'AC':
-            self.operation_entry.delete(0, tk.END)
-        else:
-            try:
-                if operation == 'inv':
-                    matrix_name = current_text.strip()
-                    result = np.linalg.inv(self.matrices[matrix_name])
-                elif operation in ['+', '-', '*']:
-                    operands = current_text.split(operation)
-                    matrix1 = self.matrices[operands[0].strip()]
-                    matrix2 = self.matrices[operands[1].strip()]
-                    if operation == '+':
-                        result = matrix1 + matrix2
-                    elif operation == '-':
-                        result = matrix1 - matrix2
-                    elif operation == '*':
-                        result = np.dot(matrix1, matrix2)
-                elif operation == '=':
-                    result = eval(current_text, {"__builtins__": None}, self.matrices)
+        self.solver.user_input(operation)
+        self.operation_entry.delete(0, tk.END)
+        self.operation_entry.insert(0, self.solver.showing_exp)
 
-                self.result_label.config(text=f"Result:\n{result}")
-            except Exception as e:
-                self.result_label.config(text=f"Error:\n{e}")
+        
 
 if __name__ == "__main__":
-    app = MainApplication()
-    app.mainloop()
+    root = tk.Tk()
+    root.configure(bg="#293C4A", bd=10)
+    root.geometry("480x800")
+    root.title("Standalone Calculator")
+
+    # Initialize the Calculator frame
+    calculator_frame = MatrixOperationPage(root, root)
+    calculator_frame.pack(fill="both", expand=True)
+    root.mainloop()
