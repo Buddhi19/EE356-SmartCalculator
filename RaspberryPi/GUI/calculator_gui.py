@@ -18,11 +18,8 @@ class Calculator_Frame(tk.Frame):
         self.Cal = Calculator()
 
         # Style for ttk.Entry
-        entry = ttk.Entry(self,textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=8, padx=0, pady=0, sticky="nsew")
-        entry2 = ttk.Entry(self,textvariable=self.answer, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry2.grid(row=1, column=0, columnspan=8, padx=0, pady=0, sticky="nsew")
-
+        entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
+        entry.grid(row=0, column=0, columnspan=9, padx=8, sticky="nsew")
 
     def create_widgets(self):
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
