@@ -13,18 +13,21 @@ class Calculator_Frame(tk.Frame):
         super().__init__(parent, bg="#293C4A")
         self.controller = controller
         self.display_var = tk.StringVar()
+        self.answer = tk.StringVar()
         self.create_widgets()
         self.Cal = Calculator()
 
         # Style for ttk.Entry
-        entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=7, padx=0, pady=15, sticky="nsew")
+        entry = ttk.Entry(self,textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
+        entry.grid(row=0, column=0, columnspan=8, padx=0, pady=0, sticky="nsew")
+        entry2 = ttk.Entry(self,textvariable=self.answer, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
+        entry2.grid(row=1, column=0, columnspan=8, padx=0, pady=0, sticky="nsew")
 
 
     def create_widgets(self):
-        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 15, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
-        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 15, 'bold')}
+        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
 
         row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
@@ -40,16 +43,16 @@ class Calculator_Frame(tk.Frame):
         self.arrow_keys = {'↑':"up", '↓':"down", '←':"left", '→':"right"}
         special_buttons = {'DEL', 'AC', '='}
 
-        row = 1
+        row = 2
         for row_buttons in buttons_grid:
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=4)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=5)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=5)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params)
+                    b = tk.Button(self, text=button, **self.button_params, width=5)
                 
 
                 b.grid(row=row, column=col, sticky="nsew")
@@ -66,7 +69,7 @@ class Calculator_Frame(tk.Frame):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
-        back_button.grid(row=8, column=0, columnspan=7, sticky="nsew")
+        back_button.grid(row=9, column=0, columnspan=7, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
@@ -76,6 +79,8 @@ class Calculator_Frame(tk.Frame):
             ModeSelectionPopup(self, self.set_mode)
         else:
             self.Cal.user_input(text)
+            if text == "=" or text == "AC":
+                self.answer.set(self.Cal.result)
             self.display_var.set(self.Cal.showing_exp)
 
     def set_mode(self, mode):
