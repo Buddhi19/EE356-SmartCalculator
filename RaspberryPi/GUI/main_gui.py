@@ -8,7 +8,7 @@ from GUI.start_gui import StartPage
 from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
-from GUI.pdf_reader_GUI import PDFReader
+# from GUI.pdf_reader_GUI import PDFReader
 from GUI.whiteboard_GUI import WhiteboardApp
 from GUI.controls_gui import TransferFunctionFrame
 from GUI.matrix_solver_gui import  MatrixOperationPage
@@ -36,7 +36,7 @@ class MainApplication(tk.Tk):
         self.add_frame(Calculator_Frame)
         self.add_frame(Graph_GUI)
         self.add_frame(Simultaneous_solver_Frame)
-        self.add_frame(PDFReader)
+        # self.add_frame(PDFReader)
         self.add_frame(WhiteboardApp)
         self.add_frame(TransferFunctionFrame)
         self.add_frame(MatrixOperationPage)
