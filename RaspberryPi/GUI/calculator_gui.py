@@ -18,7 +18,7 @@ class Calculator_Frame(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=8, padx=0, pady=15, sticky="nsew")
+        entry.grid(row=0, column=0, columnspan=7, padx=0, pady=15, sticky="nsew")
 
 
     def create_widgets(self):
@@ -29,7 +29,7 @@ class Calculator_Frame(tk.Frame):
         row1_buttons = ['shift', 'MODE', '', '↑','', 'ln','%']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
         row2_buttons = ['+', '-', '←', '', '→', 'x!', 'π']
-        row3_buttons = ['x', '/', '', '↓', '', 'd/dx', '∫']
+        row3_buttons = ['*', '/', '', '↓', '', 'd/dx', '∫']
         row4_buttons = ['7', '8', '9', 'x^n', 'sin', 'cos', 'tan']
         row5_buttons = ['4', '5', '6','\u00B2\u221A' , 'log', '(', ')']
         row6_buttons = ['1', '2', '3', 'e^x', 'hyp', 'DEL', 'AC']
@@ -45,11 +45,11 @@ class Calculator_Frame(tk.Frame):
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=5)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=4)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=5)
+                    b = tk.Button(self, text=button, **self.button_params_other)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=5)
+                    b = tk.Button(self, text=button, **self.button_params)
                 
 
                 b.grid(row=row, column=col, sticky="nsew")
@@ -61,12 +61,12 @@ class Calculator_Frame(tk.Frame):
             row += 1
             
         for i in range(8):
-            self.grid_rowconfigure(i, weight=1)
+            self.grid_rowconfigure(i)
         for i in range(9):
-            self.grid_columnconfigure(i, weight=1)
+            self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
-        back_button.grid(row=8, column=0, columnspan=8, sticky="nsew")
+        back_button.grid(row=8, column=0, columnspan=7, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
