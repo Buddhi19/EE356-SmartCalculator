@@ -13,6 +13,29 @@ class MatrixSolver(Calculator):
         self.showing_exp = "|"
         self.pointer = 0
 
+    def linear_solver(self,matA,matB,matC,matD,matE,result):
+        self.matA = matA
+        self.matB = matB
+        self.matC = matC
+        self.matD = matD
+        self.matE = matE
+        if matA in result:
+            result = result.replace(matA, self.matA)
+        if matB in result:
+            result = result.replace(matB, self.matB)
+        if matC in result:
+            result = result.replace(matC, self.matC)
+        if matD in result:
+            result = result.replace(matD, self.matD)
+        if matE in result:
+            result = result.replace(matE, self.matE)
+        result = eval(result)
+        return result
+
+
+
+        
+
     def user_input(self, key):
         if key == "AC":
             self.result = ""
