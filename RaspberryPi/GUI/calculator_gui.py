@@ -26,14 +26,14 @@ class Calculator_Frame(tk.Frame):
         self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
         self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 15, 'bold')}
 
-        row1_buttons = ['shift', 'MODE', '', '↑','', 'ln','%']
+        row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
-        row2_buttons = ['+', '-', '←', '', '→', 'x!', 'π']
-        row3_buttons = ['*', '/', '', '↓', '', 'd/dx', '∫']
-        row4_buttons = ['7', '8', '9', 'x^n', 'sin', 'cos', 'tan']
-        row5_buttons = ['4', '5', '6','\u00B2\u221A' , 'log', '(', ')']
-        row6_buttons = ['1', '2', '3', 'e^x', 'hyp', 'DEL', 'AC']
-        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', 'nCr','\u2044', '=']
+        row2_buttons = ['%', 'pi', '←', '', '→', 'log']
+        row3_buttons = ['(', ')', '', '↓', '', 'nCr']
+        row4_buttons = ['7', '8', '9', 'tan', 'sin', 'cos']
+        row5_buttons = ['4', '5', '6', '+', '-',"AC"]
+        row6_buttons = ['1', '2', '3', "*","/", 'DEL']
+        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', '=']
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons, row7_buttons]
 
