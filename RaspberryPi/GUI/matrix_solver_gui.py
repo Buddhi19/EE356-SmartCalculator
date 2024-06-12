@@ -201,7 +201,6 @@ class MatrixOperationPage(tk.Frame):
 
     def store_matrix(self, name, matrix):
         self.matrices[name] = matrix
-        self.update_matrix_buttons()
 
     def set_matrix(self, name):
         current_text = self.operation_entry.get()
@@ -219,6 +218,7 @@ class MatrixOperationPage(tk.Frame):
         self.solver.user_input(operation)
         self.operation_entry.delete(0, tk.END)
         self.operation_entry.insert(0, self.solver.showing_exp)
+        print(self.solver.result)
 
         
 

@@ -18,7 +18,7 @@ class Calculator:
             "arcsine": "aS", "arccos": "aC", "arctan": "aT","i":"I",
             "A": "A", "B": "B", "C": "C", "D": "D",
             "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z",
-            "s":"s","matA":"@", "matB":"#", "matC":"$", "matD":"%", "matE":"&"
+            "s":"s","MatA":"@", "MatB":"#", "MatC":"$", "MatD":"%", "MatE":"&"
         }
         self.mappings = {
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
