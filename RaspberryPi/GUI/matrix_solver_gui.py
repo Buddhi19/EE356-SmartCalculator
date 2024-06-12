@@ -8,29 +8,46 @@ class MainApplication(tk.Tk):
         self.title("Matrix Solver")
         self.geometry("800x600")
         self.frames = {}
-        self.matrices = {name: None for name in ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']}
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        for F in (MatrixInputPage, MatrixEntryPage, MatrixOperationPage):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
+        self.add_frame(MatrixOperationPage)
+
+    def add_frame(self, frame_class, data=None):
+        if data:
+            frame = frame_class(self.container, self, data)
+        else:
+            frame = frame_class(self.container, self)
+        self.frames[frame_class.__name__] = frame
+        frame.grid(row=0, column=0, sticky="nsew")
+
+    def show_frame(self, name, data=None):
+        print(f"Switching to frame: {name}")
+        if self.current_frame:
+            self.frames[self.current_frame].grid_remove()
+        if data:
+            frame_class = globals()[name]
+            frame = frame_class(self.container, self, data)
+            self.frames[name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame("MatrixInputPage")
-
+        else:
+            frame_class = globals()[name]
+            frame = frame_class(self.container, self)
+            self.frames[name] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
+        self.current_frame = name
+        self.frames[name].grid()
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
 
-class MatrixInputPage(tk.Frame):
-    def __init__(self, parent, controller):
+class MatrixInputPage(tk.Toplevel):
+    def __init__(self, parent, callback):
         super().__init__(parent)
-        self.controller = controller
+        self.callback = callback
         self.configure(bg="#293C4A")
 
         label = tk.Label(self, text="Enter Matrix Dimensions", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
@@ -59,27 +76,17 @@ class MatrixInputPage(tk.Frame):
                            font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         button.pack(pady=20)
 
-        add_more_button = tk.Button(self, text="Add More Matrices", command=self.add_more_matrices,
-                                    font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        add_more_button.pack(pady=10)
-
     def next_page(self):
         rows = self.row_var.get()
         cols = self.col_var.get()
         matrix_name = self.matrix_var.get()
-        self.controller.frames["MatrixEntryPage"].set_matrix_details(rows, cols, matrix_name)
-        self.controller.show_frame("MatrixEntryPage")
+        self.callback(rows, cols, matrix_name)
+        self.destroy()
 
-    def add_more_matrices(self):
-        self.controller.matrices[self.matrix_var.get()] = None
-        self.matrix_menu.set('')
-        self.row_var.set(2)
-        self.col_var.set(2)
-
-class MatrixEntryPage(tk.Frame):
-    def __init__(self, parent, controller):
+class MatrixEntryPage(tk.Toplevel):
+    def __init__(self, parent, callback):
         super().__init__(parent)
-        self.controller = controller
+        self.callback = callback
         self.configure(bg="#293C4A")
 
         self.label = tk.Label(self, text="Enter Matrix Values", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
@@ -111,7 +118,7 @@ class MatrixEntryPage(tk.Frame):
                                     font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         self.add_button.pack(pady=20)
 
-        back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("MatrixInputPage"),
+        back_button = tk.Button(self, text="Back", command=lambda: self.destroy(),
                                 font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         back_button.pack(pady=10)
 
@@ -153,14 +160,16 @@ class MatrixEntryPage(tk.Frame):
         for row_entries in self.entries:
             row = [float(entry.get()) for entry in row_entries]
             matrix.append(row)
-        self.controller.matrices[self.matrix_name] = np.array(matrix)
-        self.controller.show_frame("MatrixOperationPage")
+        self.callback(self.matrix_name, np.array(matrix))
+        self.destroy()
 
 class MatrixOperationPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg="#293C4A")
+
+        self.matrices = {name: None for name in ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']}
 
         self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
         self.label.pack(pady=20)
@@ -200,6 +209,10 @@ class MatrixOperationPage(tk.Frame):
                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
             button.grid(row=row, column=col)
 
+        add_matrix_button = tk.Button(self, text="Add Matrix", command=self.add_matrix,
+                                      font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
+        add_matrix_button.pack(pady=20)
+
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("MatrixInputPage"),
                                 font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         back_button.pack(pady=10)
@@ -210,10 +223,22 @@ class MatrixOperationPage(tk.Frame):
         for widget in self.matrix_buttons_frame.winfo_children():
             widget.destroy()
 
-        for name in self.controller.matrices.keys():
+        for name in self.matrices.keys():
             button = tk.Button(self.matrix_buttons_frame, text=name, command=lambda n=name: self.set_matrix(n),
                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
             button.pack(side=tk.LEFT, padx=5)
+
+    def add_matrix(self):
+        self.matrix_input_page = MatrixInputPage(self, self.open_matrix_entry_page)
+
+    def open_matrix_entry_page(self, rows, cols, matrix_name):
+        self.matrix_entry_page = MatrixEntryPage(self, self.store_matrix)
+        self.matrix_entry_page.set_matrix_details(rows, cols, matrix_name)
+
+    def store_matrix(self, name, matrix):
+        self.matrices[name] = matrix
+        self.update_matrix_buttons()
+        self.controller.show_frame("MatrixOperationPage")
 
     def set_matrix(self, name):
         current_text = self.operation_entry.get()
@@ -237,11 +262,11 @@ class MatrixOperationPage(tk.Frame):
             try:
                 if operation == 'inv':
                     matrix_name = current_text.strip()
-                    result = np.linalg.inv(self.controller.matrices[matrix_name])
+                    result = np.linalg.inv(self.matrices[matrix_name])
                 elif operation in ['+', '-', '*']:
                     operands = current_text.split(operation)
-                    matrix1 = self.controller.matrices[operands[0].strip()]
-                    matrix2 = self.controller.matrices[operands[1].strip()]
+                    matrix1 = self.matrices[operands[0].strip()]
+                    matrix2 = self.matrices[operands[1].strip()]
                     if operation == '+':
                         result = matrix1 + matrix2
                     elif operation == '-':
@@ -249,7 +274,7 @@ class MatrixOperationPage(tk.Frame):
                     elif operation == '*':
                         result = np.dot(matrix1, matrix2)
                 elif operation == '=':
-                    result = eval(current_text, {"__builtins__": None}, self.controller.matrices)
+                    result = eval(current_text, {"__builtins__": None}, self.matrices)
 
                 self.result_label.config(text=f"Result:\n{result}")
             except Exception as e:

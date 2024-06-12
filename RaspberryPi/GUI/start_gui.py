@@ -40,6 +40,10 @@ class StartPage(tk.Frame):
                                         command=lambda: self.controller.show_frame("TransferFunctionFrame"),font=("sans-serif", 15, "bold"))
         controls.pack(pady=10)
 
+        matrix_button = tk.Button(self, text="Matrix Calculator",
+                                        command=lambda: self.controller.show_frame("MatrixOperationPage"),font=("sans-serif", 15, "bold"))
+        matrix_button.pack(pady=10)
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Standalone Calculator")

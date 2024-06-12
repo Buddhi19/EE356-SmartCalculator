@@ -11,6 +11,7 @@ from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 from GUI.pdf_reader_GUI import PDFReader
 from GUI.whiteboard_GUI import WhiteboardApp
 from GUI.controls_gui import TransferFunctionFrame
+from GUI.matrix_solver_gui import  MatrixOperationPage
 
 class MainApplication(tk.Tk):
     def __init__(self):
@@ -20,6 +21,7 @@ class MainApplication(tk.Tk):
         # Create a menu bar
         menubar = tk.Menu(self)
         self.config(menu=menubar,bg = "#293C4A")
+        
 
         # Initialize container to hold different frames
         self.container = tk.Frame(self)
@@ -36,6 +38,7 @@ class MainApplication(tk.Tk):
         self.add_frame(PDFReader)
         self.add_frame(WhiteboardApp)
         self.add_frame(TransferFunctionFrame)
+        self.add_frame(MatrixOperationPage)
 
 
         self.show_frame("StartPage")
