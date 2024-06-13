@@ -87,7 +87,7 @@ class ModeSelection_Whiteboard(tk.Toplevel):
     def create_widgets(self):
         for mode in self.mode_list:
             button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
-            button.pack(fill=tk.X, padx=5, pady=5)
+            button.pack(fill=tk.X, pady=5)
 
     def select_mode(self, mode):
         self.callback(mode)

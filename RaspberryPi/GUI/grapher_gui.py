@@ -25,9 +25,9 @@ class Graph_GUI(tk.Frame):
         self.configure(bg="#293C4A")
 
     def create_widgets(self):
-        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 12, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 12, 'bold')}
-        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 12, 'bold')}
+        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
 
         row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
@@ -48,9 +48,9 @@ class Graph_GUI(tk.Frame):
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=5,height=3)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=4,height=3)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=5,height=3)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=4,height=3)
                 else:
                     b = tk.Button(self, text=button, **self.button_params, width=5,height=3)
                 
@@ -65,7 +65,7 @@ class Graph_GUI(tk.Frame):
             
         for i in range(8):
             self.grid_rowconfigure(i)
-        for i in range(9):
+        for i in range(6):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2,pady=10)
