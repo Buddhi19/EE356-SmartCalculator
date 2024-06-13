@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from scipy import signal
 import control 
 from control import tf, root_locus, nyquist_plot, bode_plot
 
@@ -18,16 +19,37 @@ def draw_nyquist_plot(numerator, denominator):
     plt.grid(True)
     plt.show()
 
-def draw_bode_plot(numerator, denominator):
-    # Create the transfer function
-    system = tf(numerator, denominator)
+# def draw_bode_plot(numerator, denominator):
+#     # Create the transfer function
+#     system = tf(numerator, denominator)
 
-    # Plot the Bode plot
-    fig = plt.figure(figsize=(3.3, 8))  # Set size to 330x800 pixels
-    mag, phase, omega = bode_plot(system, Plot=False)  # Plot=False to suppress automatic plot display
-    plt.title('Bode Plot')
+#     # Plot the Bode plot
+#     fig = plt.figure(figsize=(3.3, 8))  # Set size to 330x800 pixels
+#     mag, phase, omega = bode_plot(system, Plot=False)  # Plot=False to suppress automatic plot display
+#     plt.title('Bode Plot')
     
-    return fig
+#     plt.show()
+
+def draw_bode_plot(numerator,denominator):
+    transfer_function = signal.TransferFunction(numerator, denominator)
+    w, mag, phase = signal.bode(transfer_function)
+
+    #plot in black background name axis and title for both plots
+    fig, ax = plt.subplots(2, 1)
+    ax[0].plot(w, mag)
+    ax[0].set_xscale('log')
+    ax[0].set_title('Magnitude Plot')
+    ax[0].set_ylabel('Magnitude (dB)')
+    ax[0].set_xlabel('Frequency (rad/s)')
+    ax[0].grid()
+
+    ax[1].plot(w, phase)
+    ax[1].set_xscale('log')
+    ax[1].set_title('Phase Plot')
+    ax[1].set_ylabel('Phase (degrees)')
+    ax[1].set_xlabel('Frequency (rad/s)')
+    ax[1].grid()
+    plt.show()
 
 def transfer_function_visual(num_coeffs, den_coeffs):
     num_len = len(num_coeffs)
@@ -93,7 +115,7 @@ class PlotApp(tk.Frame):
 
     def plot_root_locus(self):
         # Create the transfer function from coefficients
-        sys = control.TransferFunction(self.num_coeffs, self.den_coeffs)
+        sys = signal.TransferFunction(self.num_coeffs, self.den_coeffs)
 
         # Plot the root locus
         plt.figure(figsize=(3.3, 8))  # Set size to 330x800 pixels
