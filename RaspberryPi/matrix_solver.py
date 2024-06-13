@@ -52,6 +52,13 @@ class MatrixSolver(Calculator):
                 self.pointer = 0
 
         elif key == "=":
+            if not self.degrees:
+                for key in self.mappings_for_degrees.keys():
+                    self.result = self.result.replace(key, self.mappings_for_degrees[key])
+            else:
+                for key in self.mappings.keys():
+                    self.result = self.result.replace(key, self.mappings[key])
+
             open_brackets = self.result.count("(")
             close_brackets = self.result.count(")")
             if open_brackets > close_brackets:
