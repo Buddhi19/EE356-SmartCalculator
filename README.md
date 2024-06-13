@@ -16,3 +16,7 @@
 - Grapher has some issues with passing data variable
 - Camera should be tested with a flash
 - Onscreen whiteboard yet to be implemented
+
+
+# Raspberry Pi task bar
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
