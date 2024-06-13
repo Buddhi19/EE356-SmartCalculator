@@ -35,7 +35,7 @@ def draw_bode_plot(numerator,denominator):
     w, mag, phase = signal.bode(transfer_function)
 
     #plot in black background name axis and title for both plots
-    fig, ax = plt.subplots(2, 1)
+    fig, ax = plt.subplots(2, 1, figsize=(3.3, 8))
     ax[0].plot(w, mag)
     ax[0].set_xscale('log')
     ax[0].set_title('Magnitude Plot')
@@ -57,10 +57,10 @@ def transfer_function_visual(num_coeffs, den_coeffs):
     num_poly = ""
     den_poly = ""
     for i in range(num_len):
-        num_poly += str(num_coeffs[i])+"s^"+str(num_len-(i+1))+" + " if i != (num_len-1) else str(num_coeffs[i])+"s^"+str(num_len-(i+1))
+        num_poly += str(num_coeffs[i])+"s^"+str(num_len-(i+1))+" + " if i != (num_len-1) else str(num_coeffs[i])
 
     for i in range(den_len):
-        den_poly += str(den_coeffs[i])+"s^"+str(den_len-(i+1)) + " + " if i != (den_len-1) else str(den_coeffs[i])+"s^"+str(den_len-(i+1))
+        den_poly += str(den_coeffs[i])+"s^"+str(den_len-(i+1)) + " + " if i != (den_len-1) else str(den_coeffs[i])
     return num_poly, den_poly
 
 class PlotApp(tk.Frame):
@@ -155,8 +155,8 @@ class PlotController(tk.Tk):
 
 if __name__ == "__main__":
     # Define the transfer function coefficients here
-    num_coeffs = [2]
-    den_coeffs = [3, 3, 5]
+    num_coeffs = [2,1]
+    den_coeffs = [1, 3, 3, 5]
 
     # Create the application
     app = PlotController(num_coeffs, den_coeffs)
