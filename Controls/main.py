@@ -26,8 +26,6 @@ def save_bode_plot(numerator,denominator):
     ax[1].set_ylabel('Phase (degrees)')
     ax[1].set_xlabel('Frequency (rad/s)')
     ax[1].grid()
-    
-    plt.savefig(os.path.join(parent_dir, "bode_plot.png"))
     plt.show()
 
 
