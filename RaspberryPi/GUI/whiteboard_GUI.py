@@ -109,6 +109,7 @@ class AnswerDisplay(tk.Toplevel):
 # Example usage:
 if __name__ == "__main__":
     root = tk.Tk()
+    root.geometry("330x800")
     app = WhiteboardApp(root, None)
     app.pack(fill=tk.BOTH, expand=True)
     root.mainloop()

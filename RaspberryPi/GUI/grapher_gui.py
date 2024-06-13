@@ -202,7 +202,7 @@ class Graph_Frame3D(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.configure(bg="#293C4A", bd=10)
-    root.geometry("480x800")
+    root.geometry("330x800")
     root.title("Standalone Calculator")
 
     # Initialize the Calculator frame

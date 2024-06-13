@@ -107,7 +107,7 @@ class PDFReader(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("PDF Reader")
-    root.geometry("480x800")
+    root.geometry("330x800")
     
     reader = PDFReader(root, root)
     reader.pack(expand=True, fill=tk.BOTH)

@@ -66,6 +66,7 @@ class ApplicationController:
 
 def main():
     root = tk.Tk()
+    root.geometry("330x800")
     root.title("Raspberry Pi Camera Interface")
     app_controller = ApplicationController(root)
     root.mainloop()
