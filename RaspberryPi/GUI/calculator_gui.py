@@ -19,7 +19,7 @@ class Calculator_Frame(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=9, padx=8, sticky="nsew")
+        entry.grid(row=0, column=0, columnspan=9, padx=8, pady=20, sticky="nsew")
 
     def create_widgets(self):
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
@@ -45,11 +45,11 @@ class Calculator_Frame(tk.Frame):
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=5)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=4, height=3)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=5)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=4, height=3)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=5)
+                    b = tk.Button(self, text=button, **self.button_params, width=5, height=3)
                 
 
                 b.grid(row=row, column=col, sticky="nsew")
@@ -62,10 +62,10 @@ class Calculator_Frame(tk.Frame):
             
         for i in range(8):
             self.grid_rowconfigure(i)
-        for i in range(9):
+        for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2)
         back_button.grid(row=9, column=0, columnspan=7, sticky="nsew")
 
     def on_click(self, event):
