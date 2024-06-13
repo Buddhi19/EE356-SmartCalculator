@@ -30,6 +30,20 @@ def draw_nyquist_plot(numerator, denominator):
     
 #     plt.show()
 
+def draw_root_locus(numerator, denominator):
+    # Create the transfer function
+    system = tf(numerator, denominator)
+
+    # Plot the root locus
+    fig = plt.figure(figsize=(3.3, 8))
+    root_locus(system)
+    plt.title('Root Locus')
+    plt.xlabel('Real Axis')
+    plt.ylabel('Imaginary Axis')
+    plt.grid(True)
+    plt.savefig('root_locus_plot.png')
+    plt.show()
+
 def draw_bode_plot(numerator,denominator):
     transfer_function = signal.TransferFunction(numerator, denominator)
     w, mag, phase = signal.bode(transfer_function)
@@ -115,18 +129,7 @@ class PlotApp(tk.Frame):
 
     def plot_root_locus(self):
         # Create the transfer function from coefficients
-        sys = signal.TransferFunction(self.num_coeffs, self.den_coeffs)
-
-        # Plot the root locus
-        plt.figure(figsize=(3.3, 8))  # Set size to 330x800 pixels
-        control.root_locus(sys)
-        plt.title('Root Locus')
-        plt.xlabel('Real Axis')
-        plt.ylabel('Imaginary Axis')
-        plt.grid(True)
-
-        # Display plot in tkinter window (optional)
-        plt.show()
+        draw_root_locus(self.num_coeffs, self.den_coeffs)
 
     def display_plot(self, fig):
         # Clear previous plot
