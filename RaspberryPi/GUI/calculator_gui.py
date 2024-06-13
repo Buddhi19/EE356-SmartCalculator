@@ -19,7 +19,7 @@ class Calculator_Frame(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=9, padx=8, pady=20, sticky="nsew")
+        entry.grid(row=0, column=0, columnspan=9,  pady=20, sticky="nsew")
 
     def create_widgets(self):
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
@@ -65,7 +65,7 @@ class Calculator_Frame(tk.Frame):
         for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2)
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2,pady=10)
         back_button.grid(row=9, column=0, columnspan=7, sticky="nsew")
 
     def on_click(self, event):
