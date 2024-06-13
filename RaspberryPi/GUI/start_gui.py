@@ -30,7 +30,7 @@ class StartPage(tk.Frame):
 
         for i, (text, frame_name) in enumerate(buttons):
             button = tk.Button(self, text=text, command=lambda name=frame_name: self.controller.show_frame(name),
-                               font=("sans-serif", 15, "bold"),width=25)
+                               font=("sans-serif", 15, "bold"),width=33)
             button.grid(row=i+1, column=0, pady=5,padx=0, sticky='ew')
 
 if __name__ == "__main__":
