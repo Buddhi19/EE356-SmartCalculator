@@ -50,17 +50,6 @@ class MatrixSolver(Calculator):
                 self.result = ""
                 self.showing_exp = "|"
                 self.pointer = 0
-        elif key == "inv":
-            if matrix_name in matrix_dict:
-                try:
-                    result = np.linalg.inv(matrix_dict[matrix_name])
-                    self.result = str(result)
-                except np.linalg.LinAlgError:
-                    self.result = "Matrix is singular and cannot be inverted"
-                except Exception as e:
-                    self.result = f"Error: {str(e)}"
-            else:
-                self.result = "Unknown matrix"
 
         elif key == "=":
             open_brackets = self.result.count("(")
