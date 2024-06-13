@@ -11,8 +11,9 @@ from PIL import Image, ImageTk
 
 class TransferFunctionFrame(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg="black")
+        super().__init__(parent, bg="#293C4A")
         self.controller = controller
+        self.configure(bg="#293C4A")
         
         self.numerator = "Transfer Function Numerator"
         self.denominator = "Transfer Function Denominator"
@@ -22,33 +23,30 @@ class TransferFunctionFrame(tk.Frame):
 
     def create_widgets(self):
         # Display the transfer function
-        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=400, height=400)
+        self.canvas = tk.Canvas(self, bg="#293C4A", highlightthickness=0, width=400, height=400)
         self.canvas.pack(pady=10)
 
         # Draw the fraction
-        self.num = self.canvas.create_text(200, 50, text=self.numerator, fill="white", font=("Arial", 16), anchor="s")
-        line =self.canvas.create_line(20, 60, 520, 60, fill="white", width=2)
-        self.den = self.canvas.create_text(200, 80, text=self.denominator, fill="white", font=("Arial", 16), anchor="n")
+        self.num = self.canvas.create_text(200, 50, text=self.numerator, fill="white", font=('sans-serif', 12, 'bold'), anchor="s")
+        line =self.canvas.create_line(80, 60, 320, 60, fill="white", width=2)
+        self.den = self.canvas.create_text(200, 80, text=self.denominator, fill="white", font=('sans-serif', 12,'bold'), anchor="n")
 
         # Buttons
-        self.button_frame = tk.Frame(self, bg="black")
+        self.button_frame = tk.Frame(self, bg="#293C4A")
         self.button_frame.pack(pady=10)
 
 
-        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator", command=self.edit_numerator, bg="black", fg="white")
-        self.edit_numerator_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator" ,command=self.edit_numerator,font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.edit_numerator_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator, bg="black", fg="white")
-        self.edit_denominator_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.edit_denominator_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", bg="black", fg="white",command=self.bode_plotter)
-        self.bode_button.pack(side=tk.LEFT, fill=tk.X, expand=True)        
+        self.plot_button = tk.Button(self.button_frame, text="Plot",font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",command=self.bode_plotter, width=13)
+        self.plot_button.grid(row=1, column=0, padx=2, pady=5)        
 
-        self.root_locus_button = tk.Button(self.button_frame, text="Root Locus", bg="black", fg="white")
-        self.root_locus_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
-
-        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, bg="black", fg="white")
-        self.back_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.back_button.grid(row=1, column=1, padx=2, pady=5)
 
     def edit_numerator(self):
         EditTransferFunction(self, self.update_numerator)
@@ -180,7 +178,7 @@ class ShowPlots(tk.Toplevel):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.configure(bg="black")
+    root.configure(bg="#293C4A")
     root.geometry("330x800")
     transfer_function_frame = TransferFunctionFrame(root, None)
     transfer_function_frame.pack()

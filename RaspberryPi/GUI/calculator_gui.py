@@ -29,7 +29,7 @@ class Calculator_Frame(tk.Frame):
         row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
         row2_buttons = ['%', 'pi', '←', '', '→', 'log']
-        row3_buttons = ['(', ')', '', '↓', '', 'nCr']
+        row3_buttons = ['(', ')', '^', '↓', '√', 'nCr']
         row4_buttons = ['7', '8', '9', 'tan', 'sin', 'cos']
         row5_buttons = ['4', '5', '6', '+', '-',"AC"]
         row6_buttons = ['1', '2', '3', "*","/", 'DEL']

@@ -19,6 +19,7 @@ class Simultaneous_solver_Frame(tk.Frame):
     def create_widgets(self):
 
         self.configure(bg="#293C4A")
+        
 
         self.equation_list = tk.Listbox(self, bg="#293C4A", fg="#FFF", font=('sans-serif', 15, 'bold'))
         self.equation_list.pack(fill=tk.BOTH, expand=True)
