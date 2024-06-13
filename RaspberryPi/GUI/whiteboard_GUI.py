@@ -66,11 +66,15 @@ class WhiteboardApp(tk.Frame):
         # Add code for plotting here
 
     def save_whiteboard(self, filename):
-        x0 = self.canvas.winfo_rootx() + self.canvas.winfo_x()
-        y0 = self.canvas.winfo_rooty() + self.canvas.winfo_y()
-        x1 = x0 + self.canvas.winfo_width()
-        y1 = y0 + self.canvas.winfo_height()
-        ImageGrab.grab().crop((x0, y0, x1, y1)).save(filename)
+        # Get the coordinates of the entire window relative to the screen
+        x0 = self.winfo_rootx() + 5
+        y0 = self.winfo_rooty()+ 20
+        x1 = x0 + 480
+        y1 = y0 + 910
+
+        # Use these coordinates to grab the screenshot and save it
+        ImageGrab.grab(bbox=(x0, y0, x1, y1)).save(filename)
+
 
     def reset_coords(self, event):
         self.previous_coords = None
