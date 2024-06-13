@@ -136,10 +136,10 @@ class MatrixOperationPage(tk.Frame):
         self.matrices = {name: None for name in ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']}
         self.solver = MatrixSolver(self.matrices['MatA'], self.matrices['MatB'], self.matrices['MatC'], self.matrices['MatD'], self.matrices['MatE'])
 
-        self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
+        self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 20, 'bold'), bg="#293C4A", fg="#BBB")
         self.label.pack(pady=20)
 
-        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=40)
+        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=25)
         self.operation_entry.pack(pady=10)
 
         self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
