@@ -12,6 +12,8 @@ from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 from GUI.whiteboard_GUI import WhiteboardApp
 from GUI.controls_gui import TransferFunctionFrame
 from GUI.matrix_solver_gui import  MatrixOperationPage
+from GUI.cam_GUI import CameraApp
+from GUI.loading_gui import Loading_GUI
 
 class MainApplication(tk.Tk):
     def __init__(self):
@@ -41,6 +43,8 @@ class MainApplication(tk.Tk):
         self.add_frame(WhiteboardApp)
         self.add_frame(TransferFunctionFrame)
         self.add_frame(MatrixOperationPage)
+        self.add_frame(CameraApp)
+        self.add_frame(Loading_GUI)
 
 
         self.show_frame("StartPage")
