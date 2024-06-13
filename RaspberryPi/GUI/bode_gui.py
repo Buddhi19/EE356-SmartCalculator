@@ -8,16 +8,18 @@ from control import tf, root_locus, nyquist_plot, bode_plot
 
 def draw_nyquist_plot(numerator, denominator):
     # Create the transfer function
-    system = tf(numerator, denominator)
+    system = signal.TransferFunction(numerator, denominator)
 
     # Plot the Nyquist plot
     plt.figure(figsize=(3.3, 8))  # Set size to 330x800 pixels
-    nyquist_plot(system)
+    mag, phase, omega = signal.bode(system)
+    plt.plot(mag * np.cos(phase), mag * np.sin(phase))
     plt.title('Nyquist Plot')
     plt.xlabel('Real Axis')
     plt.ylabel('Imaginary Axis')
     plt.grid(True)
-    plt.show()
+    plt.savefig('nyquist_plot.png')  
+    # plt.show()
 
 # def draw_bode_plot(numerator, denominator):
 #     # Create the transfer function
@@ -42,7 +44,8 @@ def draw_root_locus(numerator, denominator):
     plt.ylabel('Imaginary Axis')
     plt.grid(True)
     plt.savefig('root_locus_plot.png')
-    plt.show()
+    plt.savefig('root_locus.png')
+    # plt.show()
 
 def draw_bode_plot(numerator,denominator):
     transfer_function = signal.TransferFunction(numerator, denominator)
@@ -63,7 +66,8 @@ def draw_bode_plot(numerator,denominator):
     ax[1].set_ylabel('Phase (degrees)')
     ax[1].set_xlabel('Frequency (rad/s)')
     ax[1].grid()
-    plt.show()
+    plt.savefig('bode_plot.png')
+    # plt.show()
 
 def transfer_function_visual(num_coeffs, den_coeffs):
     num_len = len(num_coeffs)
