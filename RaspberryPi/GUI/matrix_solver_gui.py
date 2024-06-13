@@ -7,6 +7,7 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 from matrix_solver import MatrixSolver
+
 class MatrixInputPage(tk.Toplevel):
     def __init__(self, parent, callback):
         super().__init__(parent)
@@ -14,30 +15,29 @@ class MatrixInputPage(tk.Toplevel):
         self.configure(bg="#293C4A")
 
         label = tk.Label(self, text="Enter Matrix Dimensions", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
-        label.pack(pady=20)
+        label.grid(row=0, column=0, columnspan=2, pady=20)
 
         self.row_var = tk.IntVar(value=2)
         self.col_var = tk.IntVar(value=2)
 
         row_label = tk.Label(self, text="Rows:", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
-        row_label.pack(pady=5)
+        row_label.grid(row=1, column=0, pady=5, sticky='e')
         self.row_menu = ttk.Combobox(self, textvariable=self.row_var, values=[2, 3, 4, 5], font=('sans-serif', 15, 'bold'))
-        self.row_menu.pack(pady=5)
+        self.row_menu.grid(row=1, column=1, pady=5, sticky='w')
 
         col_label = tk.Label(self, text="Columns:", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
-        col_label.pack(pady=5)
+        col_label.grid(row=2, column=0, pady=5, sticky='e')
         self.col_menu = ttk.Combobox(self, textvariable=self.col_var, values=[2, 3, 4, 5], font=('sans-serif', 15, 'bold'))
-        self.col_menu.pack(pady=5)
+        self.col_menu.grid(row=2, column=1, pady=5, sticky='w')
 
         self.matrix_var = tk.StringVar(value='MatA')
         matrix_label = tk.Label(self, text="Select Matrix:", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
-        matrix_label.pack(pady=5)
+        matrix_label.grid(row=3, column=0, pady=5, sticky='e')
         self.matrix_menu = ttk.Combobox(self, textvariable=self.matrix_var, values=['MatA', 'MatB', 'MatC', 'MatD', 'MatE'], font=('sans-serif', 15, 'bold'))
-        self.matrix_menu.pack(pady=5)
+        self.matrix_menu.grid(row=3, column=1, pady=5, sticky='w')
 
-        button = tk.Button(self, text="Next", command=self.next_page,
-                           font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        button.pack(pady=20)
+        button = tk.Button(self, text="Next", command=self.next_page, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
+        button.grid(row=4, column=0, columnspan=2, pady=20)
 
     def next_page(self):
         rows = self.row_var.get()
@@ -53,13 +53,13 @@ class MatrixEntryPage(tk.Toplevel):
         self.configure(bg="#293C4A")
 
         self.label = tk.Label(self, text="Enter Matrix Values", font=('sans-serif', 24, 'bold'), bg="#293C4A", fg="#BBB")
-        self.label.pack(pady=20)
+        self.label.grid(row=0, column=0, columnspan=4, pady=20)
 
         self.matrix_frame = tk.Frame(self, bg="#293C4A")
-        self.matrix_frame.pack()
+        self.matrix_frame.grid(row=1, column=0, columnspan=4)
 
         self.num_pad_frame = tk.Frame(self, bg="#293C4A")
-        self.num_pad_frame.pack()
+        self.num_pad_frame.grid(row=2, column=0, columnspan=4, pady=10)
 
         self.num_pad = [
             ('7', 1, 0), ('8', 1, 1), ('9', 1, 2),
@@ -79,11 +79,11 @@ class MatrixEntryPage(tk.Toplevel):
 
         self.add_button = tk.Button(self, text="Add Matrix", command=self.add_matrix,
                                     font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        self.add_button.pack(pady=20)
+        self.add_button.grid(row=3, column=0, columnspan=4, pady=20)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.destroy(),
                                 font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        back_button.pack(pady=10)
+        back_button.grid(row=4, column=0, columnspan=4, pady=10)
 
     def set_matrix_details(self, rows, cols, matrix_name):
         self.rows = rows
@@ -131,22 +131,22 @@ class MatrixOperationPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.configure(bg="#293C4A")
+        self.configure(bg="#293C4A", width=330, height=800)
 
         self.matrices = {name: None for name in ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']}
         self.solver = MatrixSolver(self.matrices['MatA'], self.matrices['MatB'], self.matrices['MatC'], self.matrices['MatD'], self.matrices['MatE'])
 
-        self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 20, 'bold'), bg="#293C4A", fg="#BBB")
-        self.label.pack(pady=20)
+        self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 10, 'bold'), bg="#293C4A", fg="#BBB")
+        self.label.grid(row=0, column=0, columnspan=5, pady=20)
 
-        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=25)
-        self.operation_entry.pack(pady=10)
+        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right')
+        self.operation_entry.grid(row=1, column=0, columnspan=5, sticky="nsew")
 
         self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
-        self.result_label.pack(pady=10)
+        self.result_label.grid(row=2, column=0, columnspan=5, pady=10)
 
         self.operation_pad_frame = tk.Frame(self, bg="#293C4A")
-        self.operation_pad_frame.pack(pady=10)
+        self.operation_pad_frame.grid(row=3, column=0, columnspan=5, pady=10)
 
         arrow_keys = {'←':"left", '→':"right"}
         arrows = ['←','→']
@@ -159,7 +159,7 @@ class MatrixOperationPage(tk.Frame):
         for arrow in arrow_keys:
             button = tk.Button(self.operation_pad_frame, text=arrow, command=lambda a=arrow: self.perform_operation(arrow_keys[a]),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=0, column= 1+ arrows.index(arrow), padx=3, pady=5)
+            button.grid(row=0, column= arrows.index(arrow), padx=3, pady=5)
             self.operation_buttons.append(button)
 
         for matrix in matrices_row:
@@ -177,14 +177,11 @@ class MatrixOperationPage(tk.Frame):
         for sop in special_operations:
             button = tk.Button(self.operation_pad_frame, text=sop, command=lambda o=sop: self.perform_operation(o),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=2, column=1+special_operations.index(sop), padx=3, pady=5)
-            self.operation_buttons.append(button)    
-
-        self.matrix_buttons_frame = tk.Frame(self, bg="#293C4A")
-        self.matrix_buttons_frame.pack(pady=10)
+            button.grid(row=2, column=special_operations.index(sop), padx=3, pady=5)
+            self.operation_buttons.append(button)
 
         self.num_pad_frame = tk.Frame(self, bg="#293C4A")
-        self.num_pad_frame.pack(pady=10)
+        self.num_pad_frame.grid(row=4, column=0, columnspan=5, pady=10)
 
         self.num_pad = [
             ('7', 1, 0), ('8', 1, 1), ('9', 1, 2),
@@ -200,13 +197,11 @@ class MatrixOperationPage(tk.Frame):
 
         add_matrix_button = tk.Button(self, text="Add Matrix", command=self.add_matrix,
                                       font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        add_matrix_button.pack(pady=20)
+        add_matrix_button.grid(row=5, column=0, columnspan=5, pady=20)
 
         back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"),
                                 font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
-        back_button.pack(pady=10)
-        
-
+        back_button.grid(row=6, column=0, columnspan=5, pady=10)
 
     def update_matrix_buttons(self):
         for widget in self.matrix_buttons_frame.winfo_children():
@@ -242,8 +237,6 @@ class MatrixOperationPage(tk.Frame):
             self.result_label.config(text=self.solver.result)
         print(self.solver.result)
 
-        
-
 if __name__ == "__main__":
     root = tk.Tk()
     root.configure(bg="#293C4A")
@@ -252,5 +245,5 @@ if __name__ == "__main__":
 
     # Initialize the Calculator frame
     calculator_frame = MatrixOperationPage(root, root)
-    calculator_frame.pack(fill="both", expand=True)
+    calculator_frame.grid(row=0, column=0, sticky="nsew")
     root.mainloop()
