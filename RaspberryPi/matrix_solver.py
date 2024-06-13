@@ -1,5 +1,6 @@
 import numpy as np
 from main_controller import Calculator
+import numpy as np
 
 class MatrixSolver(Calculator):
     def __init__(self, matA, matB, matC, matD, matE):
@@ -14,25 +15,18 @@ class MatrixSolver(Calculator):
         self.pointer = 0
 
     def linear_solver(self, expression):
-        # Dictionary to map matrix names to actual matrices
         matrix_dict = {
-            "matA": self.matA,
-            "matB": self.matB,
-            "matC": self.matC,
-            "matD": self.matD,
-            "matE": self.matE
+            "MatA": self.matA,
+            "MatB": self.matB,
+            "MatC": self.matC,
+            "MatD": self.matD,
+            "MatE": self.matE
         }
-
-        # Replace matrix names in the expression with their actual values
         for key, value in matrix_dict.items():
             expression = expression.replace(key, f'matrix_dict["{key}"]')
 
-        try:
-            # Evaluate the expression with the matrices
-            result = eval(expression)
-            return result
-        except Exception as e:
-            return str(e)
+        # Evaluate the expression safely
+        return eval(expression, {"__builtins__": None}, {"matrix_dict": matrix_dict, "np": np})
 
     def user_input(self, key):
         matrix_dict = {
@@ -77,13 +71,15 @@ class MatrixSolver(Calculator):
                 self.showing_exp = "|"
                 return
             try:
+                print(self.result)
+                print(self.matA)
                 self.result = str(self.linear_solver(self.result))
             except ZeroDivisionError:
                 self.result = "Cannot divide by zero"
             except SyntaxError:
                 self.result = "Syntax error"
             except Exception as e:
-                self.result = f"Error: {str(e)}"
+                self.result = f"Error: {e}"
             
         elif key == "left":
             if self.pointer > 0:
@@ -118,16 +114,21 @@ class MatrixSolver(Calculator):
     def convert_to_understandable(self):
         return super().convert_to_understandable()
     
-if __name__ == "__main__": 
-    matA = [[2, 3], [4, 5]]
-    matB = [[1, 2], [3, 4]]
-    matC = []
-    matD = []
-    matE = []
-    mat = MatrixSolver(matA, matB, matC, matD, matE)
-    matrix_name = "matA"  # Define the matrix name here
-    mat.user_input("inv", matrix_name)  # Pass the matrix name to user_input
-    print(mat.result)
-    expression = "matA + matB"  # Define the expression here
-    result = mat.linear_solver(expression)
-    print(result)
+    def update_matrix(self, MatA, MatB, MatC, MatD, MatE):
+        self.matA = np.array(MatA)
+        self.matB = np.array(MatB)
+        self.matC = np.array(MatC)
+        self.matD = np.array(MatD)
+        self.matE = np.array(MatE)
+
+# Example matrices for testing
+if __name__ == "__main__":
+    import numpy as np
+    matA = np.array([[1, 2], [3, 4]])
+    matB = np.array([[5, 6], [7, 8]])
+    matC = np.array([[9, 10], [11, 12]])
+    matD = np.array([[13, 14], [15, 16]])
+    matE = np.array([[17, 18], [19, 20]])
+
+    solver = MatrixSolver(matA, matB, matC, matD, matE)
+    print(solver.linear_solver("MatA * 8"))

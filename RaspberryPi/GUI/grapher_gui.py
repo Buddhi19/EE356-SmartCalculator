@@ -94,7 +94,7 @@ class Graph_Frame2D(tk.Frame):
     def __init__(self, parent, controller, data):
         super().__init__(parent)
         self.controller = controller
-        self.config(bg="black", width=330, height=800)
+        self.config(bg="black", width=480, height=800)
         self.x = data[0]
         self.y = data[1]
         self._create_widgets_2D()
@@ -105,7 +105,7 @@ class Graph_Frame2D(tk.Frame):
         plot_frame.grid(row=0, column=0, sticky="nw")
 
         # Create the figure
-        self.fig = Figure(figsize=(3.3, 4), dpi=100, facecolor="black")
+        self.fig = Figure(figsize=(4.3, 6), dpi=100, facecolor="black")
         self.ax = self.fig.add_subplot(111)
         
         self.ax.plot(self.x, self.y)
@@ -147,7 +147,7 @@ class Graph_Frame3D(tk.Frame):
     def __init__(self, parent, controller, data):
         super().__init__(parent)
         self.controller = controller
-        self.config(bg="black", width=330, height=800)
+        self.config(bg="black", width=480, height=800)
         self.x = data[0]    
         self.y = data[1]
         self.z = data[2]
@@ -155,7 +155,7 @@ class Graph_Frame3D(tk.Frame):
 
     def _create_widgets_3D(self):
         # Create the figure and the 3D plot
-        self.fig = plt.figure(figsize=(3.3, 4), dpi=100, facecolor="black")
+        self.fig = plt.figure(figsize=(4.3, 6), dpi=100, facecolor="black")
         self.ax = self.fig.add_subplot(111, projection='3d')
         
         self.ax.plot_surface(self.x, self.y, self.z, cmap="viridis")
@@ -175,7 +175,6 @@ class Graph_Frame3D(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=10, pady=10, sticky="nw")
-        plt.close()
 
         # Toolbar below the plot
         toolbar_frame = ttk.Frame(self)
