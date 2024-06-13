@@ -29,9 +29,9 @@ class Graph_GUI(tk.Frame):
         self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
         self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
 
-        row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
+        row1_buttons = ['shift', '√', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
-        row2_buttons = ['pi', 'pi', '←', '', '→', 'log']
+        row2_buttons = ['pi', '^', '←', '', '→', 'log']
         row3_buttons = ['x', 'y', 'z', '↓', '(', ')']
         row4_buttons = ['7', '8', '9', 'tan', 'sin', 'cos']
         row5_buttons = ['4', '5', '6', '+', '-',"AC"]
