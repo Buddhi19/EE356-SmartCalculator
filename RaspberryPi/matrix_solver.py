@@ -1,14 +1,15 @@
+import numpy as np
 from main_controller import Calculator
 import numpy as np
 
 class MatrixSolver(Calculator):
     def __init__(self, matA, matB, matC, matD, matE):
         super().__init__()
-        self.matA = matA
-        self.matB = matB
-        self.matC = matC
-        self.matD = matD
-        self.matE = matE
+        self.matA = np.array(matA)
+        self.matB = np.array(matB)
+        self.matC = np.array(matC)
+        self.matD = np.array(matD)
+        self.matE = np.array(matE)
         self.result = ""
         self.showing_exp = "|"
         self.pointer = 0
@@ -28,6 +29,13 @@ class MatrixSolver(Calculator):
         return eval(expression, {"__builtins__": None}, {"matrix_dict": matrix_dict, "np": np})
 
     def user_input(self, key):
+        matrix_dict = {
+            "matA": self.matA,
+            "matB": self.matB,
+            "matC": self.matC,
+            "matD": self.matD,
+            "matE": self.matE
+        }
         if key == "AC":
             self.result = ""
             self.showing_exp = "|"
@@ -42,14 +50,19 @@ class MatrixSolver(Calculator):
                 self.result = ""
                 self.showing_exp = "|"
                 self.pointer = 0
-        elif key == "=":
-            if not self.degrees:
-                for key in self.mappings_for_degrees.keys():
-                    self.result = self.result.replace(key, self.mappings_for_degrees[key])
+        elif key == "inv":
+            if matrix_name in matrix_dict:
+                try:
+                    result = np.linalg.inv(matrix_dict[matrix_name])
+                    self.result = str(result)
+                except np.linalg.LinAlgError:
+                    self.result = "Matrix is singular and cannot be inverted"
+                except Exception as e:
+                    self.result = f"Error: {str(e)}"
             else:
-                for key in self.mappings.keys():
-                    self.result = self.result.replace(key, self.mappings[key])
-            
+                self.result = "Unknown matrix"
+
+        elif key == "=":
             open_brackets = self.result.count("(")
             close_brackets = self.result.count(")")
             if open_brackets > close_brackets:
@@ -57,7 +70,6 @@ class MatrixSolver(Calculator):
             if self.result == "":
                 self.showing_exp = "|"
                 return
-            indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
             try:
                 print(self.result)
                 print(self.matA)

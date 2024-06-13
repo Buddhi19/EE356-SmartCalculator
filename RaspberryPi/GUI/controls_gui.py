@@ -181,7 +181,7 @@ class ShowPlots(tk.Toplevel):
 if __name__ == "__main__":
     root = tk.Tk()
     root.configure(bg="black")
-    root.geometry("800x480")
+    root.geometry("330x800")
     transfer_function_frame = TransferFunctionFrame(root, None)
     transfer_function_frame.pack()
     root.mainloop()

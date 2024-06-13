@@ -149,7 +149,15 @@ class MatrixOperationPage(tk.Frame):
         self.operation_pad_frame.pack(pady=10)
 
         operations = ['+', '-', '*', 'inv', '=', 'DEL', 'AC']
+        matrices_row = ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']
         self.operation_buttons = []
+        self.matrix_buttons = []
+        for matrix in matrices_row:
+            button = tk.Button(self.operation_pad_frame, text=matrix, command=lambda o=matrix: self.perform_operation(o),
+                               font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
+            button.grid(row=1, column=matrices_row.index(matrix), padx=5, pady=5)
+            self.matrix_buttons.append(button)
+
         for op in operations:
             button = tk.Button(self.operation_pad_frame, text=op, command=lambda o=op: self.perform_operation(o),
                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
@@ -182,7 +190,6 @@ class MatrixOperationPage(tk.Frame):
                                 font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         back_button.pack(pady=10)
 
-        self.update_matrix_buttons()
 
     def update_matrix_buttons(self):
         for widget in self.matrix_buttons_frame.winfo_children():
