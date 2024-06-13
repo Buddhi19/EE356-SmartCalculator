@@ -123,7 +123,8 @@ class MatrixEntryPage(tk.Toplevel):
         for row_entries in self.entries:
             row = [float(entry.get()) for entry in row_entries]
             matrix.append(row)
-        self.callback(self.matrix_name, np.array(matrix))
+            print(row)
+        self.callback(self.matrix_name, matrix)
         self.destroy()
 
 class MatrixOperationPage(tk.Frame):
@@ -169,7 +170,7 @@ class MatrixOperationPage(tk.Frame):
         ]
 
         for (text, row, col) in self.num_pad:
-            button = tk.Button(self.num_pad_frame, text=text, command=lambda t=text: self.num_pad_click(t),
+            button = tk.Button(self.num_pad_frame, text=text, command=lambda t=text: self.perform_operation(t),
                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
             button.grid(row=row, column=col)
 
@@ -188,7 +189,7 @@ class MatrixOperationPage(tk.Frame):
             widget.destroy()
 
         for name in self.matrices.keys():
-            button = tk.Button(self.matrix_buttons_frame, text=name, command=lambda n=name: self.set_matrix(n),
+            button = tk.Button(self.matrix_buttons_frame, text=name, command=lambda n=name: self.perform_operation(n),
                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
             button.pack(side=tk.LEFT, padx=5)
 
@@ -201,23 +202,20 @@ class MatrixOperationPage(tk.Frame):
 
     def store_matrix(self, name, matrix):
         self.matrices[name] = matrix
+        self.solver.update_matrix(self.matrices['MatA'], self.matrices['MatB'], self.matrices['MatC'], self.matrices['MatD'], self.matrices['MatE'])
 
     def set_matrix(self, name):
         current_text = self.operation_entry.get()
         new_text = f"{current_text}{name}"
         self.operation_entry.delete(0, tk.END)
-        self.operation_entry.insert(0, new_text)
-
-    def num_pad_click(self, value):
-        current_text = self.operation_entry.get()
-        new_text = f"{current_text}{value}"
-        self.operation_entry.delete(0, tk.END)
-        self.operation_entry.insert(0, new_text)
+        self.operation_entry.insert(0, new_text) 
 
     def perform_operation(self, operation):
         self.solver.user_input(operation)
         self.operation_entry.delete(0, tk.END)
         self.operation_entry.insert(0, self.solver.showing_exp)
+        if operation == "=":
+            self.result_label.config(text=self.solver.result)
         print(self.solver.result)
 
         

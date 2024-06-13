@@ -1,8 +1,8 @@
 from main_controller import Calculator
-
+import numpy as np
 
 class MatrixSolver(Calculator):
-    def __init__(self,matA,matB,matC,matD,matE):
+    def __init__(self, matA, matB, matC, matD, matE):
         super().__init__()
         self.matA = matA
         self.matB = matB
@@ -13,28 +13,19 @@ class MatrixSolver(Calculator):
         self.showing_exp = "|"
         self.pointer = 0
 
-    def linear_solver(self,matA,matB,matC,matD,matE,result):
-        self.matA = matA
-        self.matB = matB
-        self.matC = matC
-        self.matD = matD
-        self.matE = matE
-        if matA in result:
-            result = result.replace(matA, self.matA)
-        if matB in result:
-            result = result.replace(matB, self.matB)
-        if matC in result:
-            result = result.replace(matC, self.matC)
-        if matD in result:
-            result = result.replace(matD, self.matD)
-        if matE in result:
-            result = result.replace(matE, self.matE)
-        result = eval(result)
-        return result
+    def linear_solver(self, expression):
+        matrix_dict = {
+            "MatA": self.matA,
+            "MatB": self.matB,
+            "MatC": self.matC,
+            "MatD": self.matD,
+            "MatE": self.matE
+        }
+        for key, value in matrix_dict.items():
+            expression = expression.replace(key, f'matrix_dict["{key}"]')
 
-
-
-        
+        # Evaluate the expression safely
+        return eval(expression, {"__builtins__": None}, {"matrix_dict": matrix_dict, "np": np})
 
     def user_input(self, key):
         if key == "AC":
@@ -68,13 +59,15 @@ class MatrixSolver(Calculator):
                 return
             indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
             try:
-                self.result = str(self.safe_eval(self.result))
+                print(self.result)
+                print(self.matA)
+                self.result = str(self.linear_solver(self.result))
             except ZeroDivisionError:
-                self.result = "Can not divide by zero"
+                self.result = "Cannot divide by zero"
             except SyntaxError:
                 self.result = "Syntax error"
-            except:
-                self.result = "Error"
+            except Exception as e:
+                self.result = f"Error: {e}"
             
         elif key == "left":
             if self.pointer > 0:
@@ -92,9 +85,9 @@ class MatrixSolver(Calculator):
             return
 
         elif key in self.keys:
-            if self.pointer !=0 and key in self.functions:
+            if self.pointer != 0 and key in self.functions:
                 if self.result[self.pointer-1] not in self.operations:
-                    self.result = self.result[:self.pointer] +"*"+ self.keys[key] + self.result[self.pointer:]
+                    self.result = self.result[:self.pointer] + "*" + self.keys[key] + self.result[self.pointer:]
                     self.pointer += 2
                     self.convert_to_understandable()
                     return
@@ -108,3 +101,22 @@ class MatrixSolver(Calculator):
         
     def convert_to_understandable(self):
         return super().convert_to_understandable()
+    
+    def update_matrix(self, MatA, MatB, MatC, MatD, MatE):
+        self.matA = np.array(MatA)
+        self.matB = np.array(MatB)
+        self.matC = np.array(MatC)
+        self.matD = np.array(MatD)
+        self.matE = np.array(MatE)
+
+# Example matrices for testing
+if __name__ == "__main__":
+    import numpy as np
+    matA = np.array([[1, 2], [3, 4]])
+    matB = np.array([[5, 6], [7, 8]])
+    matC = np.array([[9, 10], [11, 12]])
+    matD = np.array([[13, 14], [15, 16]])
+    matE = np.array([[17, 18], [19, 20]])
+
+    solver = MatrixSolver(matA, matB, matC, matD, matE)
+    print(solver.linear_solver("MatA * 8"))
