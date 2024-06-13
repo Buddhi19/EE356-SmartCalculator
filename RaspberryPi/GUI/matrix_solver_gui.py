@@ -217,6 +217,7 @@ class MatrixOperationPage(tk.Frame):
         self.solver.user_input(operation)
         self.operation_entry.delete(0, tk.END)
         self.operation_entry.insert(0, self.solver.showing_exp)
+        print(self.solver.result)
 
         
 
