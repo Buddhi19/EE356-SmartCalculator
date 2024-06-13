@@ -23,19 +23,19 @@ class Calculator:
         self.mappings = {
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
             "aS":"asin(", "aC":"acos(", "aT":"atan(","p":"pi", "I":"i",
-            "@": "MatA", "#": "MatB", "$": "MatC", "%": "MatD", "&": "MatE"
+            "@":"MatA", "#":"MatB", "$":"MatC", "%":"MatD", "&":"MatE"
         }
         self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT","="]
 
         self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","i",
-                          "A", "B", "C", "D", "U", "V", "W", "X", "Y", "Z","s","@","#","$","%","&"]
+                          "A", "B", "C", "D", "U", "V", "W", "X", "Y", "Z","s","MatA", "MatB", "MatC", "MatD", "MatE"]
 
         self.degrees = True
 
         self.mappings_for_degrees = {
             "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*",
             "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(","L":"log(,", "E":"ln(",
-            "R":"sqrt(", "I":"i",
+            "R":"sqrt(", "I":"i","@":"MatA", "#":"MatB", "$":"MatC", "%":"MatD", "&":"MatE"
         }
 
     def safe_eval(self,expression):
