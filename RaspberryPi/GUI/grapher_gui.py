@@ -52,7 +52,7 @@ class Graph_GUI(tk.Frame):
                 elif button in special_buttons:
                     b = tk.Button(self, text=button, **self.button_params_other, width=4,height=3)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=4,height=3)
+                    b = tk.Button(self, text=button, **self.button_params, width=5,height=3)
                 
 
                 b.grid(row=row, column=col, sticky="nsew")
@@ -65,7 +65,7 @@ class Graph_GUI(tk.Frame):
             
         for i in range(8):
             self.grid_rowconfigure(i)
-        for i in range(9):
+        for i in range(6):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2,pady=10)
