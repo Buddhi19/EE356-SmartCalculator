@@ -1,75 +1,145 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 import tkinter as tk
-from tkinter import simpledialog, messagebox
-from picamera import PiCamera
+from tkinter import messagebox
 from PIL import Image, ImageTk
-import io
+from picamera import PiCamera
+from io import BytesIO
+import RPi.GPIO as GPIO
+import time
+from cam_solver_server import post_image
 
 class CameraApp(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
+        self.parent = parent
         self.controller = controller
-        self.pack()
+        self.camera = None  # Camera will be initialized when the frame is shown
+        self.flash_pin = 12
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.flash_pin, GPIO.OUT)
+        GPIO.output(self.flash_pin, GPIO.LOW)
+
+        self.configure(width=480, height=600)
+        self.pack_propagate(False)
         self.create_widgets()
-        self.camera = PiCamera()
-        self.update_image()
 
     def create_widgets(self):
-        self.img_label = tk.Label(self)
-        self.img_label.pack()
+        self.capture_button = tk.Button(self, text="Capture", command=self.capture_image)
+        self.capture_button.pack(side="bottom")
 
-        self.button_frame = tk.Frame(self)
-        self.button_frame.pack(pady=10)
+        self.image_label = tk.Label(self)
+        self.image_label.pack(side="top")
 
-        self.capture_button = tk.Button(self.button_frame, text="Capture", command=self.capture_image)
-        self.capture_button.grid(row=0, column=0, padx=5)
+        back_button = tk.Button(self, text="Back", command=self.back)
+        back_button.pack(side="bottom")
+        
+    def back(self):
+        self.stop_camera()
+        self.controller.show_frame("StartPage")
 
-        self.back_button = tk.Button(self.button_frame, text="Back", command=self.back_action)
-        self.back_button.grid(row=0, column=1, padx=5)
+    def start_camera(self):
+        if not self.camera:
+            self.camera = PiCamera()
+            self.camera.resolution = (640, 480)  # Lower resolution for preview
+            self.update_image()
 
-        self.send_button = tk.Button(self.button_frame, text="Send", command=self.send_action)
-        self.send_button.grid(row=0, column=2, padx=5)
-
-        self.mode_button = tk.Button(self.button_frame, text="Mode", command=self.select_mode)
-        self.mode_button.grid(row=0, column=3, padx=5)
+    def stop_camera(self):
+        if self.camera:
+            self.camera.close()
+            self.camera = None
 
     def update_image(self):
-        stream = io.BytesIO()
-        self.camera.capture(stream, format='jpeg')
+        if not self.camera:
+            return
+        stream = BytesIO()
+        self.camera.capture(stream, format='jpeg', use_video_port=True)
         stream.seek(0)
         image = Image.open(stream)
-        image = image.resize((400, 300))
-        photo = ImageTk.PhotoImage(image)
-        self.img_label.config(image=photo)
-        self.img_label.image = photo
-        self.after(1000, self.update_image)
+        image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)  # Flip the image vertically and horizontally
+        self.photo = ImageTk.PhotoImage(image)
+        self.image_label.configure(image=self.photo)
+        self.after(50, self.update_image)  # Refresh the image every 50 ms
 
     def capture_image(self):
-        self.camera.capture('captured_image.jpg')
+        if not self.camera:
+            messagebox.showwarning("Camera Error", "Camera is not active")
+            return
+        
+        # Flash ON
+        GPIO.output(self.flash_pin, GPIO.HIGH)
+        time.sleep(0.1)  # Short delay to ensure flash is on before capture
+        
+        stream = BytesIO()
+        self.camera.resolution = (1920, 1080)  # High resolution for capture
+        self.camera.capture(stream, format='png')
+        self.camera.resolution = (640, 480)  # Restore preview resolution
+        stream.seek(0)
+        self.captured_image = Image.open(stream)
+        self.captured_image.save(parent_dir+"/captured_image.png")
+        
+        # Flash OFF
+        GPIO.output(self.flash_pin, GPIO.LOW)
+        self.stop_camera()
 
-    def select_mode(self):
-        modes = ["calculate", "complex", "matrix", "equation", "plot"]
-        mode = simpledialog.askstring("Select Mode", "Choose a mode:", initialvalue=modes[0], values=modes)
-        if mode:
-            messagebox.showinfo("Mode Selected", f"Mode selected: {mode}")
+        self.show_captured_image(self.captured_image)
+        
+    def show_captured_image(self, image):
+        self.photo = ImageTk.PhotoImage(image)
+        self.image_label.configure(image=self.photo)
+        self.capture_button.pack_forget()
 
-    def back_action(self):
-        messagebox.showinfo("Back", "Back button pressed")
+        self.recapture_button = tk.Button(self, text="Recapture", command=self.recapture_image)
+        self.recapture_button.pack(side="left")
+        
+        self.process_button = tk.Button(self, text="Process", command=self.process_image)
+        self.process_button.pack(side="right")
 
-    def send_action(self):
-        messagebox.showinfo("Send", "Send button pressed")
+    def recapture_image(self):
+        self.recapture_button.pack_forget()
+        self.process_button.pack_forget()
+        self.capture_button.pack(side="bottom")
+        self.start_camera()
 
-class ApplicationController:
-    def __init__(self, root):
-        self.root = root
-        self.camera_app = CameraApp(parent=root, controller=self)
-        self.camera_app.pack()
+    def process_image(self):
+        ans = post_image(parent_dir+"/captured_image.png")
+        messagebox.showinfo("Result", ans)
 
-def main():
-    root = tk.Tk()
-    root.geometry("330x80")
-    root.title("Raspberry Pi Camera Interface")
-    app_controller = ApplicationController(root)
-    root.mainloop()
 
-if __name__ == "__main__":
-    main()
+    def pack(self, **kwargs):
+        super().pack(**kwargs)
+        self.start_camera()
+
+    def pack_forget(self):
+        self.stop_camera()
+        super().pack_forget()
+
+    def grid(self, **kwargs):
+        super().grid(**kwargs)
+        self.start_camera()
+
+    def grid_forget(self):
+        self.stop_camera()
+        super().grid_forget()
+
+    def place(self, **kwargs):
+        super().place(**kwargs)
+        self.start_camera()
+
+    def place_forget(self):
+        self.stop_camera()
+        super().place_forget()
+
+    def __del__(self):
+        GPIO.cleanup()
+
+
+        
+    
+        
