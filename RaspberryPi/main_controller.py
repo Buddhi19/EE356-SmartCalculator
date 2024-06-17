@@ -29,7 +29,8 @@ class Calculator:
         self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", ",", "[", ":","="]
 
         self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","J",
-                          "A", "B", "D", "U", "V", "W", "X", "Y", "Z","s","MatA", "MatB", "MatC", "MatD", "MatE"]
+                          "A", "B", "D", "U", "V", "W", "X", "Y", "Z","s","MatA", "MatB", "MatC", "MatD", "MatE",
+                          "asin", "acos", "atan"]
 
         self.degrees = True
 

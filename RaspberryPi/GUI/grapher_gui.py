@@ -20,7 +20,7 @@ class Graph_GUI(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=9, pady=20, sticky="nsew")
+        entry.grid(row=0,rowspan=8, column=0, columnspan=9, sticky="nsew")
         # Set the background color of the frame to match the entry box     
         self.configure(bg="#293C4A")
 
@@ -29,21 +29,21 @@ class Graph_GUI(tk.Frame):
         self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
         self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
 
-        row1_buttons = ['shift', '√', '', '↑','', 'ln']
+        row1_buttons = ['', '', '', '↑','', 'ln']
         row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
-        row2_buttons = ['pi', '^', '←', '', '→', 'log']
-        row3_buttons = ['x', 'y', 'z', '↓', '(', ')']
+        row2_buttons = ['pi', '^', '←', '↓', '→', 'log']
+        row3_buttons = ['x', 'y', 'z', '', '(', ')']
         row4_buttons = ['7', '8', '9', 'tan', 'sin', 'cos']
         row5_buttons = ['4', '5', '6', '+', '-',"AC"]
         row6_buttons = ['1', '2', '3', "*","/", 'DEL']
-        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', '=','plot']
+        row7_buttons = ['0', '.', 'e', '=', 'plot','']
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons, row7_buttons]
 
         self.arrow_keys = {'↑':"up", '↓':"down", '←':"left", '→':"right"}
-        special_buttons = {'DEL', 'AC', '='}
+        special_buttons = {'DEL', 'AC', 'plot'}
 
-        row = 2
+        row = 8
         for row_buttons in buttons_grid:
             col = 0
             for button in row_buttons:
@@ -63,13 +63,13 @@ class Graph_GUI(tk.Frame):
                     row += 1
             row += 1
             
-        for i in range(8):
-            self.grid_rowconfigure(i)
+        for i in range(20):
+            self.grid_rowconfigure(i,weight=1)
         for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2,pady=10)
-        back_button.grid(row=9, column=0, columnspan=7, sticky="nsew")         
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,pady=10)
+        back_button.grid(row=16, column=0, columnspan=3, sticky="nsew")         
 
     def on_click(self, event):
         text = event.widget.cget("text")
