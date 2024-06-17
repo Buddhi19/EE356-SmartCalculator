@@ -3,7 +3,7 @@ import requests
 #post image to server
 def post_image():
     image_path = "whiteboard\\whiteboard.png"
-    url = "http://192.168.1.4:80/image_whiteboard"
+    url = "http://192.168.8.101:80/image_whiteboard"
     files = {'file': open(image_path, 'rb')}
     response = requests.post(url, files=files)
 
