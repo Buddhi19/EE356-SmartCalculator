@@ -16,10 +16,11 @@ class Calculator_Frame(tk.Frame):
         self.answer = tk.StringVar()
         self.create_widgets()
         self.Cal = Calculator()
+        self.shift = False
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0, column=0, columnspan=9,  pady=20, sticky="nsew")
+        entry.grid(row=0,rowspan=8, column=0, columnspan=9, sticky="nsew")
 
     def create_widgets(self):
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
@@ -27,20 +28,28 @@ class Calculator_Frame(tk.Frame):
         self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
 
         row1_buttons = ['shift', 'MODE', '', '↑','', 'ln']
-        row1_shift_buttons = ['sin⁻¹', 'cos⁻¹', 'tan⁻¹']
+        row1_shift_buttons = ['shifted', 'MODE', '', '↑','', 'ln']
         row2_buttons = ['%', 'pi', '←', '', '→', 'log']
         row3_buttons = ['(', ')', '^', '↓', '√', 'nCr']
         row4_buttons = ['7', '8', '9', 'tan', 'sin', 'cos']
+        row4_shift_buttons = ['7', '8', '9', 'tan\u207b\xb9', 'sin\u207b\xb9', 'cos\u207b\xb9']
         row5_buttons = ['4', '5', '6', '+', '-',"AC"]
         row6_buttons = ['1', '2', '3', "*","/", 'DEL']
-        row7_buttons = ['0', '.', 'EXP', 'x\u207b\xb9', '=']
+        row7_buttons = ['0', '.', 'e', 'x\u207b\xb9', '=']
+
+        self.row4_mappings = {
+            'tan\u207b\xb9': 'atan','sin\u207b\xb9': 'asin', 'cos\u207b\xb9': 'acos'
+        }
 
         buttons_grid = [row1_buttons, row2_buttons, row3_buttons, row4_buttons, row5_buttons, row6_buttons, row7_buttons]
+        if self.shift:
+            buttons_grid = [row1_shift_buttons, row2_buttons, row3_buttons, row4_shift_buttons,
+                            row5_buttons, row6_buttons, row7_buttons]
 
         self.arrow_keys = {'↑':"up", '↓':"down", '←':"left", '→':"right"}
         special_buttons = {'DEL', 'AC', '='}
 
-        row = 2
+        row = 8
         for row_buttons in buttons_grid:
             col = 0
             for button in row_buttons:
@@ -60,51 +69,34 @@ class Calculator_Frame(tk.Frame):
                     row += 1
             row += 1
             
-        for i in range(8):
-            self.grid_rowconfigure(i)
+        for i in range(20):
+            self.grid_rowconfigure(i,weight=1)
         for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,height=2,pady=10)
-        back_button.grid(row=9, column=0, columnspan=7, sticky="nsew")
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
+        back_button.grid(row=16, column=0, columnspan=2, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
         if text in self.arrow_keys:
             text = self.arrow_keys[text]
-        if text == "MODE":
-            ModeSelectionPopup(self, self.set_mode)
+        if text in self.row4_mappings:
+            text = self.row4_mappings[text]
         else:
             self.Cal.user_input(text)
             if text == "=" or text == "AC":
                 self.answer.set(self.Cal.result)
             self.display_var.set(self.Cal.showing_exp)
 
+    def update_keys(self):
+        #when shift is pressed change the keys to the shifted keys
+        pass
+
     def set_mode(self, mode):
         print(f"Selected Mode: {mode}")
         self.MODE = mode
 
-class ModeSelectionPopup(tk.Toplevel):
-    def __init__(self, parent, callback):
-        super().__init__(parent)
-        self.callback = callback
-
-        self.overrideredirect(True)
-        self.mode_list = [
-            "Calculate", "Complex", "Equation", "Matrix"
-            # Add more modes as needed
-        ]
-
-        self.create_mode_buttons()
-        
-    def create_mode_buttons(self):
-        for mode in self.mode_list:
-            button = ttk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
-            button.pack(fill=tk.X, padx=5, pady=5)
-
-    def select_mode(self, mode):
-        self.callback(mode)
-        self.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()

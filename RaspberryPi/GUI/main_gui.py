@@ -12,14 +12,15 @@ from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 from GUI.whiteboard_GUI import WhiteboardApp
 from GUI.controls_gui import TransferFunctionFrame
 from GUI.matrix_solver_gui import  MatrixOperationPage
-from GUI.cam_GUI import CameraApp
+if sys.platform == "linux":
+    from GUI.cam_GUI import CameraApp
 from GUI.loading_gui import Loading_GUI
 
 class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Multiple Frames Example")
-        self.geometry("330x800")
+        self.geometry("330x1000")
         #set full screen 
     # self.attributes('-fullscreen', True)
         # Create a menu bar
@@ -29,7 +30,7 @@ class MainApplication(tk.Tk):
 
         # Initialize container to hold different frames
         self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        self.container.pack(side="top", fill="both")
 
         self.frames = {}
         self.current_frame = None
@@ -43,7 +44,8 @@ class MainApplication(tk.Tk):
         self.add_frame(WhiteboardApp)
         self.add_frame(TransferFunctionFrame)
         self.add_frame(MatrixOperationPage)
-        self.add_frame(CameraApp)
+        if sys.platform == "linux":
+            self.add_frame(CameraApp)
         self.add_frame(Loading_GUI)
 
 
