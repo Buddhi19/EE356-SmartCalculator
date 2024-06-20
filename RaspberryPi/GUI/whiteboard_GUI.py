@@ -12,17 +12,20 @@ class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.configure(bg="#293C4A")
         self.mode = "Calculate"
+
+        # Create widgets
         self.create_widgets()
 
     def create_widgets(self):
-        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0,height=500,width = 500)
-        self.canvas.pack(anchor="center")
+        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0,width=10)
+        self.canvas.pack(fill=tk.BOTH,expand=True)
 
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
 
-        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
+        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold'),'height': 1}
 
         self.erase_button = tk.Button(self, text="Erase", command=self.erase,**button_params_main)
         self.erase_button.pack(side=tk.LEFT)
@@ -34,7 +37,7 @@ class WhiteboardApp(tk.Frame):
         self.mode_button.pack(side=tk.LEFT)
 
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver,**button_params_main)
-        self.solve_button.pack(side=tk.RIGHT)
+        self.solve_button.pack(side=tk.LEFT)
 
         self.previous_coords = None
 
