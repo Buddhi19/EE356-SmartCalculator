@@ -23,29 +23,29 @@ class TransferFunctionFrame(tk.Frame):
 
     def create_widgets(self):
         # Display the transfer function
-        self.canvas = tk.Canvas(self, bg="#293C4A", highlightthickness=0, width=400, height=400)
-        self.canvas.pack(pady=10)
+        self.canvas = tk.Canvas(self, bg="#293C4A", highlightthickness=0)
+        self.canvas.pack(expand=True,fill=tk.BOTH)
 
         # Draw the fraction
-        self.num = self.canvas.create_text(200, 50, text=self.numerator, fill="white", font=('sans-serif', 12, 'bold'), anchor="s")
-        line =self.canvas.create_line(80, 60, 320, 60, fill="white", width=2)
-        self.den = self.canvas.create_text(200, 80, text=self.denominator, fill="white", font=('sans-serif', 12,'bold'), anchor="n")
+        self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('Arial', 12, 'bold'), anchor="s")
+        line =self.canvas.create_line(30, 60, 300, 60, fill="white", width=2)
+        self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('Arial', 12,'bold'), anchor="n")
 
         # Buttons
         self.button_frame = tk.Frame(self, bg="#293C4A")
-        self.button_frame.pack(pady=10)
+        self.button_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=30)
 
 
-        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator" ,command=self.edit_numerator,font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator" ,command=self.edit_numerator,font=('Arial', 12), fg="#000",width=13)
         self.edit_numerator_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('Arial', 12), fg="#000",width=13)
         self.edit_denominator_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.plot_button = tk.Button(self.button_frame, text="Plot",font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",command=self.bode_plotter, width=13)
+        self.plot_button = tk.Button(self.button_frame, text="Plot",font=('Arial', 12), fg="#000",command=self.bode_plotter, width=13)
         self.plot_button.grid(row=1, column=0, padx=2, pady=5)        
 
-        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000",width=13)
+        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('Arial', 12),fg="#000",width=13)
         self.back_button.grid(row=1, column=1, padx=2, pady=5)
 
     def edit_numerator(self):
@@ -54,7 +54,7 @@ class TransferFunctionFrame(tk.Frame):
     def update_numerator(self, data):
         self.numerator = data
         self.canvas.delete(self.num)
-        self.num = self.canvas.create_text(200, 50, text=self.numerator, fill="white", font=("Arial", 16), anchor="s", tag="numerator")
+        self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=("Arial", 16), anchor="s", tag="numerator")
 
     def edit_denominator(self):
         EditTransferFunction(self, self.update_denominator)
@@ -62,7 +62,7 @@ class TransferFunctionFrame(tk.Frame):
     def update_denominator(self, data):
         self.denominator = data
         self.canvas.delete(self.den)
-        self.den = self.canvas.create_text(200, 80, text=self.denominator, fill="white", font=("Arial", 16), anchor="n", tag="denominator")
+        self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=("Arial", 16), anchor="n", tag="denominator")
 
     def go_back(self):
         self.controller.show_frame("StartPage")
@@ -83,7 +83,7 @@ class EditTransferFunction(tk.Toplevel):
         self.create_widgets()
     
     # Style for ttk.Entry
-        entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly', style="Custom.TEntry")
+        entry = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20, 'bold'), justify='right', state='readonly', style="Custom.TEntry")
         entry.grid(row=0, column=0, columnspan=8, padx=0, pady=15, sticky="nsew")
         
         # Set the background color of the frame to match the entry box     
@@ -91,9 +91,9 @@ class EditTransferFunction(tk.Toplevel):
 
     def create_widgets(self):
         
-        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 15, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold')}
-        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 15, 'bold')}
+        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('Arial', 15, 'bold')}
+        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('Arial', 15, 'bold')}
+        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('Arial', 15, 'bold')}
 
         
         row1_buttons =['←', '→', '', '', 's', 'z']

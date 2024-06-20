@@ -19,13 +19,13 @@ class Calculator_Frame(tk.Frame):
 
 
         # Style for ttk.Entry
-        entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
+        entry = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20, 'bold'), justify='right', state='readonly')
         entry.grid(row=0,rowspan=8, column=0, columnspan=9, sticky="nsew")
 
     def create_widgets(self):
-        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
-        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('Arial', 11, 'bold')}
+        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('Arial', 11, 'bold')}
+        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('Arial', 11, 'bold')}
 
         self.row1_buttons = ['', '', '', '↑','', 'ln']
         self.row1_shift_buttons = ['shifted', 'MODE', '', '↑','', 'ln']

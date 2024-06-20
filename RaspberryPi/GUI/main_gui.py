@@ -20,7 +20,7 @@ class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Multiple Frames Example")
-        self.geometry("330x1000")
+        self.geometry("330x800")
         #set full screen 
     # self.attributes('-fullscreen', True)
         # Create a menu bar
@@ -30,7 +30,7 @@ class MainApplication(tk.Tk):
 
         # Initialize container to hold different frames
         self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both")
+        self.container.pack(fill="both",anchor="center")
 
         self.frames = {}
         self.current_frame = None

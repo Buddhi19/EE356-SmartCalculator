@@ -68,7 +68,7 @@ class Graph_GUI(tk.Frame):
         for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main,pady=10)
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
         back_button.grid(row=16, column=0, columnspan=3, sticky="nsew")         
 
     def on_click(self, event):

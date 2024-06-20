@@ -16,8 +16,8 @@ class WhiteboardApp(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.canvas = tk.Canvas(self, bg="black")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
+        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0,height=500,width = 500)
+        self.canvas.pack(anchor="center")
 
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
