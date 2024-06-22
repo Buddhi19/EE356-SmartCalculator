@@ -20,9 +20,9 @@ class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Multiple Frames Example")
-        self.geometry("330x800")
+        # self.geometry("330x800")
         #set full screen 
-    # self.attributes('-fullscreen', True)
+        self.attributes('-fullscreen', True)
         # Create a menu bar
         menubar = tk.Menu(self)
         self.config(menu=menubar,bg = "#293C4A")

@@ -1,7 +1,8 @@
 import requests
+from server_address import server_address
 
 def generate_bode_plot(numerator, denominator):
-    url = 'http://192.168.1.4:80/generate_bode_plot'
+    url = server_address+'/generate_bode_plot'
     data = {'numerator': numerator, 'denominator': denominator}
     response = requests.post(url, json=data)
     if response.status_code == 200:

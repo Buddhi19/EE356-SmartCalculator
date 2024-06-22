@@ -34,6 +34,9 @@ class StartPage(tk.Frame):
             #center the buttons
             button.grid(row=i+1,pady=5,padx=45)
 
+        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"),width=20)
+        close_button.grid(row=9, pady=5, padx=45)
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Standalone Calculator")

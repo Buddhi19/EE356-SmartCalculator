@@ -20,7 +20,7 @@ class Calculator_Frame(tk.Frame):
 
         # Style for ttk.Entry
         entry = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20, 'bold'), justify='right', state='readonly')
-        entry.grid(row=0,rowspan=8, column=0, columnspan=9, sticky="nsew")
+        entry.grid(row=0,rowspan=11, column=0, columnspan=9, sticky="nsew")
 
     def create_widgets(self):
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('Arial', 11, 'bold')}
@@ -48,16 +48,16 @@ class Calculator_Frame(tk.Frame):
         self.arrow_keys = {'↑':"up", '↓':"down", '←':"left", '→':"right"}
         special_buttons = {'DEL', 'AC', '='}
 
-        row = 8
+        row = 11
         for row_buttons in self.buttons_grid:
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=4, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=3)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=4, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=3)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=5, height=3)
+                    b = tk.Button(self, text=button, **self.button_params, width=6, height=3)
                 
 
                 b.grid(row=row, column=col, sticky="nsew")
@@ -74,7 +74,7 @@ class Calculator_Frame(tk.Frame):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
-        back_button.grid(row=17, column=0, columnspan=2, sticky="nsew")
+        back_button.grid(row=19, column=0, columnspan=2, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
@@ -114,3 +114,4 @@ if __name__ == "__main__":
     calculator_frame.pack(fill="both", expand=True)
 
     root.mainloop()
+    

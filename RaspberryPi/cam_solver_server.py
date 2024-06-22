@@ -1,8 +1,9 @@
 import requests
+from server_address import server_address
 
 #post image to server
 def post_image(image_path):
-    url = "http://192.168.8.100:80/image"
+    url = server_address+'/image'
     files = {'file': open(image_path, 'rb')}
     response = requests.post(url, files=files)
 

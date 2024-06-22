@@ -19,24 +19,24 @@ class WhiteboardApp(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0,width=10)
-        self.canvas.pack(fill=tk.BOTH,expand=True)
+        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=10)
+        self.canvas.pack(fill=tk.BOTH, expand=True)
 
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
 
-        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold'),'height': 1}
+        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold'), 'height': 1}
 
-        self.erase_button = tk.Button(self, text="Erase", command=self.erase,**button_params_main)
+        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
         self.erase_button.pack(side=tk.LEFT)
 
-        self.back_button = tk.Button(self, text="Back", command=self.back,**button_params_main)
+        self.back_button = tk.Button(self, text="Back", command=self.back, **button_params_main)
         self.back_button.pack(side=tk.LEFT)
 
-        self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode),**button_params_main)
+        self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
         self.mode_button.pack(side=tk.LEFT)
 
-        self.solve_button = tk.Button(self, text=self.mode, command=self.solver,**button_params_main)
+        self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
         self.solve_button.pack(side=tk.LEFT)
 
         self.previous_coords = None
@@ -50,10 +50,18 @@ class WhiteboardApp(tk.Frame):
         self.solve_button.config(text=self.mode)
 
     def draw(self, event):
+        smooth_factor = 2  # Increase this value to make the lines smoother
         if self.previous_coords:
             x1, y1 = self.previous_coords
             x2, y2 = event.x, event.y
-            self.canvas.create_line(x1, y1, x2, y2, fill="white", width=5, capstyle=tk.ROUND)
+            # Interpolate between the points to create a smoother line
+            steps = max(abs(x2 - x1), abs(y2 - y1)) // smooth_factor
+            if steps!=0:
+                for i in range(steps + 1):
+                    xi = x1 + (x2 - x1) * i / steps
+                    yi = y1 + (y2 - y1) * i / steps
+                    self.canvas.create_line(x1, y1, xi, yi, fill="white", width=5, capstyle=tk.ROUND, smooth=True)
+                    x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
 
     def erase(self):
@@ -63,7 +71,7 @@ class WhiteboardApp(tk.Frame):
         self.controller.show_frame("StartPage")
 
     def solver(self):
-        self.save_whiteboard("whiteboard\\whiteboard.png")
+        self.save_whiteboard("whiteboard/whiteboard.png")
         answer = post_image()
         AnswerDisplay(self, answer)
         # Add code for plotting here
@@ -71,9 +79,9 @@ class WhiteboardApp(tk.Frame):
     def save_whiteboard(self, filename):
         # Get the coordinates of the entire window relative to the screen
         x0 = self.winfo_rootx() + 5
-        y0 = self.winfo_rooty()+ 20
+        y0 = self.winfo_rooty() + 20
         x1 = x0 + 480
-        y1 = y0 + 910
+        y1 = y0 + 620
 
         # Use these coordinates to grab the screenshot and save it
         ImageGrab.grab(bbox=(x0, y0, x1, y1)).save(filename)
@@ -86,7 +94,7 @@ class ModeSelection_Whiteboard(tk.Toplevel):
         super().__init__(parent)
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot","Transfer Function", "Simultaneous Equations", "Matrix"
+            "Calculate", "Plot", "Transfer Function", "Simultaneous Equations", "Matrix"
         ]
         self.create_widgets()
 
