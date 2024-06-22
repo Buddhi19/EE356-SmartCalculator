@@ -50,7 +50,7 @@ class WhiteboardApp(tk.Frame):
         self.solve_button.config(text=self.mode)
 
     def draw(self, event):
-        smooth_factor = 2  # Increase this value to make the lines smoother
+        smooth_factor = 1  # Increase this value to make the lines smoother
         if self.previous_coords:
             x1, y1 = self.previous_coords
             x2, y2 = event.x, event.y
@@ -72,8 +72,8 @@ class WhiteboardApp(tk.Frame):
 
     def solver(self):
         self.save_whiteboard("whiteboard/whiteboard.png")
-        answer = post_image()
-        AnswerDisplay(self, answer)
+        #answer = post_image()
+        #AnswerDisplay(self, answer)
         # Add code for plotting here
 
     def save_whiteboard(self, filename):

@@ -5,7 +5,7 @@ from main import process_image, calculate_expression, process_image_for_whiteboa
 
 app = Flask(__name__)
 
-host_url = '192.168.1.4'
+host_url = '192.168.8.100'
 
 @app.route("/")
 def hello_world():
