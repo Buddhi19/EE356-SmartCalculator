@@ -35,7 +35,7 @@ class StartPage(tk.Frame):
 
                 button = tk.Button(self, text=text, image=photo, compound="top", command=lambda name=frame_name: self.controller.show_frame(name),
                                    font=("Arial", 13, "bold"), width=180, bg="#293C4A", borderwidth=0, highlightthickness=0,
-                                   fg="white")
+                                   fg="white",pady=10)
                 button.image = photo  # keep a reference to the image
                 button.grid(row=(i//2) + 1, column=i % 2, pady=15, padx=10, sticky="nsew")
             except Exception as e:

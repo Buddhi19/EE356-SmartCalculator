@@ -8,6 +8,11 @@ from tkinter import ttk
 from simultaneous_equations import Simul
 from controls_solver import generate_bode_plot
 from PIL import Image, ImageTk
+import sympy as sp
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy import signal
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class TransferFunctionFrame(tk.Frame):
     def __init__(self, parent, controller):
@@ -42,11 +47,14 @@ class TransferFunctionFrame(tk.Frame):
         self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('Arial', 12), fg="#000",width=13)
         self.edit_denominator_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.plot_button = tk.Button(self.button_frame, text="Plot",font=('Arial', 12), fg="#000",command=self.bode_plotter, width=13)
-        self.plot_button.grid(row=1, column=0, padx=2, pady=5)        
+        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", command=self.bode_plotter, font=('Arial', 12),fg="#000",width=13)
+        self.bode_button.grid(row=1, column=0, padx=2, pady=5)        
+
+        self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, font=('Arial', 12),fg="#000",width=13)
+        self.nyquist_button.grid(row=1, column=1, padx=2, pady=5)
 
         self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('Arial', 12),fg="#000",width=13)
-        self.back_button.grid(row=1, column=1, padx=2, pady=5)
+        self.back_button.grid(row=2, column=1, padx=2, pady=5)
 
     def edit_numerator(self):
         EditTransferFunction(self, self.update_numerator)
@@ -70,8 +78,12 @@ class TransferFunctionFrame(tk.Frame):
     def bode_plotter(self):
         if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
             return
-        generate_bode_plot(self.numerator, self.denominator)
-        ShowPlots(self, "bode_plot")
+        self.controller.show_frame("BODEplot", [self.numerator, self.denominator])
+
+    def nyquist_plotter(self):
+        if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
+            return
+        self.controller.show_frame("NyquistPlot", [self.numerator, self.denominator])
 
 
 class EditTransferFunction(tk.Toplevel):
@@ -174,6 +186,123 @@ class ShowPlots(tk.Toplevel):
         panel.pack()
         close_button.pack()
         
+class BODEplot(tk.Frame):
+    def __init__(self, parent, controller,data):
+        super().__init__(parent)
+        self.controller = controller
+        self.config(bg="black", width=480, height=800)
+        self.numerator = self.convert_to_array(data[0])
+        self.denominator = self.convert_to_array(data[1])
+
+        self.create_widgets()
+
+    def convert_to_array(self, string):
+        s = sp.symbols("s")
+        poly = sp.Poly(string, s)
+        coefficients = poly.all_coeffs()
+        coefficients = [float(coef) for coef in coefficients]
+        return coefficients
+        
+    def create_widgets(self):
+        self.system = signal.TransferFunction(self.numerator, self.denominator)
+
+        w, mag, phase = signal.bode(self.system)
+
+        plot_frame = ttk.Frame(self,style="TFrame")
+        plot_frame.grid(row=0, column=0, sticky="nw")
+
+        self.fig, (self.ax_mag, self.ax_phase) = plt.subplots(2, 1, figsize=(4.7, 7), dpi=100, facecolor="black")
+
+        # Configure magnitude subplot
+        self.ax_mag.plot(w, mag, color='white')
+        self.ax_mag.set_xscale('log')
+        self.ax_mag.set_title('Bode Plot', color='white')
+        self.ax_mag.set_ylabel('Magnitude (dB)', color='white')
+        self.ax_mag.set_facecolor("black")
+        self.ax_mag.spines['bottom'].set_color('white')
+        self.ax_mag.spines['left'].set_color('white')
+        self.ax_mag.tick_params(axis='x', colors='white')
+        self.ax_mag.tick_params(axis='y', colors='white')
+        self.ax_mag.yaxis.label.set_color('white')
+
+        # Configure phase subplot
+        self.ax_phase.plot(w, phase, color='white')
+        self.ax_phase.set_xscale('log')
+        self.ax_phase.set_ylabel('Phase (degrees)', color='white')
+        self.ax_phase.set_xlabel('Frequency (rad/s)', color='white')
+        self.ax_phase.set_facecolor("black")
+        self.ax_phase.spines['bottom'].set_color('white')
+        self.ax_phase.spines['left'].set_color('white')
+        self.ax_phase.tick_params(axis='x', colors='white')
+        self.ax_phase.tick_params(axis='y', colors='white')
+        self.ax_phase.yaxis.label.set_color('white')
+        self.ax_phase.xaxis.label.set_color('white')
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=plot_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().grid(row=0, column=0, sticky="nw")
+
+        self.close_button = ttk.Button(self, text="Close", command=self.close)
+        self.close_button.grid(row=3, column=0, pady=10, sticky="nw")
+
+    def close(self):
+        self.pack_forget()
+        self.controller.show_frame("TransferFunctionFrame")
+
+class NyquistPlot(tk.Frame):
+    def __init__(self, parent, controller, data):
+        super().__init__(parent)
+        self.controller = controller
+        self.config(bg="black", width=480, height=800)
+        self.numerator = self.convert_to_array(data[0])
+        self.denominator = self.convert_to_array(data[1])
+
+        self.create_widgets()
+
+    def convert_to_array(self, string):
+        s = sp.symbols("s")
+        poly = sp.Poly(string, s)
+        coefficients = poly.all_coeffs()
+        coefficients = [float(coef) for coef in coefficients]
+        return coefficients
+
+    def create_widgets(self):
+        self.system = signal.TransferFunction(self.numerator, self.denominator)
+
+        # Calculate Nyquist plot
+        w, H = signal.freqresp(self.system)
+
+        plot_frame = ttk.Frame(self, style="TFrame")
+        plot_frame.grid(row=0, column=0, sticky="nw")
+
+        # Create figure for Nyquist plot
+        self.fig = plt.Figure(figsize=(4.5, 7), dpi=100, facecolor="black")
+        self.ax = self.fig.add_subplot(111)
+
+        # Plot Nyquist plot
+        self.ax.plot(H.real, H.imag, 'white')
+        self.ax.plot(H.real, -H.imag, 'white')
+        self.ax.set_title('Nyquist Plot', color='white')
+        self.ax.set_xlabel('Real', color='white')
+        self.ax.set_ylabel('Imaginary', color='white')
+        self.ax.set_facecolor("black")
+        self.ax.spines['bottom'].set_color('white')
+        self.ax.spines['left'].set_color('white')
+        self.ax.tick_params(axis='x', colors='white')
+        self.ax.tick_params(axis='y', colors='white')
+        self.ax.xaxis.label.set_color('white')
+        self.ax.yaxis.label.set_color('white')
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=plot_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().grid(row=0, column=0, sticky="nw")
+
+        self.close_button = ttk.Button(self, text="Close", command=self.close)
+        self.close_button.grid(row=1, column=0, pady=10, sticky="nw")
+
+    def close(self):
+        self.pack_forget()
+        self.controller.show_frame("TransferFunctionFrame")
 
 
 if __name__ == "__main__":

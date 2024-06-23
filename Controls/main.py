@@ -40,9 +40,45 @@ def save_bode_plot(numerator,denominator):
     plt.show()
     return os.path.join(parent_dir, "bode_plot.png")
 
+def save_nyquist_plot(numerator,denominator):
+    s = sp.symbols("s")
+    poly_numerator = sp.Poly(numerator, s)
+    numerator_coefficients = poly_numerator.all_coeffs()
+    numerator_coefficients = [float(coef) for coef in numerator_coefficients]
 
+    poly_denominator = sp.Poly(denominator, s)
+    denominator_coefficients = poly_denominator.all_coeffs()
+    denominator_coefficients = [float(coef) for coef in denominator_coefficients]
+
+    transfer_function = signal.TransferFunction(numerator_coefficients, denominator_coefficients)
+    w, h = signal.freqresp(transfer_function)
+
+    fig, ax = plt.subplots()
+    ax.plot(h.real, h.imag)
+    ax.set_title('Nyquist Plot')
+    ax.set_ylabel('Imaginary')
+    ax.set_xlabel('Real')
+    ax.grid()
+    
+    plt.savefig(os.path.join(parent_dir, "nyquist_plot.png"))
+    plt.show()
+    return os.path.join(parent_dir, "nyquist_plot.png")
+
+def save_root_locus_plot(numerator,denominator):
+    s = sp.symbols("s")
+    poly_numerator = sp.Poly(numerator, s)
+    numerator_coefficients = poly_numerator.all_coeffs()
+    numerator_coefficients = [float(coef) for coef in numerator_coefficients]
+
+    poly_denominator = sp.Poly(denominator, s)
+    denominator_coefficients = poly_denominator.all_coeffs()
+    denominator_coefficients = [float(coef) for coef in denominator_coefficients]
+
+    pass
 
 if __name__ == "__main__":
-    num = "s + 1"
-    den = "s^5 + 2*s + 1"
+    num = input()
+    den = input()
     save_bode_plot(num, den)
+    save_nyquist_plot(num, den)
+    save_root_locus_plot(num, den)
