@@ -2,21 +2,19 @@
 
 ## Ongoing Firmware Tasks
 
-| Task | Description |
+| Task | Status |
 |-------------|----------|
 | Image to Latex Model | 50% |
 | Latex Calculator | Completed Numerical Calculations |
-| Communicator | Started |
-| Graphing Calculator| Started |
-| Matrix Identification | |
-| Spreadsheet Calculations | |
-| Camera Module | 50% |
+| Communicator | Should implement graphing from server for all |
+| Graphing Calculator|  |
+| Matrix Identification | Not yet included |
+| Camera Module | Checking |
 
 # Notes
-- Grapher has some issues with passing data variable
 - Camera should be tested with a flash
-- Onscreen whiteboard yet to be implemented
-
+- Settings Menu to change wifi
+- pi-Oscilloscope 
 
 # Raspberry Pi task bar
 sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
