@@ -15,13 +15,14 @@ from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
 from GUI.loading_gui import Loading_GUI
+import socket
 
 class MainApplication(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Multiple Frames Example")
         self.attributes('-fullscreen', True)
-
+        self.WIFI = self.is_connected()
         self.configure(bg="#293C4A")
 
         self.container = tk.Frame(self)
@@ -55,6 +56,15 @@ class MainApplication(tk.Tk):
             frame_class = globals()[name]
             self.add_frame(frame_class, data)
             self.current_frame = name
+
+    def is_connected(self):
+        try:
+            socket.create_connection(("8.8.8.8", 53), timeout=3)
+            return True
+        except OSError:
+            pass
+        return False    
+    
 
 if __name__ == "__main__":
     app = MainApplication()

@@ -44,7 +44,7 @@ class Expressions:
 			self.expressions.append(cropped)
 		
 		cv2.imshow("img",im2)
-		cv2.waitKey(0)
+		cv2.waitKey(1000)
 		return
 	
 	def get_expressions(self):
@@ -52,8 +52,8 @@ class Expressions:
 		Get all expression containing images
 		"""
 		for image in self.expressions:
-			plt.imshow(image,cmap="gray")
-			plt.show()
+			cv2.imshow("img",image)
+			cv2.waitKey(1000)
 
 		return self.expressions
 
@@ -67,9 +67,6 @@ class Image2Text:
 		_, img_test = cv2.threshold(img_test, 85, 255, cv2.THRESH_BINARY) # 85 # 155
 		img_test = cv2.bitwise_not(img_test)
 
-
-		plt.imshow(img_test,cmap="gray")
-		plt.show()
 		return img_test
 
 	def model_eligible_format(self,img):
@@ -88,10 +85,6 @@ class Image2Text:
 		predicting expressions
 		"""
 		img_proceed = self.model_eligible_format(img)
-
-		plt.imshow(img_proceed[0][0], cmap="gray")
-		plt.show()
-
 		attention, prediction = for_test(img_proceed)
 
 		prediction_text = ""
@@ -136,14 +129,14 @@ def convert_blackboard_image(img):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	_, img = cv2.threshold(img, 55, 255, cv2.THRESH_BINARY) # 85 # 155	
 	cv2.imshow("img",img)
-	cv2.waitKey(0)
+	cv2.waitKey(1000)
 
 	kernel = np.ones((8,8),np.uint8)
 
-	dilation = cv2.dilate(img, kernel, iterations = 13) #16
+	dilation = cv2.dilate(img, kernel, iterations = 9) #16
 
 	contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)	
-	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=1]
+	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.5]
 
 	#draw the largest contour
 	contours = sorted(contours, key=cv2.contourArea, reverse=True)[:1]
@@ -152,7 +145,7 @@ def convert_blackboard_image(img):
 	rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 	img = img[y:y+h, x:x+w]
 	cv2.imshow("img",im2)
-	cv2.waitKey(0)
+	cv2.waitKey(1000)
 
 	return img
 
@@ -171,7 +164,9 @@ def test2():
 	equations = I2T.run_for_training_scenario(img2)
 
 if __name__ == "__main__":
-	test2()
-
+	I2T = Image2Text()
+	img = cv2.imread(parent_dir+"./test_images/test12.png")
+	equations = I2T.run_for_std_scenario(img)
+	print(equations)
 
 

@@ -20,7 +20,7 @@ class StartPage(tk.Frame):
             ("Calculator", "Calculator_Frame", "icons/calculator.png"),
             ("Graphing Calculator", "Graph_GUI", "icons/graph.png"),
             ("Write to Solve", "WhiteboardApp", "icons/write.png"),
-            ("Take a Photo to Solve", "TakePhotoToSolve", "icons/photo.png"),
+            ("Take a Photo to Solve", "CameraApp", "icons/photo.png"),
             ("Simultaneous Solver", "Simultaneous_solver_Frame", "icons/simultaneous.png"),
             ("PDFReader", "PDFReader", "icons/pdf.png"),
             ("Controls", "TransferFunctionFrame", "icons/controls.png"),
