@@ -44,7 +44,7 @@ class StartPage(tk.Frame):
                                    font=("sans-serif", 15, "bold"), width=200, bg="white", borderwidth=2, highlightthickness=0, highlightbackground="#000000")
                 button.grid(row=(i//2) + 1, column=i % 2, pady=15, padx=20, sticky="nsew")
 
-        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=20)
+        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
         close_button.grid(row=(len(buttons)//2) + 2, column=0, columnspan=2, pady=20)
 
         # Make the grid cells expand proportionally
