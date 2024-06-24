@@ -1,61 +1,71 @@
-from flask import Flask, request, jsonify, send_file
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
 import time
 import json
+import os
 from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
 
-app = Flask(__name__)
+app = FastAPI()
 
 host_url = '192.168.1.4'
 
-@app.route("/")
-def hello_world():
-    return "<p>Routes: </p> <p> /json1 : Image from raspberry pi </p>"
+@app.get("/")
+def read_root():
+    return {"message": "Routes: /json1 : Image from raspberry pi"}
 
-@app.route('/json1', methods=['GET','POST'])
-def handle_data():
-    data = request.json
-    f = open("fromNodeMCU.txt", "w")
-    f.write(json.dumps(data))
-    f.close()
-    return jsonify(data)
+@app.post("/json1")
+async def handle_data(data: dict):
+    with open("fromNodeMCU.txt", "w") as f:
+        f.write(json.dumps(data))
+    return JSONResponse(content=data)
 
-@app.route('/image', methods=['GET','POST'])
-def image_route():
-    if 'file' not in request.files:
-        return jsonify({"error":"No file part"})
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error":"No selected file"})
+@app.post("/image")
+async def image_route(file: UploadFile = File(...)):
     if not file:
-        return jsonify({"error":"No file part"})
-    file.save("img.png")
-    result = process_image("img.png")
+        raise HTTPException(status_code=400, detail="No file part")
+    if file.filename == '':
+        raise HTTPException(status_code=400, detail="No selected file")
+
+    file_path = "img.png"
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+
+    result = process_image(file_path)
     try:
         ans = calculate_expression(result)
-    except:
-        ans = ["Error in processing the image"]
-    return jsonify({"result":ans})
+    except Exception as e:
+        ans = [f"Error in processing the image: {str(e)}"]
 
-@app.route('/image_whiteboard', methods=['GET','POST'])
-def image_route_whiteboard():
-    if 'file' not in request.files:
-        return jsonify({"error":"No file part"})
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error":"No selected file"})
+    # Clean up the file after processing
+    os.remove(file_path)
+
+    return {"result": ans}
+
+@app.post("/image_whiteboard")
+async def image_route_whiteboard(file: UploadFile = File(...)):
     if not file:
-        return jsonify({"error":"No file part"})
-    file.save("img.png")
-    result = process_image_for_whiteboard("img.png")
-    return jsonify({"result":result})
+        raise HTTPException(status_code=400, detail="No file part")
+    if file.filename == '':
+        raise HTTPException(status_code=400, detail="No selected file")
 
-@app.route('/generate_bode_plot', methods=['POST'])
-def generate_bode_plot():
-    data = request.json
+    file_path = "img.png"
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+
+    result = process_image_for_whiteboard(file_path)
+
+    # Clean up the file after processing
+    os.remove(file_path)
+
+    return {"result": result}
+
+@app.post("/generate_bode_plot")
+async def generate_bode_plot(data: dict):
     numerator = data.get('numerator')
     denominator = data.get('denominator')
     path = save_bode_plot(numerator, denominator)  # Call your function to generate and save the Bode plot
-    return send_file(path, mimetype='image/png')
+    return FileResponse(path, media_type='image/png')
 
 if __name__ == '__main__':
-    app.run(host=host_url,port=80)
+    import uvicorn
+    uvicorn.run(app, host=host_url, port=80)
