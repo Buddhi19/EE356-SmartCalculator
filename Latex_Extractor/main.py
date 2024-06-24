@@ -119,10 +119,12 @@ class Image2Text:
 
 	def run_for_training_scenario(self,img):
 		equations = self.predict_expressions(img)
+		#close all the windows
+		cv2.destroyAllWindows()
 		return equations
 	
 def convert_blackboard_image(img):
-	img = cv2.erode(img, np.ones((3,3),np.uint8), iterations = 1)
+	img = cv2.erode(img, np.ones((2,2),np.uint8), iterations = 2)
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
@@ -131,9 +133,9 @@ def convert_blackboard_image(img):
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
-	kernel = np.ones((8,8),np.uint8)
+	kernel = np.ones((6,6),np.uint8)
 
-	dilation = cv2.dilate(img, kernel, iterations = 9) #16
+	dilation = cv2.dilate(img, kernel, iterations = 16) #16
 
 	contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)	
 	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.5]
@@ -164,9 +166,4 @@ def test2():
 	equations = I2T.run_for_training_scenario(img2)
 
 if __name__ == "__main__":
-	I2T = Image2Text()
-	img = cv2.imread(parent_dir+"./test_images/test12.png")
-	equations = I2T.run_for_std_scenario(img)
-	print(equations)
-
-
+	test2()
