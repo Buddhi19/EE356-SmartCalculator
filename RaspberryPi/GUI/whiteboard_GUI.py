@@ -20,40 +20,46 @@ class WhiteboardApp(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        
         self.entry = tk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        self.entry.pack(fill=tk.X, ipady=30)
+        self.entry.grid(row=0, column=0, columnspan=5, ipady=30, sticky="nsew")
 
-        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=10,height=600)
-        self.canvas.pack(fill=tk.BOTH)
+        self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=480, height=600)
+        self.canvas.grid(row=1, column=0, columnspan=5, sticky="nsew")
 
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
 
-        button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 15, 'bold'), 'height': 1}
-
+        button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold'), 'height': 1}
+        
         self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
-        self.erase_button.pack(side=tk.LEFT)
+        self.erase_button.grid(row=2, column=0, sticky="nsew")
 
         self.back_button = tk.Button(self, text="Back", command=self.back, **button_params_main)
-        self.back_button.pack(side=tk.LEFT)
+        self.back_button.grid(row=3, column=0, sticky="nsew")
 
         self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
-        self.mode_button.pack(side=tk.LEFT)
+        self.mode_button.grid(row=3, column=1, sticky="nsew")
 
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
-        self.solve_button.pack(side=tk.LEFT)
+        self.solve_button.grid(row=3, column=2, sticky="nsew")
 
         self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
-        self.add_button.pack(side=tk.LEFT)
+        self.add_button.grid(row=2, column=1, sticky="nsew")
 
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
-        self.DEL_button.pack(side=tk.LEFT)
+        self.DEL_button.grid(row=2, column=2, sticky="nsew")
 
         self.AC_button = tk.Button(self, text="AC", command=self.clear, **button_params_main)
-        self.AC_button.pack(side=tk.LEFT)
+        self.AC_button.grid(row=2, column=3, sticky="nsew")
 
         self.previous_coords = None
+
+        # Configure grid weights to make the widgets resize proportionally
+        for i in range(7):
+            self.columnconfigure(i, weight=1)
+        self.rowconfigure(0, weight=0)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=0)
 
     def delete(self):
         self.display_var.set(self.display_var.get()[:-1])
