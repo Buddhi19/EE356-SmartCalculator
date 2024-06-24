@@ -21,10 +21,10 @@ class WhiteboardApp(tk.Frame):
 
     def create_widgets(self):
         self.entry = tk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        self.entry.grid(row=0, column=0, columnspan=5, ipady=30, sticky="nsew")
+        self.entry.grid(row=0, column=0, columnspan=4, ipady=30, sticky="nsew")
 
         self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=480, height=600)
-        self.canvas.grid(row=1, column=0, columnspan=5, sticky="nsew")
+        self.canvas.grid(row=1, column=0, columnspan=4, sticky="nsew")
 
         self.canvas.bind("<B1-Motion>", self.draw)
         self.canvas.bind("<ButtonRelease-1>", self.reset_coords)
@@ -107,7 +107,7 @@ class WhiteboardApp(tk.Frame):
         x0 = self.winfo_rootx() + 15
         y0 = self.winfo_rooty() + 140
         x1 = x0 + 480
-        y1 = y0 + 720
+        y1 = y0 + 580
 
         # Use these coordinates to grab the screenshot and save it
         ImageGrab.grab(bbox=(x0, y0, x1, y1)).save(filename)
