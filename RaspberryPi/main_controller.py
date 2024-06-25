@@ -19,7 +19,7 @@ class Calculator:
             "A": "A", "B": "B", "C": "C", "D": "D",
             "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z",
             "s":"s","MatA":"@", "MatB":"#", "MatC":"$", "MatD":"%", "MatE":"&",
-            "!":"!"
+            "!":"!","w":"w","t":"t"
         }
         self.mappings = {
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
@@ -30,7 +30,7 @@ class Calculator:
 
         self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","J",
                           "A", "B", "D", "U", "V", "W", "X", "Y", "Z","s","MatA", "MatB", "MatC", "MatD", "MatE",
-                          "asin", "acos", "atan"]
+                          "asin", "acos", "atan", "e", "w", "t"]
 
         self.degrees = True
 

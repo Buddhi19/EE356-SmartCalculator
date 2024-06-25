@@ -4,27 +4,20 @@ import os
 import sys
 from PIL import Image, ImageTk
 
-
-class StartPage(tk.Frame):
+class StartPage2(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg="#293C4A")
-        self.create_widgets()
+        self.create_widgets2()
 
-    def create_widgets(self):
+    def create_widgets2(self):
         label = tk.Label(self, text="Smart Calculator", bg="#293C4A", fg="white", font=("Arial", 30, "bold"))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         buttons = [
-            ("Calculator", "Calculator_Frame", "icons/calculator.png"),
-            ("Graphing Calculator", "Graph_GUI", "icons/graph.png"),
-            ("Write to Solve", "WhiteboardApp", "icons/write.png"),
-            ("Take a Photo to Solve", "CameraApp", "icons/photo.png"),
-            ("Simultaneous Solver", "Simultaneous_solver_Frame", "icons/simultaneous.png"),
-            ("PDFReader", "PDFReader", "icons/pdf.png"),
-            ("Controls", "TransferFunctionFrame", "icons/controls.png"),
-            ("Matrix Calculator", "MatrixOperationPage", "icons/matrix.png")
+            ("Fourier Transform", "FourierTransform", "icons/integrals.png"),
+            ("Laplace Transform", "LaplaceTransform", "icons/laplace.png"),
         ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
@@ -44,17 +37,16 @@ class StartPage(tk.Frame):
                                    font=("sans-serif", 15, "bold"), width=200, bg="white", borderwidth=2, highlightthickness=0, highlightbackground="#000000")
                 button.grid(row=(i//2) + 1, column=i % 2, pady=15, padx=20, sticky="nsew")
 
-        current_page_num_button = tk.Button(self, text="1", command=self.current_button, 
-                                            font=("sans-serif", 20, "bold"), width=2, borderwidth=0, 
+        go_back_button = tk.Button(self, text="1", command=lambda: self.controller.show_frame("StartPage"), font=("sans-serif", 15, "bold"), borderwidth=0, 
                                             highlightthickness=0, bg="#293C4A", fg="white", 
                                             activebackground="#293C4A", activeforeground="white")
-        current_page_num_button.grid(row=6, column=0, pady=5, padx=1, sticky='e')
+        go_back_button.grid(row=6, column=0, pady=5, padx=1, sticky='e')
 
-        next_page_button = tk.Button(self, text="2", command=lambda: self.controller.show_frame("StartPage2"), 
-                                     font=("sans-serif", 15, "bold"), width=2, borderwidth=0, 
-                                     highlightthickness=0, bg="#293C4A", fg="white", 
-                                     activebackground="#293C4A", activeforeground="white")
-        next_page_button.grid(row=6, column=1, pady=5, padx=1, sticky='w')
+        current_page_num_button = tk.Button(self, text="2", command=self.current_button,
+                                            font=("sans-serif", 20, "bold"), width=2, borderwidth=0,
+                                            highlightthickness=0, bg="#293C4A", fg="white",
+                                            activebackground="#293C4A", activeforeground="white")
+        current_page_num_button.grid(row=6, column=1, pady=5, padx=1, sticky='w')
 
 
         close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
@@ -74,5 +66,5 @@ if __name__ == "__main__":
     root.title("Standalone Calculator")
     root.configure(bg="#293C4A", bd=10)
     root.geometry("400x800")
-    StartPage(root, None).pack()
+    StartPage2(root, None).pack()
     root.mainloop()

@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
 from GUI.start_gui import StartPage
+from GUI.start2_gui import StartPage2
 from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
@@ -15,6 +16,7 @@ from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
 from GUI.loading_gui import Loading_GUI
+from GUI.fourier_gui import FourierTransform
 import socket
 
 class MainApplication(tk.Tk):
@@ -40,13 +42,14 @@ class MainApplication(tk.Tk):
 
     def show_frame(self, name, data=None):
         print(f"Switching to frame: {name}")
-        if self.current_frame and self.current_frame != "StartPage":
+        if self.current_frame and self.current_frame not in ["StartPage"]:
             if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot", "NyquistPlot"]:
                 self.frames[self.current_frame].destroy()
                 del self.frames[self.current_frame]
             else:
                 self.frames[self.current_frame].grid_remove()
 
+        print(f"Current Frames: {self.frames.keys()}")
         if name in self.frames:
             # Frame already exists, so just show it
             self.current_frame = name
