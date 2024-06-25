@@ -5,13 +5,22 @@
 | Task | Status |
 |-------------|----------|
 | Image to Latex Model | 50% |
-| Latex Calculator | Completed Numerical Calculations |
 | Communicator | Should implement graphing from server for all |
-| Graphing Calculator|  |
 | Matrix Identification | Not yet included |
 | Camera Module | Checking |
+| Integral Transforms | On going |
 
-# Notes
+## To Do List
+- Integral Transforms
+    - Laplace Transform : Plotter
+    - Fourier Transform : Plotter
+    - Z Transform : Plotter
+
+- Scientific Data Analysis
+    - Interpolation
+    - Curve Fitting
+    - Regression Analysis
+
 - Camera should be tested with a flash
 - Settings Menu to change wifi
 - pi-Oscilloscope 
