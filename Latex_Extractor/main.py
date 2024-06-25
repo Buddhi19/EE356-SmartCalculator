@@ -124,18 +124,18 @@ class Image2Text:
 		return equations
 	
 def convert_blackboard_image(img):
-	img = cv2.erode(img, np.ones((2,2),np.uint8), iterations = 2)
+	img = cv2.erode(img, np.ones((3,3),np.uint8), iterations = 1)
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	_, img = cv2.threshold(img, 55, 255, cv2.THRESH_BINARY) # 85 # 155	
+	_, img = cv2.threshold(img, 230, 255, cv2.THRESH_BINARY) # 85 # 155	
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
 	kernel = np.ones((6,6),np.uint8)
 
-	dilation = cv2.dilate(img, kernel, iterations = 16) #16
+	dilation = cv2.dilate(img, kernel, iterations = 3) #16
 
 	contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)	
 	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.5]

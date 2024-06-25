@@ -16,5 +16,15 @@
 - Settings Menu to change wifi
 - pi-Oscilloscope 
 
-# Raspberry Pi task bar
+## Raspberry Pi task bar
+```
 sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+```
+## Display  
+```
+export DISPLAY=:0
+```
+## Headless StartUp 
+```
+yet to be implemented
+```

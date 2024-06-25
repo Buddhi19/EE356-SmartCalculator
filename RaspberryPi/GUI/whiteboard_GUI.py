@@ -15,6 +15,8 @@ class WhiteboardApp(tk.Frame):
         self.configure(bg="#293C4A")
         self.mode = "Calculate"
         self.display_var = tk.StringVar()
+        self.cell_size = 60
+        self.grid_visible = True
 
         # Create widgets
         self.create_widgets()
@@ -61,6 +63,20 @@ class WhiteboardApp(tk.Frame):
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=0)
 
+        self.draw_grid()
+
+    def draw_grid(self):
+        if self.grid_visible:
+            width = int(self.canvas.cget("width"))
+            height = int(self.canvas.cget("height"))
+            for i in range(0, width, self.cell_size):
+                self.canvas.create_line([(i, 0), (i, height)], tag='grid_line', fill='gray')
+            for i in range(0, height, self.cell_size):
+                self.canvas.create_line([(0, i), (width, i)], tag='grid_line', fill='gray')
+
+    def clear_grid(self):
+        self.canvas.delete('grid_line')
+
     def delete(self):
         self.display_var.set(self.display_var.get()[:-1])
 
@@ -92,6 +108,8 @@ class WhiteboardApp(tk.Frame):
 
     def erase(self):
         self.canvas.delete("all")
+        if self.grid_visible:
+            self.draw_grid()
 
     def back(self):
         self.controller.show_frame("StartPage")
