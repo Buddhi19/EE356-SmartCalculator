@@ -15,7 +15,7 @@ class WhiteboardApp(tk.Frame):
         self.configure(bg="#293C4A")
         self.mode = "Calculate"
         self.display_var = tk.StringVar()
-        self.cell_size = 60
+        self.cell_size = 250
         self.grid_visible = True
 
         # Create widgets

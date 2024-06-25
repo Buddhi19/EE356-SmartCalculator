@@ -129,7 +129,7 @@ def convert_blackboard_image(img):
 	cv2.waitKey(1000)
 
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	_, img = cv2.threshold(img, 230, 255, cv2.THRESH_BINARY) # 85 # 155	
+	_, img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY) # 85 # 155	
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
@@ -146,10 +146,19 @@ def convert_blackboard_image(img):
 	im2 = img.copy()
 	rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 	img = img[y:y+h, x:x+w]
+
+	scale_factor = 0.2
+	resized_image = cv2.resize(img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
+
+	resized_image = cv2.dilate(resized_image, np.ones((4,4),np.uint8), iterations = 1)
+
 	cv2.imshow("img",im2)
 	cv2.waitKey(1000)
 
-	return img
+	cv2.imshow("img",resized_image)
+	cv2.waitKey(0)
+
+	return resized_image
 
 def test1():
 	img = cv2.imread(parent_dir+"./test_images/test5.png")
