@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import ttk
 import math
-from fourier_solver import FourierSolver
+from fourier_solver import FourierSolver, get_fourier_transform
 
 class FourierTransform(tk.Frame):
     def __init__(self, parent, controller):
@@ -91,18 +91,31 @@ class FourierTransform(tk.Frame):
 
     def on_click(self, event):
         text = event.widget.cget("text")
+
+        if text == "Transform":
+            if self.display_initial_variable.get() == "Initial variable" or self.display_final_variable.get() == "Final variable":
+                return
+            if self.display_var.get() == "Function to transform":
+                return
+            exp = self.fourier_solver.final_expression()
+            t = self.display_initial_variable.get()
+            w = self.display_final_variable.get()
+            get_fourier_transform(exp, t, w)
+            self.controller.show_frame("ShowFourierSpectrum")
+            return
+
         if self.current_entry == self.entry2:
             if text in ["AC", "DEL"]:
                 self.display_initial_variable.set("Initial variable")
                 return
             if text in self.variables:
-                self.display_initial_variable.set("Initial variable = "+text)
+                self.display_initial_variable.set(text)
         elif self.current_entry == self.entry3:
             if text in ["AC", "DEL"]:
                 self.display_final_variable.set("Final variable")
                 return
             if text in self.variables:
-                self.display_final_variable.set("final variable = "+text)
+                self.display_final_variable.set(text)
         else:
             if text in self.arrow_keys:
                 text = self.arrow_keys[text]
@@ -138,6 +151,27 @@ class FourierTransform(tk.Frame):
 
     def set_current_entry(self, entry):
         self.current_entry = entry
+
+
+class ShowFourierSpectrum(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent, bg="#293C4A")
+        self.controller = controller
+        self.create_widgets()
+
+    def create_widgets(self):
+        # load image
+        img = tk.PhotoImage(file='integrals/fourier_transform.png',height=600)
+        label = tk.Label(self, image=img)
+        label.image = img
+        label.pack()
+
+        close_button = tk.Button(self, text="Close", command=lambda: self.controller.show_frame("FourierTransform"))
+        close_button.pack()
+
+        show_button = tk.Button(self, text="Show Equation", command=lambda: self.controller.show_frame("ShowFourierSpectrum"))
+        show_button.pack()
+
 
 if __name__ == "__main__":
     root = tk.Tk()

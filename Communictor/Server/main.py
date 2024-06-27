@@ -7,6 +7,8 @@ from Latex_Extractor.main import Image2Text, convert_blackboard_image
 from Calculator.main import Cal
 import cv2
 from Controls.main import save_bode_plot
+from Integral_Transformations.fourier import Fourier
+from Integral_Transformations.laplace import Laplace
 
 def process_image(img_location):
     I2T = Image2Text()
@@ -35,4 +37,16 @@ def calculate_expression(expression):
 
 def save_bode_plot_from_image(numerator,denominator):
     path = save_bode_plot(numerator,denominator)
+    return path
+
+def fourier_solver(expression,a,b):
+    fourier = Fourier(expression,a,b)
+    return fourier.fourier_transform
+
+def fourier_transform_image():
+    path = "fourier_spectrum.png"
+    return path
+
+def fourier_equation_image():
+    path = "fourier_transform.png"
     return path

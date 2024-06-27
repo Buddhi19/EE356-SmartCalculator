@@ -16,7 +16,7 @@ from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
 from GUI.loading_gui import Loading_GUI
-from GUI.fourier_gui import FourierTransform
+from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 import socket
 
 class MainApplication(tk.Tk):
@@ -43,7 +43,7 @@ class MainApplication(tk.Tk):
     def show_frame(self, name, data=None):
         print(f"Switching to frame: {name}")
         if self.current_frame and self.current_frame not in ["StartPage"]:
-            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot", "NyquistPlot"]:
+            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot", "NyquistPlot","ShowFourierSpectrum"]:
                 self.frames[self.current_frame].destroy()
                 del self.frames[self.current_frame]
             else:

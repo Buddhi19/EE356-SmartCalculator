@@ -4,6 +4,7 @@ import time
 import json
 import os
 from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
+from main import fourier_solver, fourier_transform_image
 
 app = FastAPI()
 
@@ -11,13 +12,7 @@ host_url = '192.168.1.4'
 
 @app.get("/")
 def read_root():
-    return {"message": "Routes: /json1 : Image from raspberry pi"}
-
-@app.post("/json1")
-async def handle_data(data: dict):
-    with open("fromNodeMCU.txt", "w") as f:
-        f.write(json.dumps(data))
-    return JSONResponse(content=data)
+    return 
 
 @app.post("/image")
 async def image_route(file: UploadFile = File(...)):
@@ -65,6 +60,16 @@ async def generate_bode_plot(data: dict):
     denominator = data.get('denominator')
     path = save_bode_plot(numerator, denominator)  # Call your function to generate and save the Bode plot
     return FileResponse(path, media_type='image/png')
+
+@app.post("/fourier_transform_image")
+async def fourier_transform(data: dict):
+    expression = data.get('expression')
+    a = data.get('a')
+    b = data.get('b')
+    fourier = fourier_solver(expression, a, b)
+    path = fourier_transform_image()
+    return FileResponse(path, media_type='image/png')
+    
 
 if __name__ == '__main__':
     import uvicorn
