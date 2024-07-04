@@ -155,14 +155,14 @@ class FourierTransform(tk.Frame):
 
 class ShowFourierSpectrum(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg="#293C4A")
+        super().__init__(parent, bg="black")
         self.controller = controller
         self.create_widgets()
 
     def create_widgets(self):
         # load image
-        img = tk.PhotoImage(file='integrals/fourier_transform.png',height=600)
-        label = tk.Label(self, image=img)
+        img = tk.PhotoImage(file='integrals/fourier_transform.png')
+        label = tk.Label(self, image=img, borderwidth=0)
         label.image = img
         label.pack()
 
