@@ -73,4 +73,16 @@ def get_fourier_transform(exp, t, w):
         print("Fourier transform image saved successfully.")
     else:
         print("Failed to generate Fourier transform image.")
+
+def get_laplace_transform(exp, t, s):
+    url = server_address+'/laplace_transform_image'
+    data = {'expression': exp, 'a': t, 'b': s}
+    print(data)
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        with open('integrals/laplace_transform.png', 'wb') as f:
+            f.write(response.content)
+        print("Laplace transform image saved successfully.")
+    else:
+        print("Failed to generate Laplace transform image.")
     

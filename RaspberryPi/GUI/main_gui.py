@@ -17,6 +17,7 @@ if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
 from GUI.loading_gui import Loading_GUI
 from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
+from GUI.laplace_gui import LaplaceTransform
 import socket
 
 class MainApplication(tk.Tk):

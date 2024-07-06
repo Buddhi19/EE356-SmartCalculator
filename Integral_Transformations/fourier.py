@@ -51,6 +51,7 @@ class Fourier:
         
         t_vals = np.linspace(-10, 10, 1000)
         sample_rate = t_vals[1] - t_vals[0]
+        # print(sample_rate)
         
         y_vals = expr_func(t_vals)
         
@@ -61,6 +62,8 @@ class Fourier:
         xf = np.fft.fftshift(xf)
         
         magnitude = np.abs(yf)
+        # normalize the magnitude
+        magnitude = magnitude / np.max(magnitude)
         phase = np.angle(yf)
         
         plt.figure(figsize=(4.3, 6), facecolor='black')
@@ -73,6 +76,7 @@ class Fourier:
         ax1.grid(True, color='gray')
         ax1.tick_params(colors='white')
         
+        
         ax2 = plt.subplot(2, 1, 2, facecolor='black')
         ax2.plot(xf, phase)
         ax2.set_title('Phase Response', color='white')
@@ -84,8 +88,6 @@ class Fourier:
         plt.tight_layout()
         plt.savefig("fourier_spectrum.png")
         plt.show()
-        time.sleep(0.5)
-        plt.close()
 
 
 if __name__ == "__main__":
