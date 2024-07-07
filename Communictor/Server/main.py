@@ -50,3 +50,15 @@ def fourier_transform_image():
 def fourier_equation_image():
     path = "fourier_transform.png"
     return path
+
+def laplace_solver(expression,a,b):
+    laplace = Laplace(expression,a,b)
+    return laplace.laplace_transform
+
+def laplace_equation_image():
+    path = "laplace_transform.png"
+    return path
+
+def laplace_spectrum_image():
+    path = "laplace_spectrum.png"
+    return path
