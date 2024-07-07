@@ -5,6 +5,7 @@ import json
 import os
 from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
 from main import fourier_solver, fourier_transform_image
+from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 
 app = FastAPI()
 
@@ -68,6 +69,20 @@ async def fourier_transform(data: dict):
     b = data.get('b')
     fourier = fourier_solver(expression, a, b)
     path = fourier_transform_image()
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/laplace_transform_image")
+async def laplace_transform(data: dict):
+    expression = data.get('expression')
+    a = data.get('a')
+    b = data.get('b')
+    laplace = laplace_solver(expression, a, b)
+    path = laplace_equation_image()
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/laplace_spectrum_image")
+async def laplace_spectrum(data : dict):
+    path = laplace_spectrum_image()
     return FileResponse(path, media_type='image/png')
     
 
