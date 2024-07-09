@@ -40,20 +40,23 @@ class StartPage2(tk.Frame):
         go_back_button = tk.Button(self, text="1", command=lambda: self.controller.show_frame("StartPage"), font=("sans-serif", 15, "bold"), borderwidth=0, 
                                             highlightthickness=0, bg="#293C4A", fg="white", 
                                             activebackground="#293C4A", activeforeground="white")
-        go_back_button.grid(row=6, column=0, pady=5, padx=1, sticky='e')
+        go_back_button.grid(row=6, column=0, padx=1, sticky='e')
 
         current_page_num_button = tk.Button(self, text="2", command=self.current_button,
                                             font=("sans-serif", 20, "bold"), width=2, borderwidth=0,
                                             highlightthickness=0, bg="#293C4A", fg="white",
                                             activebackground="#293C4A", activeforeground="white")
-        current_page_num_button.grid(row=6, column=1, pady=5, padx=1, sticky='w')
+        current_page_num_button.grid(row=6, column=1, padx=1, sticky='w')
 
 
         close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
-        close_button.grid(row=7, column=0, columnspan=2, pady=20)
+        close_button.grid(row=7, column=0, columnspan=2)
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):
+            if row==6 or row==7:
+                self.grid_rowconfigure(row)
+                continue
             self.grid_rowconfigure(row, weight=1)
         for col in range(2):
             self.grid_columnconfigure(col, weight=1)

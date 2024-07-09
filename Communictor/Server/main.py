@@ -62,3 +62,7 @@ def laplace_equation_image():
 def laplace_spectrum_image():
     path = "laplace_spectrum.png"
     return path
+
+def calculate_exp(exp:str):
+    cal = Cal()
+    return cal.calculate(exp)

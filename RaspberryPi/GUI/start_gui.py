@@ -48,13 +48,13 @@ class StartPage(tk.Frame):
                                             font=("sans-serif", 20, "bold"), width=2, borderwidth=0, 
                                             highlightthickness=0, bg="#293C4A", fg="white", 
                                             activebackground="#293C4A", activeforeground="white")
-        current_page_num_button.grid(row=6, column=0, pady=5, padx=1, sticky='e')
+        current_page_num_button.grid(row=6, column=0, padx=1, sticky='e')
 
         next_page_button = tk.Button(self, text="2", command=lambda: self.controller.show_frame("StartPage2"), 
                                      font=("sans-serif", 15, "bold"), width=2, borderwidth=0, 
                                      highlightthickness=0, bg="#293C4A", fg="white", 
                                      activebackground="#293C4A", activeforeground="white")
-        next_page_button.grid(row=6, column=1, pady=5, padx=1, sticky='w')
+        next_page_button.grid(row=6, column=1, padx=1, sticky='w')
 
 
         close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
@@ -62,6 +62,9 @@ class StartPage(tk.Frame):
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):
+            if row == 6 or row == 7:
+                self.grid_rowconfigure(row)
+                return
             self.grid_rowconfigure(row, weight=1)
         for col in range(2):
             self.grid_columnconfigure(col, weight=1)

@@ -6,10 +6,11 @@ import os
 from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
 from main import fourier_solver, fourier_transform_image
 from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
+from main import calculate_exp
 
 app = FastAPI()
 
-host_url = '192.168.1.4'
+host_url = '192.168.8.103'
 
 @app.get("/")
 def read_root():
@@ -84,6 +85,14 @@ async def laplace_transform(data: dict):
 async def laplace_spectrum(data : dict):
     path = laplace_spectrum_image()
     return FileResponse(path, media_type='image/png')
+
+@app.post("/calculate")
+async def calculate(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    ans = calculate_exp(expression)
+    return {"result": ans}
     
 
 if __name__ == '__main__':

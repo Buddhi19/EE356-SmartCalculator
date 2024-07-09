@@ -133,9 +133,9 @@ def convert_blackboard_image(img):
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
-	kernel = np.ones((6,6),np.uint8)
+	kernel = np.ones((7,7),np.uint8)
 
-	dilation = cv2.dilate(img, kernel, iterations = 3) #16
+	dilation = cv2.dilate(img, kernel, iterations = 7) #16
 
 	contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)	
 	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.5]
@@ -147,7 +147,7 @@ def convert_blackboard_image(img):
 	rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 	img = img[y:y+h, x:x+w]
 
-	scale_factor = 0.2
+	scale_factor = 0.6
 	resized_image = cv2.resize(img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
 
 	resized_image = cv2.dilate(resized_image, np.ones((4,4),np.uint8), iterations = 1)

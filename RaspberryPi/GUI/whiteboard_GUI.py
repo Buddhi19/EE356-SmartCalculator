@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image
+from whiteboard_solver import post_image, get_ans
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -15,7 +15,7 @@ class WhiteboardApp(tk.Frame):
         self.configure(bg="#293C4A")
         self.mode = "Calculate"
         self.display_var = tk.StringVar()
-        self.cell_size = 250
+        self.cell_size = 130
         self.grid_visible = True
 
         # Create widgets
@@ -158,7 +158,8 @@ class WhiteboardApp(tk.Frame):
 
     def add_action(self, window):
         #add answer to display
-        self.display_var.set(self.display_var.get() + self.answer)
+        ans = get_ans(self.answer)
+        self.display_var.set(ans)
         window.destroy()
 
     def retry_action(self, window):

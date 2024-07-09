@@ -14,3 +14,15 @@ def post_image():
         print(response.text)
     
     return response.json().get("result")
+
+
+def get_ans(exp: str):
+    url = server_address + '/calculate'
+    data = {'expression': exp}
+    response = requests.post(url, json=data)
+
+    if response.status_code == 200:
+        result = response.json().get("result")
+        return result
+    else:
+        return "Error"
