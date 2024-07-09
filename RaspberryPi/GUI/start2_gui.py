@@ -54,9 +54,6 @@ class StartPage2(tk.Frame):
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):
-            if row==6 or row==7:
-                self.grid_rowconfigure(row)
-                continue
             self.grid_rowconfigure(row, weight=1)
         for col in range(2):
             self.grid_columnconfigure(col, weight=1)
