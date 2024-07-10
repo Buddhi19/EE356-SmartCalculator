@@ -2,17 +2,43 @@
 
 ## Ongoing Firmware Tasks
 
-| Task | Description |
+| Task | Status |
 |-------------|----------|
 | Image to Latex Model | 50% |
-| Latex Calculator | Completed Numerical Calculations |
-| Communicator | Started |
-| Graphing Calculator| Started |
-| Matrix Identification | |
-| Spreadsheet Calculations | |
-| Camera Module | 50% |
+| Communicator | Should implement graphing from server for all |
+| Matrix Identification | Not yet included |
+| Camera Module | Checking |
+| Integral Transforms | On going |
 
-# Notes
-- Grapher has some issues with passing data variable
+## To Do List
+- Integral Transforms
+    - Laplace Transform : Plotter
+    - Fourier Transform : Plotter
+    - Z Transform : Plotter
+
+- Scientific Data Analysis
+    - Interpolation
+    - Curve Fitting
+    - Regression Analysis
+
 - Camera should be tested with a flash
-- Onscreen whiteboard yet to be implemented
+- Settings Menu to change wifi
+- pi-Oscilloscope 
+
+## Raspberry Pi task bar
+```
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+```
+## Display  
+```
+export DISPLAY=:0
+```
+## Headless StartUp 
+```
+yet to be implemented
+```
+
+## Requirement later will be implemented on a bash file
+```
+sudo apt install -y python3-picamera2
+```

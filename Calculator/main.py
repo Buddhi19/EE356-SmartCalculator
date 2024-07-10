@@ -25,7 +25,8 @@ class Cal(formatter):
         calculate the given expression
         """
         ans = self.convert_to_sympy(expression)
-        return (self.convert_to_latex(float(ans)))
+        ans = round(float(ans), 4)
+        return (self.convert_to_latex(ans))
 
     def differentiator(self,expression:str):
         """

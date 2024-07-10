@@ -15,26 +15,29 @@ class Calculator:
             "sin": "S", "cos": "C", "tan": "T", "AC": "AC",
             "DEL": "DEL", "log": "L", "ln": "E", "sqrt": "R",
             "^": "^", "pi": "p", "e": "e",
-            "arcsine": "aS", "arccos": "aC", "arctan": "aT","i":"I",
+            "asin": ",", "acos": "[", "atan": ":","j":"J",
             "A": "A", "B": "B", "C": "C", "D": "D",
             "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z",
-            "s":"s"
+            "s":"s","MatA":"@", "MatB":"#", "MatC":"$", "MatD":"%", "MatE":"&",
+            "!":"!","w":"w","t":"t"
         }
         self.mappings = {
             "S":"sin(", "C":"cos(", "T":"tan(", "L":"log(", "E":"ln(", "R":"sqrt(",
-            "aS":"asin(", "aC":"acos(", "aT":"atan(","p":"pi", "I":"i"
+            ",":"asin(", "[":"acos(", ":":"atan(","p":"pi", "j":"J",
+            "@":"MatA", "#":"MatB", "$":"MatC", "%":"MatD", "&":"MatE"
         }
-        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", "aS", "aC", "aT","="]
+        self.operations = ["+", "-", "*", "/", "^", "S", "C", "T", "L", "E", "R", "p", ",", "[", ":","="]
 
-        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","i",
-                          "A", "B", "C", "D", "U", "V", "W", "X", "Y", "Z","s"]
+        self.functions = ["sin", "cos", "tan", "log", "ln", "sqrt", "pi", "arcsine", "arccos", "arctan","x","y","z","J",
+                          "A", "B", "D", "U", "V", "W", "X", "Y", "Z","s","MatA", "MatB", "MatC", "MatD", "MatE",
+                          "asin", "acos", "atan", "e", "w", "t"]
 
         self.degrees = True
 
         self.mappings_for_degrees = {
             "S":"sin(pi/180*", "C":"cos(pi/180*", "T":"tan(pi/180*",
-            "aS":"180/pi*asin(", "aC":"180/pi*acos(", "aT":"180/pi*atan(","L":"log(,", "E":"ln(",
-            "R":"sqrt(", "I":"i",
+            ",":"180/pi*asin(", "[":"180/pi*acos(", ":":"180/pi*atan(","L":"log(", "E":"ln(",
+            "R":"sqrt(", "j":"J","@":"MatA", "#":"MatB", "$":"MatC", "%":"MatD", "&":"MatE"
         }
 
     def safe_eval(self,expression):
@@ -43,7 +46,7 @@ class Calculator:
             'cos': math.cos,
             'tan': math.tan,
             'hypot': math.hypot,
-            'log': math.log,
+            'log': math.log10,
             'exp': math.exp,
             'sqrt': math.sqrt,
             'pi': math.pi,
@@ -53,7 +56,8 @@ class Calculator:
             'asin': math.asin,
             'acos': math.acos,
             'atan': math.atan,
-            'I': 1j,
+            'J': 1j,
+            'ln': math.log,
             # Add more functions and constants as needed
         }
 
@@ -92,6 +96,24 @@ class Calculator:
                 for key in self.mappings.keys():
                     self.result = self.result.replace(key, self.mappings[key])
 
+            if "!" in self.result:
+                try:
+                    index = self.result.index("!")
+                    # Extract the number preceding the "!"
+                    # Find the start of the number by looking backward until you hit a non-digit character
+                    start_index = index - 1
+                    while start_index >= 0 and self.result[start_index].isdigit():
+                        start_index -= 1
+                    start_index += 1  # Move to the first digit of the number
+                    
+                    num = self.result[start_index:index]  # Extract the number
+                    self.result = self.result[:start_index] + "factorial(" + num + ")" + self.result[index+1:]
+                    print(self.result)
+                except Exception as e:
+                    self.result = "factorial error"
+                    self.showing_exp = self.result
+                    return
+
             open_brackets = self.result.count("(")
             close_brackets = self.result.count(")")
             if open_brackets > close_brackets:
@@ -99,11 +121,13 @@ class Calculator:
             if self.result == "":
                 self.showing_exp = "|"
                 return
+            print(f"Expression: {self.result}")
+            if "^" in self.result:
+                self.result = self.result.replace("^", "**")
             indicator = self.result[:self.pointer]+"|"+self.result[self.pointer:]
             try:
                 self.result = str(self.safe_eval(self.result))
-                if "j" in self.result:
-                    self.result = self.result.replace("j","i")
+                print(f"Result: {self.result}")
             except ZeroDivisionError:
                 self.result = "Can not divide by zero"
             except SyntaxError:
