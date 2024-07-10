@@ -37,3 +37,8 @@ export DISPLAY=:0
 ```
 yet to be implemented
 ```
+
+## Requirement later will be implemented on a bash file
+```
+sudo apt install -y python3-picamera2
+```
