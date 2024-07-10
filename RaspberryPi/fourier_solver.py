@@ -85,4 +85,14 @@ def get_laplace_transform(exp, t, s):
         print("Laplace transform image saved successfully.")
     else:
         print("Failed to generate Laplace transform image.")
+
+def get_laplace_spectrum():
+    url = server_address+'/laplace_spectrum_image'
+    response = requests.get(url, json={"t":"t"})
+    if response.status_code == 200:
+        with open('integrals/laplace_spectrum.png', 'wb') as f:
+            f.write(response.content)
+        print("Laplace spectrum image saved successfully.")
+    else:
+        print("Failed to generate Laplace spectrum image.")
     

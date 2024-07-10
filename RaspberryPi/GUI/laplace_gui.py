@@ -7,7 +7,7 @@ import tkinter as tk
 from tkinter import ttk
 import math
 from sympy import symbols, sympify, laplace_transform
-from fourier_solver import get_laplace_transform
+from fourier_solver import get_laplace_transform, get_laplace_spectrum
 
 class LaplaceTransform(tk.Frame):
     def __init__(self, parent, controller):
@@ -38,8 +38,6 @@ class LaplaceTransform(tk.Frame):
         #result_frame = ttk.Frame(self)
         #result_frame.grid(row=2, column=0, pady=20, padx=20, sticky="ew")
         #result_frame.columnconfigure(1, weight=1)
-        
-       
 
         # Calculator buttons
         calc_frame = ttk.Frame(self)

@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-from picamera import PiCamera
-from picamera.array import PiRGBArray
+from picamera2 import Picamera2
+from libcamera import controls
 import threading
 import io
 import time
@@ -13,9 +13,9 @@ class CameraApp(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         
-        self.camera = PiCamera()
-        self.camera.resolution = (640, 480)  # Lower resolution for preview
-        self.stream = PiRGBArray(self.camera)
+        self.camera = Picamera2()
+        self.camera.configure(self.camera.create_preview_configuration(main={"size": (640, 480)}))
+        self.camera.start()
         
         self.label = tk.Label(self)
         self.label.pack()
@@ -38,15 +38,14 @@ class CameraApp(tk.Frame):
         GPIO.output(self.flash_pin, GPIO.LOW)
     
     def update_preview(self):
-        for frame in self.camera.capture_continuous(self.stream, format="rgb", use_video_port=True):
-            if self.stop_event.is_set():
-                break
-            image = Image.fromarray(frame.array)
-            self.stream.truncate(0)
-            self.stream.seek(0)
+        while not self.stop_event.is_set():
+            frame = self.camera.capture_array()
+            image = Image.fromarray(frame)
+            image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
             image = ImageTk.PhotoImage(image)
             self.label.config(image=image)
             self.label.image = image
+            time.sleep(0.1)  # Adjust this value to control frame rate
     
     def capture_image(self):
         try:
@@ -58,14 +57,22 @@ class CameraApp(tk.Frame):
             GPIO.output(self.flash_pin, GPIO.HIGH)
             time.sleep(0.1)  # Short delay to ensure flash is on before capture
             
-            stream = io.BytesIO()
-            self.camera.resolution = (1920, 1080)  # High resolution for capture
-            self.camera.capture(stream, format='jpeg')
-            self.camera.resolution = (640, 480)  # Restore preview resolution
-            stream.seek(0)
-            image = Image.open(stream)
-            image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)  # Flip the image vertically and horizontally
+            # Capture high-resolution image
+            self.camera.stop()
+            self.camera.configure(self.camera.create_still_configuration(main={"size": (1920, 1080)}))
+            self.camera.start()
+            frame = self.camera.capture_array()
+            image = Image.fromarray(frame)
+            
+            # Flip the image vertically and horizontally
+            image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
+            
             image.save("captured_image.jpg")
+            
+            # Restore preview configuration
+            self.camera.stop()
+            self.camera.configure(self.camera.create_preview_configuration(main={"size": (640, 480)}))
+            self.camera.start()
             
             # Flash OFF
             GPIO.output(self.flash_pin, GPIO.LOW)
@@ -79,37 +86,41 @@ class CameraApp(tk.Frame):
     def pack(self, **kwargs):
         super().pack(**kwargs)
         self.start_camera()
-
+    
     def pack_forget(self):
         self.stop_camera()
         super().pack_forget()
-
+    
     def grid(self, **kwargs):
         super().grid(**kwargs)
         self.start_camera()
-
+    
     def grid_forget(self):
         self.stop_camera()
         super().grid_forget()
-
+    
     def place(self, **kwargs):
         super().place(**kwargs)
         self.start_camera()
-
+    
     def place_forget(self):
         self.stop_camera()
         super().place_forget()
         
     def start_camera(self):
         if not self.camera:
-            self.camera = PiCamera()
-            self.camera.resolution = (640, 480)  # Lower resolution for preview
-            self.update_image()
-
+            self.camera = Picamera2()
+            self.camera.configure(self.camera.create_preview_configuration(main={"size": (640, 480)}))
+            self.camera.start()
+            self.update_preview()
+    
     def stop_camera(self):
         if self.camera:
+            self.stop_event.set()
+            self.camera.stop()
             self.camera.close()
             self.camera = None
-
+    
     def __del__(self):
+        self.stop_camera()
         GPIO.cleanup()

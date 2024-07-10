@@ -4,6 +4,7 @@ import os
 import sys
 from PIL import Image, ImageTk
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -17,14 +18,14 @@ class StartPage(tk.Frame):
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         buttons = [
-            ("Calculator", "Calculator_Frame", "icons/calculator.png"),
-            ("Graphing Calculator", "Graph_GUI", "icons/graph.png"),
-            ("Write to Solve", "WhiteboardApp", "icons/write.png"),
-            ("Take a Photo to Solve", "CameraApp", "icons/photo.png"),
-            ("Simultaneous Solver", "Simultaneous_solver_Frame", "icons/simultaneous.png"),
-            ("PDFReader", "PDFReader", "icons/pdf.png"),
-            ("Controls", "TransferFunctionFrame", "icons/controls.png"),
-            ("Matrix Calculator", "MatrixOperationPage", "icons/matrix.png")
+            ("Calculator", "Calculator_Frame", parent_dir + "\\icons\\calculator.png"),
+            ("Graphing Calculator", "Graph_GUI", parent_dir + "\\icons\\graph.png"),
+            ("Write to Solve", "WhiteboardApp",parent_dir + "\\icons\\write.png"),
+            ("Take a Photo to Solve", "CameraApp", parent_dir + "\\icons\\photo.png"),
+            ("Simultaneous Solver", "Simultaneous_solver_Frame", parent_dir + "\\icons\\simultaneous.png"),
+            ("PDFReader", "PDFReader", parent_dir + "\\icons\\pdf.png"),
+            ("Controls", "TransferFunctionFrame", parent_dir + "\\icons\\controls.png"),
+            ("Matrix Calculator", "MatrixOperationPage", parent_dir + "\\icons\\matrix.png")
         ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
@@ -48,20 +49,23 @@ class StartPage(tk.Frame):
                                             font=("sans-serif", 20, "bold"), width=2, borderwidth=0, 
                                             highlightthickness=0, bg="#293C4A", fg="white", 
                                             activebackground="#293C4A", activeforeground="white")
-        current_page_num_button.grid(row=6, column=0, pady=5, padx=1, sticky='e')
+        current_page_num_button.grid(row=6, column=0, padx=1, sticky='e')
 
         next_page_button = tk.Button(self, text="2", command=lambda: self.controller.show_frame("StartPage2"), 
                                      font=("sans-serif", 15, "bold"), width=2, borderwidth=0, 
                                      highlightthickness=0, bg="#293C4A", fg="white", 
                                      activebackground="#293C4A", activeforeground="white")
-        next_page_button.grid(row=6, column=1, pady=5, padx=1, sticky='w')
+        next_page_button.grid(row=6, column=1, padx=1, sticky='w')
 
 
         close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
-        close_button.grid(row=7, column=0, columnspan=2, pady=20)
+        close_button.grid(row=7, column=0, columnspan=2)
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):
+            if row == 6 or row == 7:
+                self.grid_rowconfigure(row)
+                return
             self.grid_rowconfigure(row, weight=1)
         for col in range(2):
             self.grid_columnconfigure(col, weight=1)
