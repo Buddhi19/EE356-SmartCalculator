@@ -32,16 +32,20 @@ class DiscreteSignalCalculator(tk.Frame):
         col = 0
         for button in buttons:
             cmd = lambda x=button: self.click(x)
-            tk.Button(self, text=button, command=cmd, width=5, height=2, font=('Arial', 18)).grid(row=row, column=col, sticky="nsew", padx=2, pady=2)
+            tk.Button(self, text=button, command=cmd, width=5, height=2, font=('Arial', 18), 
+                      bg='#3C3636', fg='white').grid(row=row, column=col, sticky="nsew", padx=2, pady=2)
             col += 1
             if col > 3:
                 col = 0
                 row += 1
 
         # Additional buttons
-        tk.Button(self, text="C", command=self.clear, width=5, height=2, font=('Arial', 18)).grid(row=row, column=0, sticky="nsew", padx=2, pady=2)
-        tk.Button(self, text="^", command=lambda: self.click('^'), width=5, height=2, font=('Arial', 18)).grid(row=row, column=1, sticky="nsew", padx=2, pady=2)
-        tk.Button(self, text="Add", command=self.add_to_signal, width=5, height=2, font=('Arial', 18)).grid(row=row, column=2, columnspan=2, sticky="nsew", padx=2, pady=2)
+        tk.Button(self, text="C", command=self.clear, width=5, height=2, font=('Arial', 18), 
+                  bg='#3C3636', fg='white').grid(row=row, column=0, sticky="nsew", padx=2, pady=2)
+        tk.Button(self, text="^", command=lambda: self.click('^'), width=5, height=2, font=('Arial', 18), 
+                  bg='#3C3636', fg='white').grid(row=row, column=1, sticky="nsew", padx=2, pady=2)
+        tk.Button(self, text="Add", command=self.add_to_signal, width=5, height=2, font=('Arial', 18), 
+                  bg='#db701f', fg='white').grid(row=row, column=2, columnspan=2, sticky="nsew", padx=2, pady=2)
 
         # Configure grid
         for i in range(6):
