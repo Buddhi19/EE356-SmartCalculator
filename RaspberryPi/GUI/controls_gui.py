@@ -336,7 +336,6 @@ class C2D_model(tk.Toplevel):
         self.mode = mode
         self.mode_var.set(f"Selected Mode: {mode}")
         T = self.sampling_period_var.get()
-        self.callback(mode, T)
 
     def set(self):
         T = self.sampling_period_var.get()

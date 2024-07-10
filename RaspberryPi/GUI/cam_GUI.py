@@ -7,6 +7,10 @@ import threading
 import io
 import time
 import RPi.GPIO as GPIO
+import os
+import sys
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 class CameraApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -23,8 +27,7 @@ class CameraApp(tk.Frame):
         self.capture_button = tk.Button(self, text="Capture", command=self.capture_image)
         self.capture_button.pack()
         
-        self.back_button = tk.Button(self, text="Back", command=lambda: controller.show_frame("StartPage"))
-        self.back_button.pack()
+        self.back_button = tk.Button(self, text="Back", command=self.back)
         
         self.stop_event = threading.Event()
         self.preview_thread = threading.Thread(target=self.update_preview)
@@ -36,6 +39,10 @@ class CameraApp(tk.Frame):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.flash_pin, GPIO.OUT)
         GPIO.output(self.flash_pin, GPIO.LOW)
+
+    def back(self):
+        self.stop_camera()
+        self.controller.show_frame("StartPage")
     
     def update_preview(self):
         while not self.stop_event.is_set():
@@ -67,7 +74,7 @@ class CameraApp(tk.Frame):
             # Flip the image vertically and horizontally
             image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
             
-            image.save("captured_image.jpg")
+            image.save(parent_dir+"/captured_image.png")
             
             # Restore preview configuration
             self.camera.stop()
