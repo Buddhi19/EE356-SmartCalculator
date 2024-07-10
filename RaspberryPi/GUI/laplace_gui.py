@@ -118,8 +118,39 @@ class ShowLaplaceTransform(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        ttk.Label(self, text="Laplace Transform Result", font=('sans-serif', 20, 'bold'), background="#293C4A", foreground="#BBB").pack(pady=10)
-        ttk.Button(self, text="Back to Calculator", command=lambda: controller.show_frame("LaplaceTransform"), style="TButton").pack(pady=10)
+        self.create_widgets()
+
+    def create_widgets(self):
+        img = tk.PhotoImage(file="integrals/laplace_transform.png")
+        label = tk.Label(self, image=img, borderwidth=0)
+        label.image = img
+        label.pack()
+
+        close_button = tk.Button(self, text="Close", command=lambda: self.controller.show_frame("LaplaceTransform"))
+        close_button.pack()
+
+        show_button = tk.Button(self, text="Show Spectrum", command=self.show_spectrum)
+        show_button.pack()
+
+    def show_spectrum(self):
+        get_laplace_spectrum()
+        print("Showing Laplace Spectrum")
+        self.controller.show_frame("ShowLaplaceSpectrum")
+
+class ShowLaplaceSpectrum(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.create_widgets()
+
+    def create_widgets(self):
+        img = tk.PhotoImage(file="integrals/laplace_spectrum.png")
+        label = tk.Label(self, image=img, borderwidth=0)
+        label.image = img
+        label.pack()
+
+        close_button = tk.Button(self, text="Close", command=lambda: self.controller.show_frame("LaplaceTransform"))
+        close_button.pack()
 
 if __name__ == "__main__":
     root = tk.Tk()
