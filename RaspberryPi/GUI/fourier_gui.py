@@ -20,13 +20,13 @@ class FourierTransform(tk.Frame):
         self.fourier_solver = FourierSolver()
 
         # Entry widgets
-        self.entry1 = ttk.Entry(self, textvariable=self.display_var, font=('Arial', 20, 'bold'), justify='right', state='readonly')
+        self.entry1 = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
         self.entry1.grid(row=0, rowspan=5, column=0, columnspan=9, sticky="nsew")
 
-        self.entry2 = ttk.Entry(self, textvariable=self.display_initial_variable, font=('Arial', 10, 'bold'), justify='right', state='readonly')
+        self.entry2 = ttk.Entry(self, textvariable=self.display_initial_variable, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
         self.entry2.grid(row=5, rowspan=3, column=0, columnspan=9, sticky="nsew")
 
-        self.entry3 = ttk.Entry(self, textvariable=self.display_final_variable, font=('Arial', 10, 'bold'), justify='right', state='readonly')
+        self.entry3 = ttk.Entry(self, textvariable=self.display_final_variable, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
         self.entry3.grid(row=8, rowspan=3, column=0, columnspan=9, sticky="nsew")
 
         self.current_entry = None  # To track currently focused entry
@@ -36,9 +36,9 @@ class FourierTransform(tk.Frame):
 
     def create_widgets(self):
         # Button configurations and grid layout (example buttons)
-        self.button_params = {'fg': '#BBB', 'bg': '#3C3636', 'font': ('Arial', 11, 'bold')}
-        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('Arial', 11, 'bold')}
-        self.button_params_other = {'fg': '#000', 'bg': '#db701f', 'font': ('Arial', 11, 'bold')}
+        self.button_params = {'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_other = {'fg': '#000', 'bg': '#db701f', 'font': ('sans-serif', 11, 'bold')}
 
         self.row1_buttons = ['', '', '', '↑', '', 'ln']
         self.row2_buttons = ['', 'pi', '←', '↓', '→', 'log']

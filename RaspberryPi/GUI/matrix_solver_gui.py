@@ -214,7 +214,7 @@ class MatrixOperationPage(tk.Frame):
 
         for name in self.matrices.keys():
             button = tk.Button(self.matrix_buttons_frame, text=name, command=lambda n=name: self.perform_operation(n),
-                               font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", width=5)
+                               font=('sans-serif', 10, 'bold'), bg="#BBB", fg="#000", width=5)
             button.pack(side=tk.LEFT, padx=5)
 
     def add_matrix(self):
