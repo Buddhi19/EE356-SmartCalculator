@@ -4,6 +4,7 @@ import os
 import sys
 from PIL import Image, ImageTk
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -17,14 +18,14 @@ class StartPage(tk.Frame):
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         buttons = [
-            ("Calculator", "Calculator_Frame", "icons/calculator.png"),
-            ("Graphing Calculator", "Graph_GUI", "icons/graph.png"),
-            ("Write to Solve", "WhiteboardApp", "icons/write.png"),
-            ("Take a Photo to Solve", "CameraApp", "icons/photo.png"),
-            ("Simultaneous Solver", "Simultaneous_solver_Frame", "icons/simultaneous.png"),
-            ("PDFReader", "PDFReader", "icons/pdf.png"),
-            ("Controls", "TransferFunctionFrame", "icons/controls.png"),
-            ("Matrix Calculator", "MatrixOperationPage", "icons/matrix.png")
+            ("Calculator", "Calculator_Frame", parent_dir + "\\icons\\calculator.png"),
+            ("Graphing Calculator", "Graph_GUI", parent_dir + "\\icons\\graph.png"),
+            ("Write to Solve", "WhiteboardApp",parent_dir + "\\icons\\write.png"),
+            ("Take a Photo to Solve", "CameraApp", parent_dir + "\\icons\\photo.png"),
+            ("Simultaneous Solver", "Simultaneous_solver_Frame", parent_dir + "\\icons\\simultaneous.png"),
+            ("PDFReader", "PDFReader", parent_dir + "\\icons\\pdf.png"),
+            ("Controls", "TransferFunctionFrame", parent_dir + "\\icons\\controls.png"),
+            ("Matrix Calculator", "MatrixOperationPage", parent_dir + "\\icons\\matrix.png")
         ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):

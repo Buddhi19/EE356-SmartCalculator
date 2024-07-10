@@ -4,6 +4,8 @@ import os
 import sys
 from PIL import Image, ImageTk
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 class StartPage2(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -16,8 +18,8 @@ class StartPage2(tk.Frame):
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         buttons = [
-            ("Fourier Transform", "FourierTransform", "icons/integrals.png"),
-            ("Laplace Transform", "LaplaceTransform", "icons/laplace.png"),
+            ("Fourier Transform", "FourierTransform", parent_dir + "\\icons\\integrals.png"),
+            ("Laplace Transform", "LaplaceTransform", parent_dir + "\\icons\\laplace.png"),
         ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
