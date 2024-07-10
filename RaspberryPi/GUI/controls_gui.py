@@ -33,7 +33,7 @@ class TransferFunctionFrame(tk.Frame):
 
         # Draw the fraction
         self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('Arial', 12, 'bold'), anchor="s")
-        line =self.canvas.create_line(30, 60, 300, 60, fill="white", width=2)
+        line =self.canvas.create_line(20, 60, 320, 60, fill="white", width=3)
         self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('Arial', 12,'bold'), anchor="n")
 
         # Buttons
@@ -53,8 +53,96 @@ class TransferFunctionFrame(tk.Frame):
         self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, font=('Arial', 12),fg="#000",width=13)
         self.nyquist_button.grid(row=1, column=1, padx=2, pady=5)
 
+        self.add_feedback_button = tk.Button(self.button_frame, text="Add Feedback", command=self.add_feedback, font=('Arial', 12),fg="#000",width=13)
+        self.add_feedback_button.grid(row=2, column=0, padx=2, pady=5)
+
+        self.c2d_button = tk.Button(self.button_frame, text="Continuous to Discrete", command=self.c2d, font=('Arial', 12),fg="#000",width=13)
+        self.c2d_button.grid(row=3, column=1, padx=2, pady=5)
+
+        self.remove = tk.Button(self.button_frame, text="Remove", command=self.remove, font=('Arial', 12),fg="#000",width=13)
+        self.remove.grid(row=3, column=0, padx=2, pady=5)
+
         self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('Arial', 12),fg="#000",width=13)
         self.back_button.grid(row=2, column=1, padx=2, pady=5)
+
+    def remove(self):
+        self.canvas.delete(self.num)
+        self.canvas.delete(self.den)
+        self.numerator = "Transfer Function Numerator"
+        self.denominator = "Transfer Function Denominator"
+        self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('Arial', 12, 'bold'), anchor="s")
+        self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('Arial', 12,'bold'), anchor="n")
+
+    def c2d(self):
+        if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
+            return
+        C2D_model(self, self.update_c2d)
+
+    def update_c2d(self, data):
+        self.T = data[1]
+        self.mode = data[0]
+
+        if self.T == "T":
+            self.T = sp.symbols("T")
+
+        s = sp.symbols("s")
+        z = sp.symbols("z")
+        numerator = sp.Poly(self.numerator, s)
+        denominator = sp.Poly(self.denominator, s)
+
+        if self.mode == "Forward Euler":
+            numerator = numerator.as_expr().subs(s, (z-1)/self.T)
+            denominator = denominator.as_expr().subs(s, (z-1)/self.T)
+
+        if self.mode == "Backward Euler":
+            numerator = numerator.as_expr().subs(s, z/(self.T*(z-1)))
+            denominator = denominator.as_expr().subs(s, z/(self.T*(z-1)))
+
+        if self.mode == "Tustin":
+            numerator = numerator.as_expr().subs(s, 2*(z-1)/(self.T*(z+1)))
+            denominator = denominator.as_expr().subs(s, 2*(z-1)/(self.T*(z+1)))
+
+        self.transfer_function = numerator / denominator 
+
+        self.numerator, self.denominator = self.transfer_function.as_numer_denom()
+
+        self.numerator = sp.simplify(self.numerator)
+        self.numerator = sp.expand(self.numerator)
+
+        self.denominator = sp.simplify(self.denominator)
+        self.denominator = sp.expand(self.denominator)
+
+        numerator = str(self.numerator).replace("**", "^")
+        denominator = str(self.denominator).replace("**", "^")
+
+        self.canvas.delete(self.num)
+        self.canvas.delete(self.den)
+
+        self.num = self.canvas.create_text(170, 50, text=numerator, fill="white", font=("Arial", 12), anchor="s", tag="numerator")
+        self.den = self.canvas.create_text(170, 80, text=denominator, fill="white", font=("Arial", 12), anchor="n", tag="denominator")
+
+    def add_feedback(self):
+        EditTransferFunction(self, self.update_feedback)
+
+    def update_feedback(self, data):
+        self.feedback = data
+        self.canvas.delete(self.num)
+        self.canvas.delete(self.den)   
+        self.solve_for_feedback_transfer_function(self.feedback)
+
+
+    def solve_for_feedback_transfer_function(self, feedback):
+        s = sp.symbols("s")
+        numerator = sp.Poly(self.numerator, s)
+        denominator = sp.Poly(self.denominator, s)
+        feedback = sp.Poly(feedback, s)
+        transfer_function = numerator / (denominator + numerator * feedback)
+        transfer_function = sp.simplify(transfer_function)
+        numerator_poly, denominator_poly = transfer_function.as_numer_denom()
+        self.numerator = numerator_poly
+        self.denominator = denominator_poly
+        self.num = self.canvas.create_text(170, 50, text=numerator_poly, fill="white", font=("Arial", 16), anchor="s", tag="feedback")
+        self.den = self.canvas.create_text(170, 80, text=denominator_poly, fill="white", font=("Arial", 16), anchor="n", tag="feedback")
 
     def edit_numerator(self):
         EditTransferFunction(self, self.update_numerator)
@@ -166,6 +254,95 @@ class EditTransferFunction(tk.Toplevel):
                 self.display_var.set(self.solver.showing_exp)
         self.solver.user_input(button_text)
         self.display_var.set(self.solver.showing_exp)
+
+
+import tkinter as tk
+from tkinter import ttk
+
+class C2D_model(tk.Toplevel):
+    def __init__(self, parent, callback):
+        super().__init__(parent)
+        self.callback = callback
+        self.display_var = tk.StringVar()
+        self.T = sp.symbols("T")
+        self.sampling_period_var = tk.StringVar(value=self.T)
+        self.mode_var = tk.StringVar(value="Selected Mode: None")
+        self.solver = Simul()
+        self.mode = ""
+        self.create_widgets()
+
+    def create_widgets(self):
+        period_label = ttk.Label(self, text="Sampling Period (T):", font=('Arial', 12))
+        period_label.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="w")
+
+        period_entry = ttk.Entry(self, textvariable=self.sampling_period_var, font=('Arial', 12))
+        period_entry.grid(row=1, column=2, columnspan=2, padx=5, pady=5, sticky="w")
+
+        forward_button = ttk.Button(self, text="Forward Euler", command=lambda: self.set_mode("Forward Euler"))
+        forward_button.grid(row=2, column=0, columnspan=1, padx=5, pady=5)
+
+        backward_button = ttk.Button(self, text="Backward Euler", command=lambda: self.set_mode("Backward Euler"))
+        backward_button.grid(row=2, column=2, columnspan=1, padx=5, pady=5)
+
+        tustin_button = ttk.Button(self, text="Tustin", command=lambda: self.set_mode("Tustin"))
+        tustin_button.grid(row=2, column=4, columnspan=1, padx=5, pady=5)
+
+        set_button = ttk.Button(self, text="Set", command=self.set)
+        set_button.grid(row=2, column=5, columnspan=1, padx=5, pady=5)
+
+        mode_button = ttk.Button(self, textvariable=self.mode_var, state='disabled')
+        mode_button.grid(row=2, column=6, columnspan=2, padx=5, pady=5)
+
+        self.create_keypad()
+
+    def create_keypad(self):
+        buttons = [
+            '7', '8', '9', 'AC',
+            '4', '5', '6', 'DEL',
+            '1', '2', '3', '',
+            '0', '.', '', ''
+        ]
+        
+        row = 3
+        col = 0
+
+        for button in buttons:
+            action = lambda x=button: self.on_keypad_click(x)
+            ttk.Button(self, text=button, command=action).grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
+
+        for i in range(3, 7):
+            self.grid_rowconfigure(i, weight=1)
+        for i in range(4):
+            self.grid_columnconfigure(i, weight=1)
+
+    def on_keypad_click(self, key):
+        if key == 'AC':
+            self.sampling_period_var.set('')
+        elif key == 'DEL':
+            current_value = self.sampling_period_var.get()
+            self.sampling_period_var.set(current_value[:-1])
+        else:
+            current_value = self.sampling_period_var.get()
+            if current_value == self.T:
+                self.sampling_period_var.set(key)
+            else:
+                self.sampling_period_var.set(current_value + key)
+
+    def set_mode(self, mode):
+        self.mode = mode
+        self.mode_var.set(f"Selected Mode: {mode}")
+        T = self.sampling_period_var.get()
+        self.callback(mode, T)
+
+    def set(self):
+        T = self.sampling_period_var.get()
+        self.callback([self.mode, T])
+        self.destroy()
+
 
     
 class ShowPlots(tk.Toplevel):
