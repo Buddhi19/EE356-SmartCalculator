@@ -139,7 +139,7 @@ class MatrixOperationPage(tk.Frame):
         self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 20, 'bold'), bg="#293C4A", fg="#BBB")
         self.label.pack(pady=20)
 
-        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=25)
+        self.operation_entry = tk.Entry(self, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=30)
         self.operation_entry.pack(pady=10)
 
         self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
@@ -150,7 +150,7 @@ class MatrixOperationPage(tk.Frame):
 
         arrow_keys = {'←':"left", '→':"right"}
         arrows = ['←','→']
-        operations = ['+', '-', '*', 'inv' ]
+        operations = ['+', '-', '*' ]
         special_operations = ['=', 'DEL', 'AC']
         matrices_row = ['MatA', 'MatB', 'MatC', 'MatD', 'MatE']
         self.operation_buttons = []
@@ -159,32 +159,37 @@ class MatrixOperationPage(tk.Frame):
         for arrow in arrow_keys:
             button = tk.Button(self.operation_pad_frame, text=arrow, command=lambda a=arrow: self.perform_operation(arrow_keys[a]),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=0, column= 1+ arrows.index(arrow), padx=3, pady=5)
+            button.grid(row=0, column= 1+ arrows.index(arrow))
             self.operation_buttons.append(button)
+
+        inv_button = tk.Button(self.operation_pad_frame, text='inv', command=lambda: self.perform_operation('inv'),
+                               font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
+        inv_button.grid(row=0, column=3)
+        self.operation_buttons.append(inv_button)
 
         for matrix in matrices_row:
             button = tk.Button(self.operation_pad_frame, text=matrix, command=lambda o=matrix: self.perform_operation(o),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=3, column=matrices_row.index(matrix), padx=3, pady=5)
+            button.grid(row=3, column=matrices_row.index(matrix) )
             self.matrix_buttons.append(button)
 
         for op in operations:
             button = tk.Button(self.operation_pad_frame, text=op, command=lambda o=op: self.perform_operation(o),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=1, column=operations.index(op), padx=3, pady=5)
+            button.grid(row=1, column=1+operations.index(op))
             self.operation_buttons.append(button)
 
         for sop in special_operations:
             button = tk.Button(self.operation_pad_frame, text=sop, command=lambda o=sop: self.perform_operation(o),
                                font=('sans-serif', 12, 'bold'), bg="#BBB", fg="#000", width=4)
-            button.grid(row=2, column=1+special_operations.index(sop), padx=3, pady=5)
+            button.grid(row=2, column=1+special_operations.index(sop))
             self.operation_buttons.append(button)    
 
         self.matrix_buttons_frame = tk.Frame(self, bg="#293C4A")
-        self.matrix_buttons_frame.pack(pady=10)
+        self.matrix_buttons_frame.pack()
 
         self.num_pad_frame = tk.Frame(self, bg="#293C4A")
-        self.num_pad_frame.pack(pady=10)
+        self.num_pad_frame.pack()
 
         self.num_pad = [
             ('7', 1, 0), ('8', 1, 1), ('9', 1, 2),

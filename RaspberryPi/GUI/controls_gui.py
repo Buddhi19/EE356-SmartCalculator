@@ -303,6 +303,7 @@ class C2D_model(tk.Toplevel):
     
         
     def create_keypad(self):
+        self.button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold')}
         buttons = [
             '7', '8', '9', 'AC',
             '4', '5', '6', 'DEL',
@@ -315,7 +316,7 @@ class C2D_model(tk.Toplevel):
 
         for button in buttons:
             action = lambda x=button: self.on_keypad_click(x)
-            ttk.Button(self, text=button, command=action).grid(row=row, column=col,padx=5, pady=5, sticky="nsew")
+            tk.Button(self, text=button, command=action,**self.button_params_main).grid(row=row, column=col,padx=5, pady=5, sticky="nsew")
             col += 1
             if col > 3:
                 col = 0
@@ -492,7 +493,7 @@ class NyquistPlot(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     root.configure(bg="#293C4A")
-    root.geometry("330x700")
+    root.geometry("330x800")
     transfer_function_frame = TransferFunctionFrame(root, None)
     transfer_function_frame.pack()
     root.mainloop()

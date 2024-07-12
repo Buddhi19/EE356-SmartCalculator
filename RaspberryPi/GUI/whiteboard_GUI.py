@@ -43,7 +43,7 @@ class WhiteboardApp(tk.Frame):
         self.mode_button.grid(row=3, column=1, sticky="nsew")
 
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
-        self.solve_button.grid(row=3, column=2, sticky="nsew")
+        self.solve_button.grid(row=3, column=2,columnspan=2, sticky="nsew")
 
         self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
         self.add_button.grid(row=2, column=1, sticky="nsew")
@@ -168,7 +168,7 @@ class WhiteboardApp(tk.Frame):
 
 class ModeSelection_Whiteboard(tk.Toplevel):
     def __init__(self, parent, callback):
-        super().__init__(parent)
+        super().__init__(parent, bg="#293C4A")
         self.callback = callback
         self.mode_list = [
             "Calculate", "Plot", "Transfer Function", "Simultaneous Equations", "Matrix"
@@ -176,8 +176,9 @@ class ModeSelection_Whiteboard(tk.Toplevel):
         self.create_widgets()
 
     def create_widgets(self):
+        button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold')}
         for mode in self.mode_list:
-            button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
+            button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m),**button_params_main)
             button.pack(fill=tk.X, pady=5)
 
     def select_mode(self, mode):

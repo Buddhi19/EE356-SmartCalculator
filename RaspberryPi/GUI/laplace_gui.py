@@ -20,19 +20,22 @@ class LaplaceTransform(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        self.configure(bg="#293C4A")
+        self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
         self.columnconfigure(0, weight=1)
 
         # Function entry
         function_frame = ttk.Frame(self)
-        function_frame.grid(row=0, column=0, pady=20, padx=20, sticky="ew")
+        function_frame.grid(row=0, column=0, pady=20, padx=10, sticky="ew")
         function_frame.columnconfigure(1, weight=1)
         
-        ttk.Label(function_frame, text="f(t) = ", font=('sans-serif', 10, 'bold')).grid(row=0, column=0)
-        self.function_entry = ttk.Entry(function_frame, textvariable=self.function_var, font=('sans-serif', 10, 'bold'), justify='right')
+        ttk.Label(function_frame, text="f(t) = ", font=('sans-serif', 13, 'bold')).grid(row=0, column=0)
+        self.function_entry = ttk.Entry(function_frame, textvariable=self.function_var, font=('sans-serif', 13, 'bold'), justify='right',width =25)
         self.function_entry.grid(row=0, column=1, sticky="ew")
 
         # Transform button
-        ttk.Button(self, text="Compute Laplace Transform", command=self.compute_transform, style="TButton").grid(row=1, column=0, pady=40)
+        tk.Button(self, text="Compute Laplace Transform", command=self.compute_transform, **self.button_params_main).grid(row=1, column=0, pady=40)
 
         # Result display
         #result_frame = ttk.Frame(self)
@@ -54,17 +57,17 @@ class LaplaceTransform(tk.Frame):
         row, col = 0, 0
         for button in buttons:
             cmd = lambda x=button: self.click(x)
-            ttk.Button(calc_frame, text=button, command=cmd, style="Calc.TButton").grid(row=row, column=col, sticky='nsew', padx=2, pady=2)
+            tk.Button(calc_frame, text=button, command=cmd, **self.button_params_main).grid(row=row, column=col, sticky='nsew')
             col += 1
             if col > 5:
                 col = 0
                 row += 1
 
         # Help button
-        ttk.Button(self, text="Help", command=self.show_help, style="TButton").grid(row=4, column=0, pady=10)
+        tk.Button(self, text="Help", command=self.show_help, **self.button_params_main).grid(row=4, column=0, pady=10)
 
         # Back button
-        ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), style="TButton").grid(row=5, column=0, pady=10)
+        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main).grid(row=5, column=0, pady=10)
 
     def click(self, key):
         if key == 'AC':

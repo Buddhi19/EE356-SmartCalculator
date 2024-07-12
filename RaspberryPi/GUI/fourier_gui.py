@@ -12,24 +12,14 @@ class FourierTransform(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, bg="#293C4A")
         self.controller = controller
-        self.display_var = tk.StringVar(value="Function to transform")
-        self.display_initial_variable = tk.StringVar(value="Initial variable")
-        self.display_final_variable = tk.StringVar(value="Final variable")
+        self.display_var = tk.StringVar(value="")
         self.create_widgets()
 
         self.fourier_solver = FourierSolver()
 
-        # Entry widgets
-        self.entry1 = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
-        self.entry1.grid(row=0, rowspan=5, column=0, columnspan=9, sticky="nsew")
-
-        self.entry2 = ttk.Entry(self, textvariable=self.display_initial_variable, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
-        self.entry2.grid(row=5, rowspan=3, column=0, columnspan=9, sticky="nsew")
-
-        self.entry3 = ttk.Entry(self, textvariable=self.display_final_variable, font=('sans-serif', 10, 'bold'), justify='right', state='readonly')
-        self.entry3.grid(row=8, rowspan=3, column=0, columnspan=9, sticky="nsew")
-
-        self.current_entry = None  # To track currently focused entry
+        # Entry widget
+        self.entry = ttk.Entry(self, textvariable=self.display_var, font=('sans-serif', 15, 'bold'), justify='right')
+        self.entry.grid(row=0, rowspan=5, column=0, columnspan=9, sticky="nsew",pady=20)
 
         # Key bindings
         self.bind_keys()
@@ -40,8 +30,8 @@ class FourierTransform(tk.Frame):
         self.button_params_main = {'bd': 5, 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
         self.button_params_other = {'fg': '#000', 'bg': '#db701f', 'font': ('sans-serif', 11, 'bold')}
 
-        self.row1_buttons = ['', '', '', '↑', '', 'ln']
-        self.row2_buttons = ['', 'pi', '←', '↓', '→', 'log']
+        self.row1_buttons = ['', '', '', '↑', '', '']
+        self.row2_buttons = ['ln', 'pi', '←', '↓', '→', 'log']
         self.row3_buttons = ['(', ')', 'w', 'x', 'y', 't']
         self.row4_buttons = ['7', '8', '9', '', '', '^']
         self.row3b = ['tan', 'sin', 'cos', 'tan\u207b\xb9', 'sin\u207b\xb9', 'cos\u207b\xb9']
@@ -60,18 +50,18 @@ class FourierTransform(tk.Frame):
             self.row5_buttons, self.row6_buttons, self.row7_buttons
         ]
         self.arrow_keys = {'↑': "up", '↓': "down", '←': "left", '→': "right"}
-        special_buttons = {'DEL', 'AC', '='}
+        special_buttons = {'DEL', 'AC', 'Transform'}
 
         row = 11
         for row_buttons in self.buttons_grid:
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=2)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=2)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params, width=6, height=2)
 
                 b.grid(row=row, column=col, sticky="nsew")
                 b.bind("<Button-1>", self.on_click)
@@ -93,64 +83,38 @@ class FourierTransform(tk.Frame):
         text = event.widget.cget("text")
 
         if text == "Transform":
-            if self.display_initial_variable.get() == "Initial variable" or self.display_final_variable.get() == "Final variable":
-                return
-            if self.display_var.get() == "Function to transform":
+            if self.display_var.get() == "":
                 return
             exp = self.fourier_solver.final_expression()
-            t = self.display_initial_variable.get()
-            w = self.display_final_variable.get()
-            get_fourier_transform(exp, t, w)
-            self.controller.show_frame("ShowFourierSpectrum")
+            t = 't'  # assuming t is the initial variable
+            w = 'w'  # assuming w is the final variable
+            transformed_expr = get_fourier_transform(exp, t, w)
+            self.display_var.set(transformed_expr)
             return
 
-        if self.current_entry == self.entry2:
-            if text in ["AC", "DEL"]:
-                self.display_initial_variable.set("Initial variable")
-                return
-            if text in self.variables:
-                self.display_initial_variable.set(text)
-        elif self.current_entry == self.entry3:
-            if text in ["AC", "DEL"]:
-                self.display_final_variable.set("Final variable")
-                return
-            if text in self.variables:
-                self.display_final_variable.set(text)
-        else:
-            if text in self.arrow_keys:
-                text = self.arrow_keys[text]
-            if text in self.row4_mappings:
-                text = self.row4_mappings[text]
-            if text == "^(-1)":
-                self.Cal.result += text
-                self.Cal.convert_to_understandable()
-                self.display_var.set(self.Cal.showing_exp)
-                return
-            self.fourier_solver.user_input(text)
-            if text == "AC":
-                self.display_var.set("Function to transform")
-                return
-            self.display_var.set(self.fourier_solver.showing_exp)
+        if text in self.arrow_keys:
+            text = self.arrow_keys[text]
+        if text in self.row4_mappings:
+            text = self.row4_mappings[text]
+        if text == "^(-1)":
+            self.Cal.result += text
+            self.Cal.convert_to_understandable()
+            self.display_var.set(self.Cal.showing_exp)
+            return
+        self.fourier_solver.user_input(text)
+        if text == "AC":
+            self.display_var.set("")
+            return
+        self.display_var.set(self.fourier_solver.showing_exp)
 
     def bind_keys(self):
         # Bind keyboard keys to the same function as button clicks
         self.bind_all("<KeyPress>", self.on_key_press)
-        self.entry2.bind("<FocusIn>", lambda event: self.set_current_entry(self.entry2))
-        self.entry3.bind("<FocusIn>", lambda event: self.set_current_entry(self.entry3))
-        self.entry1.bind("<FocusIn>", lambda event: self.set_current_entry(self.entry1))
 
     def on_key_press(self, event):
         key = event.char
         if key:
-            if self.current_entry == self.entry2:
-                self.display_initial_variable.set(self.display_initial_variable.get() + key)
-            elif self.current_entry == self.entry3:
-                self.display_final_variable.set(self.display_final_variable.get() + key)
-            else:
-                self.display_var.set(self.display_var.get() + key)
-
-    def set_current_entry(self, entry):
-        self.current_entry = entry
+            self.display_var.set(self.display_var.get() + key)
 
 
 class ShowFourierSpectrum(tk.Frame):
