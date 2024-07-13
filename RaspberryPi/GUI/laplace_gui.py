@@ -67,7 +67,7 @@ class LaplaceTransform(tk.Frame):
         tk.Button(self, text="Help", command=self.show_help, **self.button_params_main).grid(row=4, column=0, pady=10)
 
         # Back button
-        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main).grid(row=5, column=0, pady=10)
+        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage2"), **self.button_params_main).grid(row=5, column=0, pady=10)
 
     def click(self, key):
         if key == 'AC':
