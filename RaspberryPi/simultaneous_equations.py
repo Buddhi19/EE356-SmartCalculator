@@ -1,15 +1,32 @@
 import sympy as sp
-import numpy as np
-import matplotlib.pyplot as plt
+import math
+
 from main_controller import Calculator
 
-class Grapher(Calculator):
+class SimultaneousEquations:
+    def __init__(self):
+        pass
+    def solve_equations(self,equations):
+        parsed_equations = [sp.sympify(eq).evalf() for eq in equations]
+        variables = list(set().union(*[eq.free_symbols for eq in parsed_equations]))
+
+        solutions = sp.solve(parsed_equations, variables)
+
+        return solutions
+    
+    def simultaneous_solver(self, equations):
+        equations_simplified = []
+        for eq in equations:
+            f,g = eq.split("=")
+            eq_simplified = f+"-"+g
+            equations_simplified.append(eq_simplified)
+        solutions = self.solve_equations(equations_simplified)
+        return solutions
+    
+
+class Simul(Calculator):
     def __init__(self):
         super().__init__()
-        self.x = sp.symbols("x")
-        self.y = sp.symbols("y")    
-        self.z = sp.symbols("z")
-        self.range = 10
         self.pointer = 0
         self.result = ""
         self.showing_exp = "|"
@@ -29,7 +46,7 @@ class Grapher(Calculator):
                 self.result = ""
                 self.showing_exp = "|"
                 self.pointer = 0
-        elif key == "plot":
+        elif key == "Add":
             try:
                 if not self.degrees:
                     for key in self.mappings_for_degrees.keys():
@@ -45,38 +62,7 @@ class Grapher(Calculator):
                 if self.result == "":
                     self.showing_exp = "|"
                     return
-                
-                from sympy.abc import x, y, z
-
-                if "z" in self.result:
-                    f, g = self.result.split("=")
-                    equation = f + "-" + g
-                    solve_z = sp.solve(equation, z)[0]
-
-                    x_vals = np.linspace(-self.range, self.range, 100)
-                    y_vals = np.linspace(-self.range, self.range, 100)
-                    x_vals, y_vals = np.meshgrid(x_vals, y_vals)
-                    z_vals = sp.lambdify((self.x, self.y), solve_z,"numpy")(x_vals, y_vals)
-                    # fig = plt.figure()
-                    # ax = fig.add_subplot(111, projection='3d')
-                    # ax.plot_surface(x_vals, y_vals, z_vals, cmap="viridis")
-                    # ax.set_xlabel("x-axis")
-                    # ax.set_ylabel("y-axis")
-                    # ax.set_zlabel("z-axis")
-                    # plt.show()
-                    return {"3D":[x_vals, y_vals, z_vals]}
-                else:
-                    f, g = self.result.split("=")
-                    equation = f + "-" + g
-                    print(equation)
-                    solve_y = sp.solve(equation, y)[0]
-                    x_vals = np.linspace(-self.range, self.range, 100)
-                    y_vals = sp.lambdify(self.x, solve_y, "numpy")(x_vals)
-                    # plt.plot(x_vals, y_vals)
-                    # plt.xlabel("x-axis")
-                    # plt.ylabel("y-axis")
-                    # plt.show()
-                    return {"2D":[x_vals, y_vals]}
+                return self.result
             except:
                 self.result = "Error in the input"
                 self.showing_exp = self.result
@@ -98,6 +84,7 @@ class Grapher(Calculator):
             return
 
         elif key in self.keys:
+            print(self.keys[key])
             if self.pointer !=0 and key in self.functions:
                 if self.result[self.pointer-1] not in self.operations:
                     self.result = self.result[:self.pointer] +"*"+ self.keys[key] + self.result[self.pointer:]
@@ -114,16 +101,38 @@ class Grapher(Calculator):
         
     def convert_to_understandable(self):
         return super().convert_to_understandable()
-        
-    
-
 
 
 if __name__ == "__main__":
-    grapher = Grapher()
-    while True:
-        key = input("Enter key: ")
-        grapher.user_input(key)
-        indicator = grapher.result[:grapher.pointer]+"|"+grapher.result[grapher.pointer:]
-        print(indicator)
-        
+    equations = []
+
+    # Input the number of equations
+    num_equations = int(input("Enter the number of equations: "))
+
+    # Input each equation
+    for i in range(num_equations):
+        eq = input(f"Enter equation {i + 1}: ")
+        equations.append(eq)
+
+    simul =SimultaneousEquations()
+    # Solve the equations
+    solutions = simul.solve_equations(equations)
+    print(solutions)
+    # Print the solutions
+    if solutions:
+        print("Solutions:")
+        # Check the type of the solutions and handle accordingly
+        if isinstance(solutions, dict):
+            for var, val in solutions.items():
+                print(f"{var} = {val}")
+        elif isinstance(solutions, list):
+            for sol in solutions:
+                if isinstance(sol, dict):
+                    for var, val in sol.items():
+                        print(f"{var} = {val}")
+                else:
+                    print(sol)
+        else:
+            print(solutions)
+    else:
+        print("No solution found or infinite solutions exist.")

@@ -2,21 +2,43 @@
 
 ## Ongoing Firmware Tasks
 
-| Task | Description |
+| Task | Status |
 |-------------|----------|
 | Image to Latex Model | 50% |
-| Latex Calculator | Completed Numerical Calculations |
-| Communicator | Started |
-| Graphing Calculator| Started |
-| Matrix Identification | |
-| Spreadsheet Calculations | |
-| Camera Module | 50% |
+| Communicator | Should implement graphing from server for all |
+| Matrix Identification | Not yet included |
+| Camera Module | Checking |
+| Integral Transforms | On going |
 
+## To Do List
+- Integral Transforms
+    - Laplace Transform : Plotter
+    - Fourier Transform : Plotter
+    - Z Transform : Plotter
 
-## Camera to Computer Data Communication
+- Scientific Data Analysis
+    - Interpolation
+    - Curve Fitting
+    - Regression Analysis
 
-![cameraflow drawio](https://github.com/Buddhi19/EE356-SmartCalculator/assets/119914594/a831215b-a3d6-4008-bd4d-0d18a6ccdfca)
+- Camera should be tested with a flash
+- Settings Menu to change wifi
+- pi-Oscilloscope 
 
-# Important
+## Raspberry Pi task bar
+```
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+```
+## Display  
+```
+export DISPLAY=:0
+```
+## Headless StartUp 
+```
+yet to be implemented
+```
 
-ESP webserver.ino able to save a file on sd card but still cannot share the file with ESP32
+## Requirement later will be implemented on a bash file
+```
+sudo apt install -y python3-picamera2
+```

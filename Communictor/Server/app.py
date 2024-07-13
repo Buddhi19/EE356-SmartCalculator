@@ -1,40 +1,100 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse, FileResponse
 import time
 import json
-from main import process_image, calculate_expression
+import os
+from main import process_image, calculate_expression, process_image_for_whiteboard, save_bode_plot
+from main import fourier_solver, fourier_transform_image
+from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
+from main import calculate_exp
 
-app = Flask(__name__)
+app = FastAPI()
 
-host_url = '192.168.8.100'
+host_url = '192.168.8.102'
 
-@app.route("/")
-def hello_world():
-    return "<p>Routes: </p> <p> /json1 : Image from raspberry pi </p>"
+@app.get("/")
+def read_root():
+    return 
 
-@app.route('/json1', methods=['GET','POST'])
-def handle_data():
-    data = request.json
-    f = open("fromNodeMCU.txt", "w")
-    f.write(json.dumps(data))
-    f.close()
-    return jsonify(data)
-
-@app.route('/image', methods=['GET','POST'])
-def image_route():
-    if 'file' not in request.files:
-        return jsonify({"error":"No file part"})
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error":"No selected file"})
+@app.post("/image")
+async def image_route(file: UploadFile = File(...)):
     if not file:
-        return jsonify({"error":"No file part"})
-    file.save("img.png")
-    result = process_image("img.png")
+        raise HTTPException(status_code=400, detail="No file part")
+    if file.filename == '':
+        raise HTTPException(status_code=400, detail="No selected file")
+
+    file_path = "img.png"
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+
+    result = process_image(file_path)
     try:
         ans = calculate_expression(result)
-    except:
-        ans = ["Error in processing the image"]
-    return jsonify({"result":ans})
+    except Exception as e:
+        ans = [f"Error in processing the image: {str(e)}"]
+
+    # Clean up the file after processing
+    os.remove(file_path)
+
+    return {"result": ans}
+
+@app.post("/image_whiteboard")
+async def image_route_whiteboard(file: UploadFile = File(...)):
+    if not file:
+        raise HTTPException(status_code=400, detail="No file part")
+    if file.filename == '':
+        raise HTTPException(status_code=400, detail="No selected file")
+
+    file_path = "img.png"
+    with open(file_path, "wb") as f:
+        f.write(file.file.read())
+
+    result = process_image_for_whiteboard(file_path)
+
+    # Clean up the file after processing
+    os.remove(file_path)
+
+    return {"result": result}
+
+@app.post("/generate_bode_plot")
+async def generate_bode_plot(data: dict):
+    numerator = data.get('numerator')
+    denominator = data.get('denominator')
+    path = save_bode_plot(numerator, denominator)  # Call your function to generate and save the Bode plot
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/fourier_transform_image")
+async def fourier_transform(data: dict):
+    expression = data.get('expression')
+    a = data.get('a')
+    b = data.get('b')
+    fourier = fourier_solver(expression, a, b)
+    path = fourier_transform_image()
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/laplace_transform_image")
+async def laplace_transform(data: dict):
+    expression = data.get('expression')
+    a = data.get('a')
+    b = data.get('b')
+    laplace = laplace_solver(expression, a, b)
+    path = laplace_equation_image()
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/laplace_spectrum_image")
+async def laplace_spectrum(data : dict):
+    path = laplace_spectrum_image()
+    return FileResponse(path, media_type='image/png')
+
+@app.post("/calculate")
+async def calculate(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    ans = calculate_exp(expression)
+    return {"result": ans}
+    
 
 if __name__ == '__main__':
-    app.run(host=host_url,port=80)
+    import uvicorn
+    uvicorn.run(app, host=host_url, port=80)
