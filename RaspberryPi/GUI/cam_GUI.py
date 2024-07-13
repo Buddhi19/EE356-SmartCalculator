@@ -28,7 +28,8 @@ class CameraApp(tk.Frame):
         self.capture_button.pack()
         
         self.back_button = tk.Button(self, text="Back", command=self.back)
-        
+        self.back_button.pack()
+
         self.stop_event = threading.Event()
         self.preview_thread = threading.Thread(target=self.update_preview)
         self.preview_thread.daemon = True
@@ -127,6 +128,12 @@ class CameraApp(tk.Frame):
             self.camera.stop()
             self.camera.close()
             self.camera = None
+
+    def on_show(self):
+        self.start_camera()
+    
+    def on_hide(self):
+        self.stop_camera()
     
     def __del__(self):
         self.stop_camera()

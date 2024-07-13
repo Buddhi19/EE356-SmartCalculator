@@ -28,6 +28,18 @@ class StartPage(tk.Frame):
             ("Matrix Calculator", "MatrixOperationPage", parent_dir + "\\icons\\matrix.png")
         ]
 
+        if sys.platform == "linux":
+            buttons = [
+                ("Calculator", "Calculator_Frame", parent_dir + "/icons/calculator.png"),
+                ("Graphing Calculator", "Graph_GUI", parent_dir + "/icons/graph.png"),
+                ("Write to Solve", "WhiteboardApp", parent_dir + "/icons/write.png"),
+                ("Take a Photo to Solve", "CameraApp", parent_dir + "/icons/photo.png"),
+                ("Simultaneous Solver", "Simultaneous_solver_Frame", parent_dir + "/icons/simultaneous.png"),
+                ("PDFReader", "PDFReader", parent_dir + "/icons/pdf.png"),
+                ("Controls", "TransferFunctionFrame", parent_dir + "/icons/controls.png"),
+                ("Matrix Calculator", "MatrixOperationPage", parent_dir + "/icons/matrix.png")
+            ]
+
         for i, (text, frame_name, image_path) in enumerate(buttons):
             try:
                 image = Image.open(image_path)
