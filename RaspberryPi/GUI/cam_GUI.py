@@ -169,6 +169,12 @@ class CameraApp(tk.Frame):
             self.camera.stop()
             self.camera.close()
             self.camera = None
+
+    def on_show(self):
+        self.start_camera()
+    
+    def on_hide(self):
+        self.stop_camera()
     
     def __del__(self):
         self.stop_camera()
