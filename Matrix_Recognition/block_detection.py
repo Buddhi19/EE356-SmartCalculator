@@ -51,31 +51,31 @@ def detect_blocks_using_connected_components(image_path, output_dir):
             block = SymbolBlock(block_image, top_left, bottom_right)
             blocks.append(block)
             
-            # Save the block image (optional)
+            # Save the block image
             block_image_path = f"{output_dir}/block_{i}.png"
             cv2.imwrite(block_image_path, block_image)
             print(f"Saved block image: {block_image_path}")
 
-            # Draw the rectangle (optional)
+            # Draw the rectangle
             cv2.rectangle(image, top_left, bottom_right, (0, 255, 0), 2)
 
-    # Display the result (optional)
+    # Display the result
     cv2.imshow('Detected Blocks', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
     return blocks
 
-# Path to the image
-image_path = 'images/image.png'
-output_dir = 'images/blocks'  # Specify the directory to save block images
+if __name__ == "__main__":
+    # Path to the image
+    image_path = 'images/image.png'
+    output_dir = 'images/blocks'
+    # Create the output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
 
-# Create the output directory if it doesn't exist
-os.makedirs(output_dir, exist_ok=True)
+    # Detect blocks and save them as separate images
+    blocks = detect_blocks_using_connected_components(image_path, output_dir)
 
-# Detect blocks and save them as separate images
-blocks = detect_blocks_using_connected_components(image_path, output_dir)
-
-# Print the details of each block
-for block in blocks:
-    print(block)
+    # Print the details of each block
+    for block in blocks:
+        print(block)
