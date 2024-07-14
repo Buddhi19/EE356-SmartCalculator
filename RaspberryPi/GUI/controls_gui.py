@@ -39,34 +39,55 @@ class TransferFunctionFrame(tk.Frame):
 
         # Buttons
         self.button_frame = tk.Frame(self, bg="#293C4A")
-        self.button_frame.pack(expand=True, fill=tk.BOTH, after=self.canvas)
+        self.button_frame.pack(expand=True, fill=tk.BOTH, after=self.canvas, padx=20)
 
-        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator" ,command=self.edit_numerator,font=('sans-serif', 10,'bold'), fg="#000",width=13)
+        button_style = {
+            'font': ('sans-serif', 10, 'bold'),
+            'fg': "#FFF",
+            'bg': "#3E4C59",
+            'activebackground': "#52667A",
+            'width': 20,
+            'borderwidth': 2,
+            'relief': 'raised',
+            'height':3
+        }
+        button_style_for_back = {
+            'font': ('sans-serif', 10, 'bold'),
+            'fg': "#FFF",
+            'bg': "#3E4C59",
+            'activebackground': "#52667A",
+            'width': 45,
+            'borderwidth': 2,
+            'relief': 'raised',
+            'height':2
+        }
+
+        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator", command=self.edit_numerator, **button_style)
         self.edit_numerator_button.grid(row=0, column=0, padx=10, pady=5)
 
-        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('sans-serif', 10,'bold'), fg="#000",width=13)
+        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator, **button_style)
         self.edit_denominator_button.grid(row=0, column=1, padx=10, pady=5)
 
-        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", command=self.bode_plotter, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.bode_button.grid(row=1, column=0, padx=10, pady=5)        
+        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", command=self.bode_plotter, **button_style)
+        self.bode_button.grid(row=1, column=0, padx=10, pady=5)
 
-        self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, font=('sans-serif', 10,'bold'),fg="#000",width=13)
+        self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, **button_style)
         self.nyquist_button.grid(row=1, column=1, padx=10, pady=5)
 
-        self.add_feedback_button = tk.Button(self.button_frame, text="Add Feedback", command=self.add_feedback, font=('sans-serif', 10,'bold'),fg="#000",width=13)
+        self.add_feedback_button = tk.Button(self.button_frame, text="Add Feedback", command=self.add_feedback, **button_style)
         self.add_feedback_button.grid(row=2, column=0, padx=10, pady=5)
 
-        self.c2d_button = tk.Button(self.button_frame, text="Continuous to Discrete", command=self.c2d, font=('sans-serif', 10,'bold'),fg="#000",width=17)
-        self.c2d_button.grid(row=3, column=1, padx=2, pady=5)
+        self.c2d_button = tk.Button(self.button_frame, text="Continuous to Discrete", command=self.c2d, **button_style)
+        self.c2d_button.grid(row=3, column=1, padx=10, pady=5)
 
-        self.remove = tk.Button(self.button_frame, text="Remove", command=self.remove, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.remove.grid(row=3, column=0, padx=2, pady=5)
+        self.remove_button = tk.Button(self.button_frame, text="Remove", command=self.remove, **button_style)
+        self.remove_button.grid(row=3, column=0, padx=10, pady=5)
 
-        self.step_response_button = tk.Button(self.button_frame, text="Step Response", command=self.step_response_plotter, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.step_response_button.grid(row=4, column=1, padx=2, pady=5)
+        self.step_response_button = tk.Button(self.button_frame, text="Step Response", command=self.step_response_plotter, **button_style)
+        self.step_response_button.grid(row=2, column=1, padx=10, pady=5)
 
-        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.back_button.grid(row=2, column=1, padx=2, pady=5)
+        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, **button_style_for_back)
+        self.back_button.grid(row=4,column=0,columnspan=2, padx=10, pady=5)
 
     def remove(self):
         self.canvas.delete(self.num)

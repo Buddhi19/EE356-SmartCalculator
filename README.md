@@ -1,15 +1,5 @@
 # Smart Calculator
 
-## Ongoing Firmware Tasks
-
-| Task | Status |
-|-------------|----------|
-| Image to Latex Model | 50% |
-| Communicator | Should implement graphing from server for all |
-| Matrix Identification | Not yet included |
-| Camera Module | Checking |
-| Integral Transforms | On going |
-
 ## To Do List
 - Integral Transforms
     - Laplace Transform : Plotter

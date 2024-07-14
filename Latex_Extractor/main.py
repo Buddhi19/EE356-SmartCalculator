@@ -64,8 +64,11 @@ class Image2Text:
 		expressions in white
 		"""
 		img_test = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		_, img_test = cv2.threshold(img_test, 85, 255, cv2.THRESH_BINARY) # 85 # 155
+		_, img_test = cv2.threshold(img_test, 180, 255, cv2.THRESH_BINARY) # 85 # 155
 		img_test = cv2.bitwise_not(img_test)
+
+		cv2.imshow("img",img_test)
+		cv2.waitKey(0)
 
 		return img_test
 
@@ -160,8 +163,9 @@ def convert_blackboard_image(img):
 
 	return resized_image
 
+
 def test1():
-	img = cv2.imread(parent_dir+"./Pi_Images/captured_image_6.png")
+	img = cv2.imread(parent_dir+"./Pi_Images/captured_image_8.png")
 	I2T = Image2Text()
 	equations = I2T.run_for_std_scenario(img)
 	print(equations)
