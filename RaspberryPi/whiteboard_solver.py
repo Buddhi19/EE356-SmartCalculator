@@ -1,5 +1,10 @@
 import requests
 from server_address import server_address
+import os
+import sys
+
+sys.path.append(os.path.dirname(__file__))
+
 #post image to server
 def post_image():
     image_path = "whiteboard/whiteboard.png"
@@ -26,3 +31,16 @@ def get_ans(exp: str):
         return result
     else:
         return "Error"
+
+def get_plot_image(exp: str):
+    url = server_address + '/plot_graph'
+    data = {'expression': exp}
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        with open('whiteboard/plot.png', 'wb') as f:
+            f.write(response.content)
+        print("Plot image saved successfully.")
+        return 1
+    else:
+        print("Failed to generate plot image.")
+        return 0

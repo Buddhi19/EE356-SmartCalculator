@@ -19,6 +19,7 @@ class TransferFunctionFrame(tk.Frame):
         super().__init__(parent, bg="#293C4A")
         self.controller = controller
         self.configure(bg="#293C4A")
+        self.x =40
         
         self.numerator = "Transfer Function Numerator"
         self.denominator = "Transfer Function Denominator"
@@ -32,38 +33,61 @@ class TransferFunctionFrame(tk.Frame):
         self.canvas.pack(expand=True,fill=tk.BOTH)
 
         # Draw the fraction
-        self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('Arial', 12, 'bold'), anchor="s")
-        line =self.canvas.create_line(20, 60, 320, 60, fill="white", width=3)
-        self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('Arial', 12,'bold'), anchor="n")
+        self.num = self.canvas.create_text(170+self.x, 50, text=self.numerator, fill="white", font=('Arial', 12, 'bold'), anchor="s")
+        line =self.canvas.create_line(20+self.x, 60, 320+self.x, 60, fill="white", width=3)
+        self.den = self.canvas.create_text(170+self.x, 80, text=self.denominator, fill="white", font=('Arial', 12,'bold'), anchor="n")
 
         # Buttons
         self.button_frame = tk.Frame(self, bg="#293C4A")
-        self.button_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=30)
+        self.button_frame.pack(expand=True, fill=tk.BOTH, after=self.canvas, padx=20)
 
+        button_style = {
+            'font': ('sans-serif', 10, 'bold'),
+            'fg': "#FFF",
+            'bg': "#3E4C59",
+            'activebackground': "#52667A",
+            'width': 20,
+            'borderwidth': 2,
+            'relief': 'raised',
+            'height':3
+        }
+        button_style_for_back = {
+            'font': ('sans-serif', 10, 'bold'),
+            'fg': "#FFF",
+            'bg': "#3E4C59",
+            'activebackground': "#52667A",
+            'width': 45,
+            'borderwidth': 2,
+            'relief': 'raised',
+            'height':2
+        }
 
-        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator" ,command=self.edit_numerator,font=('sans-serif', 10,'bold'), fg="#000",width=13)
-        self.edit_numerator_button.grid(row=0, column=0, padx=5, pady=5)
+        self.edit_numerator_button = tk.Button(self.button_frame, text="Edit Numerator", command=self.edit_numerator, **button_style)
+        self.edit_numerator_button.grid(row=0, column=0, padx=10, pady=5)
 
-        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator,font=('sans-serif', 10,'bold'), fg="#000",width=13)
-        self.edit_denominator_button.grid(row=0, column=1, padx=5, pady=5)
+        self.edit_denominator_button = tk.Button(self.button_frame, text="Edit Denominator", command=self.edit_denominator, **button_style)
+        self.edit_denominator_button.grid(row=0, column=1, padx=10, pady=5)
 
-        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", command=self.bode_plotter, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.bode_button.grid(row=1, column=0, padx=2, pady=5)        
+        self.bode_button = tk.Button(self.button_frame, text="Bode Plot", command=self.bode_plotter, **button_style)
+        self.bode_button.grid(row=1, column=0, padx=10, pady=5)
 
-        self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.nyquist_button.grid(row=1, column=1, padx=2, pady=5)
+        self.nyquist_button = tk.Button(self.button_frame, text="Nyquist Plot", command=self.nyquist_plotter, **button_style)
+        self.nyquist_button.grid(row=1, column=1, padx=10, pady=5)
 
-        self.add_feedback_button = tk.Button(self.button_frame, text="Add Feedback", command=self.add_feedback, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.add_feedback_button.grid(row=2, column=0, padx=2, pady=5)
+        self.add_feedback_button = tk.Button(self.button_frame, text="Add Feedback", command=self.add_feedback, **button_style)
+        self.add_feedback_button.grid(row=2, column=0, padx=10, pady=5)
 
-        self.c2d_button = tk.Button(self.button_frame, text="Continuous to Discrete", command=self.c2d, font=('sans-serif', 10,'bold'),fg="#000",width=17)
-        self.c2d_button.grid(row=3, column=1, padx=2, pady=5)
+        self.c2d_button = tk.Button(self.button_frame, text="Continuous to Discrete", command=self.c2d, **button_style)
+        self.c2d_button.grid(row=3, column=1, padx=10, pady=5)
 
-        self.remove = tk.Button(self.button_frame, text="Remove", command=self.remove, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.remove.grid(row=3, column=0, padx=2, pady=5)
+        self.remove_button = tk.Button(self.button_frame, text="Remove", command=self.remove, **button_style)
+        self.remove_button.grid(row=3, column=0, padx=10, pady=5)
 
-        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, font=('sans-serif', 10,'bold'),fg="#000",width=13)
-        self.back_button.grid(row=2, column=1, padx=2, pady=5)
+        self.step_response_button = tk.Button(self.button_frame, text="Step Response", command=self.step_response_plotter, **button_style)
+        self.step_response_button.grid(row=2, column=1, padx=10, pady=5)
+
+        self.back_button = tk.Button(self.button_frame, text="Back", command=self.go_back, **button_style_for_back)
+        self.back_button.grid(row=4,column=0,columnspan=2, padx=10, pady=5)
 
     def remove(self):
         self.canvas.delete(self.num)
@@ -84,6 +108,8 @@ class TransferFunctionFrame(tk.Frame):
 
         if self.T == "T":
             self.T = sp.symbols("T")
+        else:
+            self.T = float(self.T)
 
         s = sp.symbols("s")
         z = sp.symbols("z")
@@ -172,6 +198,11 @@ class TransferFunctionFrame(tk.Frame):
         if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
             return
         self.controller.show_frame("NyquistPlot", [self.numerator, self.denominator])
+
+    def step_response_plotter(self):
+        if self.numerator == "Transfer Function Numerator" or self.denominator == "Transfer Function Denominator":
+            return
+        self.controller.show_frame("StepResponsePlot", [self.numerator, self.denominator])
 
 
 class EditTransferFunction(tk.Toplevel):
@@ -489,6 +520,72 @@ class NyquistPlot(tk.Frame):
         self.pack_forget()
         self.controller.show_frame("TransferFunctionFrame")
 
+class StepResponsePlot(tk.Frame):
+    def __init__(self, parent, controller, data):
+        super().__init__(parent)
+        self.controller = controller
+        self.config(bg="black", width=480, height=800)
+        self.data = data
+
+        self.create_widgets()
+
+    def convert_to_array(self, string, var):
+        poly = sp.Poly(string, var)
+        coefficients = poly.all_coeffs()
+        coefficients = [float(coef) for coef in coefficients]
+        return coefficients
+
+    def create_widgets(self):
+        if 's' in str(self.data[0]) or 's' in str(self.data[1]):
+            var = sp.symbols('s')
+            system_type = 'continuous'
+        else:
+            var = sp.symbols('z')
+            system_type = 'discrete'
+
+        self.numerator = self.convert_to_array(self.data[0], var)
+        self.denominator = self.convert_to_array(self.data[1], var)
+
+        if system_type == 'continuous':
+            self.system = signal.TransferFunction(self.numerator, self.denominator)
+            t, y = signal.step(self.system)
+            step_input = np.ones_like(t)
+        else:
+            self.system = signal.dlti(self.numerator, self.denominator)
+            t, y = signal.dstep(self.system)
+            t, y = np.squeeze(t), np.squeeze(y)
+            step_input = np.ones_like(t)
+
+        plot_frame = ttk.Frame(self, style="TFrame")
+        plot_frame.grid(row=0, column=0, sticky="nw")
+
+        self.fig, self.ax = plt.subplots(figsize=(4.7, 7), dpi=100, facecolor="black")
+
+        # Configure step response plot
+        self.ax.plot(t, y, color='blue', label='Step Response')
+        self.ax.plot(t, step_input, color='yellow', label='Step Function')
+
+        self.ax.set_title('Step Response', color='white')
+        self.ax.set_xlabel('Time', color='white')
+        self.ax.set_ylabel('Amplitude', color='white')
+        self.ax.set_facecolor("black")
+        self.ax.spines['bottom'].set_color('white')
+        self.ax.spines['left'].set_color('white')
+        self.ax.tick_params(axis='x', colors='white')
+        self.ax.tick_params(axis='y', colors='white')
+        self.ax.xaxis.label.set_color('white')
+        self.ax.yaxis.label.set_color('white')
+
+        self.canvas = FigureCanvasTkAgg(self.fig, master=plot_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().grid(row=0, column=0, sticky="nw")
+
+        self.close_button = ttk.Button(self, text="Close", command=self.close)
+        self.close_button.grid(row=1, column=0, pady=10, sticky="nw")
+
+    def close(self):
+        self.pack_forget()
+        self.controller.show_frame("TransferFunctionFrame")
 
 if __name__ == "__main__":
     root = tk.Tk()

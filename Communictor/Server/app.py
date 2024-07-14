@@ -7,10 +7,11 @@ from main import process_image, calculate_expression, process_image_for_whiteboa
 from main import fourier_solver, fourier_transform_image
 from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 from main import calculate_exp
+from main import plot_graph
 
 app = FastAPI()
 
-host_url = '192.168.8.102'
+host_url = '192.168.1.4'
 
 @app.get("/")
 def read_root():
@@ -93,6 +94,14 @@ async def calculate(data: dict):
         return {"result": []}
     ans = calculate_exp(expression)
     return {"result": ans}
+
+@app.post("/plot_graph")
+async def send_plot(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    path = plot_graph(expression)
+    return FileResponse(path, media_type='image/png') 
     
 
 if __name__ == '__main__':

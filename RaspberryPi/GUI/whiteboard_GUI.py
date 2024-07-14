@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image, get_ans
+from whiteboard_solver import post_image, get_ans, get_plot_image
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -158,13 +158,21 @@ class WhiteboardApp(tk.Frame):
 
     def add_action(self, window):
         #add answer to display
-        ans = get_ans(self.answer)
-        self.display_var.set(ans)
-        window.destroy()
+        if self.mode == "Calculate":
+            ans = get_ans(self.answer)
+            self.display_var.set(ans)
+            window.destroy()
+        if self.mode == "Plot":
+            if get_plot_image(self.answer) == 1:
+                window.destroy()
+                self.controller.show_frame("ShowPlot")
+            else:
+                window.destroy()
+                messagebox.showinfo("Error", "Failed to generate plot image.")
+
 
     def retry_action(self, window):
         window.destroy()
-        
 
 class ModeSelection_Whiteboard(tk.Toplevel):
     def __init__(self, parent, callback):
@@ -196,6 +204,21 @@ class AnswerDisplay(tk.Toplevel):
         label.pack()
 
         close_button = tk.Button(self, text="Close", command=self.destroy)
+        close_button.pack()
+
+class ShowPlot(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.image_path = "whiteboard/plot.png"
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.plot_image = tk.PhotoImage(file=self.image_path)
+        self.plot_label = tk.Label(self, image=self.plot_image)
+        self.plot_label.pack()
+
+        close_button = tk.Button(self, text="Close", command=lambda: self.controller.show_frame("WhiteboardApp"))
         close_button.pack()
 
 # Example usage:
