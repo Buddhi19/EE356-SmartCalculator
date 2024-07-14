@@ -23,51 +23,69 @@ class LaplaceTransform(tk.Frame):
         self.configure(bg="#293C4A")
         self.button_params = { 'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
         self.button_params_main = { 'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_other = { 'fg': '#000', 'bg':'#db701f', 'font': ('Arial', 11, 'bold')}
         self.columnconfigure(0, weight=1)
 
         # Function entry
         function_frame = ttk.Frame(self)
-        function_frame.grid(row=0, column=0, pady=20, padx=10, sticky="ew")
+        function_frame.grid(row=0, column=0, pady=20, sticky="ew")
         function_frame.columnconfigure(1, weight=1)
         
-        ttk.Label(function_frame, text="f(t) = ", font=('sans-serif', 13, 'bold')).grid(row=0, column=0)
-        self.function_entry = ttk.Entry(function_frame, textvariable=self.function_var, font=('sans-serif', 13, 'bold'), justify='right',width =25)
+        ttk.Label(function_frame, text="f(t) = ", font=('sans-serif', 15, 'bold')).grid(row=0, column=0)
+        self.function_entry = ttk.Entry(function_frame, textvariable=self.function_var, font=('sans-serif', 15, 'bold'), justify='right', width=20)
         self.function_entry.grid(row=0, column=1, sticky="ew")
 
         # Transform button
-        tk.Button(self, text="Compute Laplace Transform", command=self.compute_transform, **self.button_params_main).grid(row=1, column=0, pady=40)
-
-        # Result display
-        #result_frame = ttk.Frame(self)
-        #result_frame.grid(row=2, column=0, pady=20, padx=20, sticky="ew")
-        #result_frame.columnconfigure(1, weight=1)
+        tk.Button(self, text="Compute Laplace Transform", command=self.compute_transform, **self.button_params_main, width=30).grid(row=1, column=0, pady=20)
 
         # Calculator buttons
         calc_frame = ttk.Frame(self)
-        calc_frame.grid(row=3, column=0, pady=20)
+        calc_frame.grid(row=2, column=0, pady=20)
         
         buttons = [
-            'AC', 'DEL', '(', ')', '^', 'sqrt',
-            '7', '8', '9', '/', 'sin', 'cos',
-            '4', '5', '6', '*', 'tan', 'exp',
-            '1', '2', '3', '-', 'log', 'u(t)',
-            '0', '.', 't', '+', 'e', 'δ(t)'
+            '←', '→', '(', ')', 
+            't', 'δ(t)', 'u(t)', '^',
+            'sqrt', 'sin', 'cos', 'tan',
+            '7', '8', '9', '/',
+            '4', '5', '6', '*',
+            '1', '2', '3', '-',  
+            '0', '.', 'e', '+', 
+            'AC', 'DEL', 'log', 'exp'
         ]
+
+        special_buttons = {'DEL', 'AC', '='}
+        self.arrow_keys = {'↑': "up", '↓': "down", '←': "left", '→': "right"}
         
         row, col = 0, 0
         for button in buttons:
-            cmd = lambda x=button: self.click(x)
-            tk.Button(calc_frame, text=button, command=cmd, **self.button_params_main).grid(row=row, column=col, sticky='nsew')
+            if button in self.arrow_keys:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params_main, width=9, height=3).grid(row=row, column=col, sticky='nsew')
+            elif button in special_buttons:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params_other, width=9, height=3).grid(row=row, column=col, sticky='nsew')
+            else:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params, width=9, height=3).grid(row=row, column=col, sticky='nsew')
             col += 1
-            if col > 5:
+            if col > 3:
                 col = 0
                 row += 1
 
-        # Help button
-        tk.Button(self, text="Help", command=self.show_help, **self.button_params_main).grid(row=4, column=0, pady=10)
-
-        # Back button
-        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main).grid(row=5, column=0, pady=10)
+        # Other buttons
+        other_buttons = ['Help', 'Back']
+        other_buttons_frame = ttk.Frame(self)
+        other_buttons_frame.grid(row=3, column=0, pady=10, sticky="ew")
+        
+        other_buttons_frame.columnconfigure(0, weight=1)
+        other_buttons_frame.columnconfigure(1, weight=1)
+        
+        for i, button in enumerate(other_buttons):
+            if button == 'Help':
+                cmd = lambda x=button: self.show_help()
+            else:
+                cmd = lambda x=button: self.controller.show_frame("StartPage")
+            tk.Button(other_buttons_frame, text=button, command=cmd, **self.button_params_main,width=20).grid(row=0, column=i, sticky="ew")
 
     def click(self, key):
         if key == 'AC':
@@ -94,7 +112,8 @@ class LaplaceTransform(tk.Frame):
         help_text = """
         Laplace Transform Calculator
 
-        Enter a function of t to compute its Laplace transform.
+        Enter a function of t to compute its Laplace 
+        transform.
         
         Examples:
         - t^2 : L{t^2} = 2/s^3
@@ -109,13 +128,16 @@ class LaplaceTransform(tk.Frame):
         - AC: Clear all input
         - DEL: Delete last character
 
-        Use the calculator buttons for easy input of functions and operations.
+        Use the calculator buttons for easy input of 
+        functions and operations.
         """
         help_window = tk.Toplevel(self)
         help_window.title("Help")
-        ttk.Label(help_window, text=help_text, justify=tk.LEFT, background="#293C4A", foreground="#BBB").pack(padx=20, pady=20)
-
-# The rest of the code (ShowLaplaceTransform and LaplaceApp classes) remains the same
+        help_window.configure(bg="#293C4A")
+        help_window.geometry("330x500")
+        
+        help_label = tk.Label(help_window, text=help_text, justify=tk.LEFT, bg="#293C4A", fg="#BBB", font=('sans-serif', 10, 'bold'))
+        help_label.pack(padx=10, pady=0)
 
 class ShowLaplaceTransform(tk.Frame):
     def __init__(self, parent, controller):

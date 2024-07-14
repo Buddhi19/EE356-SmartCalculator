@@ -52,16 +52,16 @@ class FourierTransform(tk.Frame):
         self.arrow_keys = {'↑': "up", '↓': "down", '←': "left", '→': "right"}
         special_buttons = {'DEL', 'AC', 'Transform'}
 
-        row = 11
+        row = 5
         for row_buttons in self.buttons_grid:
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=2)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=3)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=2)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=3)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=6, height=2)
+                    b = tk.Button(self, text=button, **self.button_params, width=6, height=3)
 
                 b.grid(row=row, column=col, sticky="nsew")
                 b.bind("<Button-1>", self.on_click)
@@ -77,7 +77,7 @@ class FourierTransform(tk.Frame):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
-        back_button.grid(row=19, column=0, columnspan=2, sticky="nsew")
+        back_button.grid(row=13, column=0, columnspan=2, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")
