@@ -9,6 +9,7 @@ import cv2
 from Controls.main import save_bode_plot
 from Integral_Transformations.fourier import Fourier
 from Integral_Transformations.laplace import Laplace
+from Graphing_Calculator.Graphing_calculator import plot_and_save
 
 def process_image(img_location):
     I2T = Image2Text()
@@ -66,3 +67,11 @@ def laplace_spectrum_image():
 def calculate_exp(exp:str):
     cal = Cal()
     return cal.calculate(exp)
+
+def plot_graph(exp:str):
+    """
+    this exp should be a latex expression
+    """
+    path = plot_and_save(exp)
+    print(f"Plot saved at {path}")
+    return path

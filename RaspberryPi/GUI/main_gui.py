@@ -10,8 +10,8 @@ from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 # from GUI.pdf_reader_GUI import PDFReader
-from GUI.whiteboard_GUI import WhiteboardApp
-from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot
+from GUI.whiteboard_GUI import WhiteboardApp, ShowPlot
+from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot, StepResponsePlot
 from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
@@ -45,7 +45,7 @@ class MainApplication(tk.Tk):
     def show_frame(self, name, data=None):
         print(f"Switching to frame: {name}")
         if self.current_frame and self.current_frame not in ["StartPage"]:
-            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot",
+            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot","StepResponsePlot",
                                        "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp","CameraApp"]:
                 if self.current_frame == "CameraApp":
                     self.frames[self.current_frame].on_hide()
