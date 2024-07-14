@@ -156,12 +156,12 @@ def convert_blackboard_image(img):
 	cv2.waitKey(1000)
 
 	cv2.imshow("img",resized_image)
-	cv2.waitKey(0)
+	cv2.waitKey(1000)
 
 	return resized_image
 
 def test1():
-	img = cv2.imread(parent_dir+"./test_images/test5.png")
+	img = cv2.imread(parent_dir+"./Pi_Images/captured_image_6.png")
 	I2T = Image2Text()
 	equations = I2T.run_for_std_scenario(img)
 	print(equations)
@@ -175,4 +175,4 @@ def test2():
 	equations = I2T.run_for_training_scenario(img2)
 
 if __name__ == "__main__":
-	test2()
+	test1()

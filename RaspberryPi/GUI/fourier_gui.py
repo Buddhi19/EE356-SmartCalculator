@@ -76,8 +76,8 @@ class FourierTransform(tk.Frame):
         for i in range(6):
             self.grid_columnconfigure(i)
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main)
-        back_button.grid(row=13, column=0, columnspan=2, sticky="nsew")
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage2"), **self.button_params_main)
+        back_button.grid(row=19, column=0, columnspan=2, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")

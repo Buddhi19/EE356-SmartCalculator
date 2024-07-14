@@ -18,6 +18,7 @@ if sys.platform == "linux":
 from GUI.loading_gui import Loading_GUI
 from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 from GUI.laplace_gui import LaplaceTransform, ShowLaplaceTransform, ShowLaplaceSpectrum
+from GUI.z_transform_GUI import DiscreteSignalCalculator
 import socket
 
 class MainApplication(tk.Tk):
@@ -46,6 +47,8 @@ class MainApplication(tk.Tk):
         if self.current_frame and self.current_frame not in ["StartPage"]:
             if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot",
                                        "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp","CameraApp"]:
+                if self.current_frame == "CameraApp":
+                    self.frames[self.current_frame].on_hide()
                 self.frames[self.current_frame].destroy()
                 del self.frames[self.current_frame]
             else:
@@ -56,11 +59,15 @@ class MainApplication(tk.Tk):
             # Frame already exists, so just show it
             self.current_frame = name
             self.frames[name].grid()
+            if name == "CameraApp":
+                self.frames[name].on_show()
         else:
             # Frame doesn't exist, create it and add to frames dictionary
             frame_class = globals()[name]
             self.add_frame(frame_class, data)
             self.current_frame = name
+            if name == "CameraApp":
+                self.frames[name].on_show()
 
     def is_connected(self):
         try:

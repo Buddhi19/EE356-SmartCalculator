@@ -10,7 +10,7 @@ from main import calculate_exp
 
 app = FastAPI()
 
-host_url = '192.168.8.103'
+host_url = '192.168.8.102'
 
 @app.get("/")
 def read_root():
