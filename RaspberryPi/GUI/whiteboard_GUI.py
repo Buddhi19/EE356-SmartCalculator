@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image, get_ans, get_plot_image
+from whiteboard_solver import post_image, get_ans, get_plot_image, get_transfer_function
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -169,6 +169,16 @@ class WhiteboardApp(tk.Frame):
             else:
                 window.destroy()
                 messagebox.showinfo("Error", "Failed to generate plot image.")
+        if self.mode == "Transfer Function":
+            ans = get_transfer_function(self.answer)
+            if ans != "Error":
+                self.display_var.set(ans)
+            else:
+                self.controller.numerator = self.answer[0]
+                self.controller.denominator = self.answer[1]
+                window.destroy()
+                self.controller.show_frame("TransferFunctionFrame")
+
 
 
     def retry_action(self, window):

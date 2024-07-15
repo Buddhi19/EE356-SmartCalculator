@@ -21,8 +21,8 @@ class TransferFunctionFrame(tk.Frame):
         self.configure(bg="#293C4A")
         self.x =40
         
-        self.numerator = "Transfer Function Numerator"
-        self.denominator = "Transfer Function Denominator"
+        self.numerator = self.controller.numerator if self.controller else "Transfer Function Numerator"
+        self.denominator = self.controller.denominator if self.controller else "Transfer Function Denominator"
 
         # Create widgets
         self.create_widgets()
@@ -175,6 +175,7 @@ class TransferFunctionFrame(tk.Frame):
         
     def update_numerator(self, data):
         self.numerator = data
+        self.controller.numerator = data
         self.canvas.delete(self.num)
         self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('sans-serif', 16), anchor="s", tag="numerator")
 
@@ -183,6 +184,7 @@ class TransferFunctionFrame(tk.Frame):
 
     def update_denominator(self, data):
         self.denominator = data
+        self.controller.denominator = data
         self.canvas.delete(self.den)
         self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('sans-serif', 16), anchor="n", tag="denominator")
 

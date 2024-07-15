@@ -7,7 +7,7 @@ from main import process_image, calculate_expression, process_image_for_whiteboa
 from main import fourier_solver, fourier_transform_image
 from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 from main import calculate_exp
-from main import plot_graph
+from main import plot_graph, get_num_and_den
 
 app = FastAPI()
 
@@ -102,6 +102,14 @@ async def send_plot(data: dict):
         return {"result": []}
     path = plot_graph(expression)
     return FileResponse(path, media_type='image/png') 
+
+@app.post("/transfer_function")
+async def transfer_function(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    ans = get_num_and_den(expression)
+    return {"result": ans}
     
 
 if __name__ == '__main__':

@@ -44,3 +44,13 @@ def get_plot_image(exp: str):
     else:
         print("Failed to generate plot image.")
         return 0
+
+def get_transfer_function(exp: str):
+    url = server_address + '/transfer_function'
+    data = {'expression': exp}
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        result = response.json().get("result")
+        return result
+    else:
+        return "Error"
