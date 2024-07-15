@@ -6,16 +6,14 @@ import numpy as np
 from scipy import stats
 
 class NormalDistributionCalculator(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.parent.title("Normal Distribution Calculator")
+        self.controller = controller
         
         # Set window size and colors
-        window_width = 480
-        window_height = 800
-        self.parent.geometry(f"{window_width}x{window_height}")
-        self.parent.resizable(False, False)
+        # window_width = 480
+        # window_height = 800
         self.parent.configure(bg='#3C3636')
 
         # Create custom styles with larger font
@@ -71,10 +69,14 @@ class NormalDistributionCalculator(tk.Frame):
         self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 14, 'bold'))
         self.result_label.grid(row=6, column=0, columnspan=2, pady=5)
 
+        # Create back button
+        self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
+        self.back_button.grid(row=7, column=0, columnspan=2, pady=10)
+
         # Create graph
         self.figure, self.ax = plt.subplots(figsize=(4.5, 4), facecolor='#3C3636')
         self.canvas = FigureCanvasTkAgg(self.figure, master=main_frame)
-        self.canvas.get_tk_widget().grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+        self.canvas.get_tk_widget().grid(row=8, column=0, columnspan=2, padx=5, pady=5)
 
         self.update_graph()
 
@@ -142,6 +144,10 @@ class NormalDistributionCalculator(tk.Frame):
 
         self.figure.tight_layout()
         self.canvas.draw()
+
+    def go_back(self):
+        # Define the action for the back button here
+        self.parent.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
