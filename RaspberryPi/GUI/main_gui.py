@@ -28,6 +28,8 @@ class MainApplication(tk.Tk):
         self.attributes('-fullscreen', True)
         self.WIFI = self.is_connected()
         self.configure(bg="#293C4A")
+        self.numerator = "Transfer Function Numerator"
+        self.denominator = "Transfer Function Denominator"
 
         self.container = tk.Frame(self)
         self.container.pack(fill="both")
@@ -46,7 +48,9 @@ class MainApplication(tk.Tk):
         print(f"Switching to frame: {name}")
         if self.current_frame and self.current_frame not in ["StartPage"]:
             if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot","StepResponsePlot",
-                                       "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp","CameraApp"]:
+                                       "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp",
+                                       "CameraApp","ShowPlot"] or (self.current_frame in ["TransferFunctionFrame"]
+                                                                   and name == "StartPage"):
                 if self.current_frame == "CameraApp":
                     self.frames[self.current_frame].on_hide()
                 self.frames[self.current_frame].destroy()

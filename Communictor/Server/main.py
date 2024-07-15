@@ -1,5 +1,6 @@
 import os
 import sys
+import latex2sympy2 as l2s2
 
 sys.path.append(os.path.dirname("../../"))
 
@@ -75,3 +76,16 @@ def plot_graph(exp:str):
     path = plot_and_save(exp)
     print(f"Plot saved at {path}")
     return path
+
+def convert_to_sympy(expression:str):
+    """
+    convert the given latex string to sympy 
+    expression
+    """
+    return l2s2.latex2sympy(expression)
+
+def get_num_and_den(exp:str):
+    exp = convert_to_sympy(exp)
+    numerator = exp.as_numer_denom()[0]
+    denominator = exp.as_numer_denom()[1]
+    return (numerator,denominator)
