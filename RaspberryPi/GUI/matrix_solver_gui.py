@@ -44,6 +44,10 @@ class MatrixInputPage(tk.Toplevel):
         write_button = tk.Button(self, text="Write and add", command=self.on_write_click, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         write_button.pack(pady=10)
 
+        back_button = tk.Button(self, text="Back", command=lambda: self.destroy(),
+                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
+        back_button.pack(pady=10)
+
     def on_write_click(self):
         Whiteboard(self)
 
