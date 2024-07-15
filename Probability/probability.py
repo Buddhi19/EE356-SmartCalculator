@@ -5,30 +5,31 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 from scipy import stats
 
-class NormalDistributionCalculator:
-    def __init__(self, master):
-        self.master = master
-        master.title("Normal Distribution Calculator")
+class NormalDistributionCalculator(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, parent)
+        self.parent = parent
+        self.parent.title("Normal Distribution Calculator")
         
         # Set window size and colors
         window_width = 480
         window_height = 800
-        master.geometry(f"{window_width}x{window_height}")
-        master.resizable(False, False)
-        master.configure(bg='#3C3636')
+        self.parent.geometry(f"{window_width}x{window_height}")
+        self.parent.resizable(False, False)
+        self.parent.configure(bg='#3C3636')
 
-        # Create custom styles
+        # Create custom styles with larger font
         style = ttk.Style()
         style.theme_use('clam')
         style.configure('TFrame', background='#3C3636')
-        style.configure('TLabel', background='#3C3636', foreground='#db701f')
-        style.configure('TEntry', fieldbackground='#3C3636', foreground='#db701f')
-        style.configure('TButton', background='#db701f', foreground='#3C3636')
+        style.configure('TLabel', background='#3C3636', foreground='#db701f', font=('TkDefaultFont', 12))
+        style.configure('TEntry', fieldbackground='#3C3636', foreground='#db701f', font=('TkDefaultFont', 12))
+        style.configure('TButton', background='#db701f', foreground='#3C3636', font=('TkDefaultFont', 12, 'bold'))
         style.map('TButton', background=[('active', '#db701f')])
-        style.configure('TCombobox', fieldbackground='#3C3636', foreground='#3C3636', selectbackground='#db701f')
+        style.configure('TCombobox', fieldbackground='#3C3636', foreground='#3C3636', selectbackground='#db701f', font=('TkDefaultFont', 12))
 
         # Create main frame
-        main_frame = ttk.Frame(master, padding="10")
+        main_frame = ttk.Frame(self, padding="10")
         main_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
         # Create input fields
@@ -67,7 +68,7 @@ class NormalDistributionCalculator:
         self.calculate_button.grid(row=5, column=0, columnspan=2, pady=10)
 
         # Create result label
-        self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 10, 'bold'))
+        self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 14, 'bold'))
         self.result_label.grid(row=6, column=0, columnspan=2, pady=5)
 
         # Create graph
@@ -120,10 +121,10 @@ class NormalDistributionCalculator:
         y = stats.norm.pdf(x, mean, std)
         self.ax.plot(x, y, color='#db701f')
         self.ax.set_facecolor('#3C3636')
-        self.ax.set_title("Normal Distribution", color='#db701f')
-        self.ax.set_xlabel("X", color='#db701f')
-        self.ax.set_ylabel("Probability Density", color='#db701f')
-        self.ax.tick_params(colors='#db701f')
+        self.ax.set_title("Normal Distribution", color='#db701f', fontsize=14)
+        self.ax.set_xlabel("X", color='#db701f', fontsize=12)
+        self.ax.set_ylabel("Probability Density", color='#db701f', fontsize=12)
+        self.ax.tick_params(colors='#db701f', labelsize=10)
         
         if prob_type == "P(X > a)":
             x_filled = np.linspace(lower, mean + 4*std, 100)
@@ -142,6 +143,8 @@ class NormalDistributionCalculator:
         self.figure.tight_layout()
         self.canvas.draw()
 
-root = tk.Tk()
-app = NormalDistributionCalculator(root)
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = NormalDistributionCalculator(root)
+    app.pack(fill="both", expand=True)
+    root.mainloop()
