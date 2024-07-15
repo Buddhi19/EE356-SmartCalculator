@@ -17,6 +17,7 @@ class WhiteboardApp(tk.Frame):
         self.display_var = tk.StringVar()
         self.cell_size = 130
         self.grid_visible = True
+        self.is_erasing = False  # Flag to track eraser mode
 
         # Create widgets
         self.create_widgets()
@@ -84,7 +85,9 @@ class WhiteboardApp(tk.Frame):
         self.display_var.set(self.display_var.get()[:-1])
 
     def clear(self):
-        self.display_var.set("")
+        self.canvas.delete("all")
+        if self.grid_visible:
+            self.draw_grid()
 
     def set_mode(self, mode):
         self.mode = mode
@@ -96,6 +99,7 @@ class WhiteboardApp(tk.Frame):
 
     def draw(self, event):
         smooth_factor = 1  # Increase this value to make the lines smoother
+        color = "black" if self.is_erasing else "white"
         if self.previous_coords:
             x1, y1 = self.previous_coords
             x2, y2 = event.x, event.y
@@ -105,14 +109,13 @@ class WhiteboardApp(tk.Frame):
                 for i in range(steps + 1):
                     xi = x1 + (x2 - x1) * i / steps
                     yi = y1 + (y2 - y1) * i / steps
-                    self.canvas.create_line(x1, y1, xi, yi, fill="white", width=5, capstyle=tk.ROUND, smooth=True)
+                    self.canvas.create_line(x1, y1, xi, yi, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
 
-    def clear(self):
-        self.canvas.delete("all")
-        if self.grid_visible:
-            self.draw_grid()
+    def erase(self):
+        self.is_erasing = not self.is_erasing
+        self.erase_button.config(relief=tk.SUNKEN if self.is_erasing else tk.RAISED)
 
     def back(self):
         self.controller.show_frame("StartPage")
