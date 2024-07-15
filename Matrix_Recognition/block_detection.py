@@ -54,7 +54,7 @@ def detect_blocks_using_connected_components(image_path, output_dir):
             # Save the block image
             block_image_path = f"{output_dir}/block_{i}.png"
             cv2.imwrite(block_image_path, block_image)
-            print(f"Saved block image: {block_image_path}")
+            # print(f"Saved block image: {block_image_path}")
 
             # Draw the rectangle
             cv2.rectangle(image, top_left, bottom_right, (0, 255, 0), 2)
@@ -66,6 +66,63 @@ def detect_blocks_using_connected_components(image_path, output_dir):
 
     return blocks
 
+def is_matrix_present(blocks):
+    if not blocks:
+        return False
+
+    # Separate blocks into brackets and number
+    brackets = [block for block in blocks if block.symbol == '[' or block.symbol == ']']
+    numbers = [block for block in blocks if block.symbol != '[' or block.symbol != ']']
+
+    if not brackets or not numbers:
+        return False
+
+    # Calculate average size of brackets and numbers
+    bracket_areas = [abs((block.bottom_right[1] - block.top_left[1])) for block in brackets]
+    number_areas = [abs((block.bottom_right[1] - block.top_left[1])) for block in numbers]
+
+    print(len(bracket_areas))
+    print(len(number_areas))
+
+    avg_bracket_area = sum(bracket_areas) / len(bracket_areas)
+    avg_number_area = sum(number_areas) / len(number_areas)
+
+    # Compare the average size of brackets to the average size of numbers
+    if avg_bracket_area > avg_number_area*2:
+        return True
+    else:
+        return False
+    
+def output_matrix_in_latex(blocks):
+    # Sort blocks by their y-coordinate (top-left corner) to determine rows
+    blocks.sort(key=lambda block: block.top_left[1])
+
+    rows = []
+    current_row = []
+    current_y = blocks[0].top_left[1]
+
+    for block in blocks:
+        if abs(block.top_left[1] - current_y) > 20:  # New row if y-coordinate difference is significant
+            rows.append(current_row)
+            current_row = []
+            current_y = block.top_left[1]
+        current_row.append(block)
+    rows.append(current_row)  # Append the last row
+
+    # Sort each row by the x-coordinate (left to right)
+    for row in rows:
+        row.sort(key=lambda block: block.top_left[0])
+
+    # Generate LaTeX code for the matrix
+    latex_matrix = "\\begin{bmatrix}\n"
+    for row in rows:
+        row_symbols = " & ".join([block.symbol for block in row])
+        latex_matrix += row_symbols + " \\\\\n"
+    latex_matrix += "\\end{bmatrix}"
+
+    return latex_matrix
+
+
 if __name__ == "__main__":
     # Path to the image
     image_path = 'images/image.png'
@@ -76,6 +133,20 @@ if __name__ == "__main__":
     # Detect blocks and save them as separate images
     blocks = detect_blocks_using_connected_components(image_path, output_dir)
 
+    blocks[0].symbol = "["
+    blocks[1].symbol = "]"
+    blocks[2].symbol = "1"
+    blocks[3].symbol = "4"
+    blocks[4].symbol = "-13"
+    blocks[5].symbol = "20"
+    blocks[6].symbol = "5"
+    blocks[7].symbol = "-6"
+
+
+    is_mat = is_matrix_present(blocks)
+    print(is_mat)
+    print(output_matrix_in_latex(blocks))
+
     # Print the details of each block
-    for block in blocks:
-        print(block)
+    # for block in blocks:
+    #     print(block)

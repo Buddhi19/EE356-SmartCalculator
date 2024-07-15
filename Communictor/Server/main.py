@@ -9,6 +9,7 @@ import cv2
 from Controls.main import save_bode_plot
 from Integral_Transformations.fourier import Fourier
 from Integral_Transformations.laplace import Laplace
+from Matrix_Recognition.block_detection import detect_blocks_using_connected_components
 
 def process_image(img_location):
     I2T = Image2Text()
@@ -66,3 +67,10 @@ def laplace_spectrum_image():
 def calculate_exp(exp:str):
     cal = Cal()
     return cal.calculate(exp)
+
+def mat_img_saver(img_path):
+    out_dir = "images"
+    Block_array = detect_blocks_using_connected_components(img_path, out_dir)
+
+def mat_solver(mat_dit):
+    
