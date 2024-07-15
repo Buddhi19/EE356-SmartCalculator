@@ -1,15 +1,16 @@
-import tkinter as tk
-from tkinter import messagebox
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 from z_transform_solver import get_z_transform
 
 class DiscreteSignalCalculator(tk.Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent)
+        super().__init__(parent, bg="#293C4A")
         self.controller = controller
         self.current_input = ""
         self.signal = []
@@ -17,49 +18,74 @@ class DiscreteSignalCalculator(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        self.configure(bg="#293C4A")
+        self.button_params = {'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 11, 'bold')}
+        self.button_params_other = {'fg': '#000', 'bg': '#db701f', 'font': ('Arial', 11, 'bold')}
+        self.columnconfigure(0, weight=1)
+
         # Display area
-        self.display = tk.Text(self, height=4, width=30, font=('Arial', 18))
-        self.display.grid(row=0, column=0, columnspan=4, padx=5, pady=5, sticky="nsew")
+        display_frame = ttk.Frame(self)
+        display_frame.grid(row=0, column=0, pady=20, sticky="ew", ipady=10)
+        display_frame.columnconfigure(1, weight=1)
+
+        self.display = tk.Entry(display_frame, font=('sans-serif', 20, 'bold'), justify='right')
+        self.display.grid(row=0, column=0, columnspan=4, sticky="ew")
 
         # Buttons
+        calc_frame = ttk.Frame(self)
+        calc_frame.grid(row=1, column=0, pady=20)
+
         buttons = [
+            '←', '→', '(', ')',
+            'sin','cos','tan','sqrt',
             '7', '8', '9', '/',
             '4', '5', '6', '*',
             '1', '2', '3', '-',
-            '0', '.', 'n', '+'
+            '0', '.', 'n', '+',
+            'AC', 'DEL', '^', '='
         ]
 
-        row = 2
-        col = 0
+        special_buttons = {'DEL', 'AC', '='}
+        self.arrow_keys = {'↑': "up", '↓': "down", '←': "left", '→': "right"}
+
+        row, col = 0, 0
         for button in buttons:
-            cmd = lambda x=button: self.click(x)
-            tk.Button(self, text=button, command=cmd, width=5, height=2, font=('Arial', 18), 
-                      bg='#3C3636', fg='white').grid(row=row, column=col, sticky="nsew", padx=2, pady=2)
+            if button in self.arrow_keys:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params_main, width=9, height=3).grid(row=row, column=col, sticky="nsew")
+            elif button in special_buttons:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params_other, width=9, height=3).grid(row=row, column=col, sticky="nsew")
+            else:
+                cmd = lambda x=button: self.click(x)
+                tk.Button(calc_frame, text=button, command=cmd, **self.button_params, width=9, height=3).grid(row=row, column=col, sticky="nsew")
             col += 1
             if col > 3:
                 col = 0
                 row += 1
 
-        # Additional buttons
-        tk.Button(self, text="C", command=self.clear, width=5, height=2, font=('Arial', 18), 
-                  bg='#3C3636', fg='white').grid(row=row, column=0, sticky="nsew", padx=2, pady=2)
-        tk.Button(self, text="^", command=lambda: self.click('^'), width=5, height=2, font=('Arial', 18), 
-                  bg='#3C3636', fg='white').grid(row=row, column=1, sticky="nsew", padx=2, pady=2)
-        tk.Button(self, text="Add", command=self.add_to_signal, width=5, height=2, font=('Arial', 18), 
-                  bg='#db701f', fg='white').grid(row=row, column=2, columnspan=2, sticky="nsew", padx=2, pady=2)
+        # Compute Z Transform button
+        tk.Button(self, text="Compute Z Transform", command=self.calculate_z_transform, **self.button_params_main, width=20,height =2).grid(row=3, column=0, pady=10)
 
-        # Configure grid
-        for i in range(6):
-            self.grid_rowconfigure(i, weight=1)
-        for i in range(4):
-            self.grid_columnconfigure(i, weight=1)
+        # Back button
+        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main, width=15,height=2).grid(row=4, column=0, pady=10)
+
+        #self.signal_display = tk.Text(self, height=4, width=40, font=('sans-serif', 12))
+        #self.signal_display.grid(row=5, column=0, pady=10, padx=10, sticky="ew")
 
     def click(self, key):
-        if key == 'n':
+        if key == 'AC':
+            self.current_input = ""
+        elif key == 'DEL':
+            self.current_input = self.current_input[:-1]
+        elif key == 'n':
             if self.current_input and self.current_input[-1].isdigit():
                 self.current_input += '*n'
             else:
                 self.current_input += 'n'
+        elif key in ['sin', 'cos', 'tan','sqrt']:
+            self.function_var.set(self.function_var.get() + key + '(')
         elif key == '^':
             if self.current_input and self.current_input[-1] in ('n', ')', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
                 self.current_input += '^'
@@ -89,17 +115,23 @@ class DiscreteSignalCalculator(tk.Frame):
             self.signal_display.insert(tk.END, f"x[n] = {item}\n")
 
     def calculate_z_transform(self):
-        get_z_transform("EXPRESSION")
-    
-
-
+        try:
+            result = get_z_transform(self.signal)
+            messagebox.showinfo("Z-Transform Result", result)
+        except Exception as e:
+            messagebox.showerror("Error", f"Error calculating Z-transform: {e}")
 
 if __name__ == "__main__":
     root = tk.Tk()
+    root.configure(bg="#293C4A", bd=10)
+    root.geometry("330x800")
     root.title("Discrete Signal Calculator")
-    root.geometry("480x800")
-    
-    calculator = DiscreteSignalCalculator(root, root)
-    calculator.pack(expand=True, fill=tk.BOTH)
-    
+
+    calculator_frame = DiscreteSignalCalculator(root, root)
+    calculator_frame.pack(fill="both", expand=True)
+
+    style = ttk.Style()
+    style.configure("TButton", font=('sans-serif', 10, 'bold'), background="#BBB", foreground="#000")
+    style.configure("Calc.TButton", font=('sans-serif', 10, 'bold'), background="#BBB", foreground="#000", width=5)
+
     root.mainloop()
