@@ -10,7 +10,9 @@ import cv2
 from Controls.main import save_bode_plot
 from Integral_Transformations.fourier import Fourier
 from Integral_Transformations.laplace import Laplace
+from Integral_Transformations.z_transform import z_transform
 from Graphing_Calculator.Graphing_calculator import plot_and_save
+import matplotlib.pyplot as plt
 
 def process_image(img_location):
     I2T = Image2Text()
@@ -89,3 +91,12 @@ def get_num_and_den(exp:str):
     numerator = exp.as_numer_denom()[0]
     denominator = exp.as_numer_denom()[1]
     return (numerator,denominator)
+
+def get_z_transform(expression:str):
+    exp = z_transform(expression)
+    #type this in latex to an image
+    plt.figure(figsize=(4.3, 2), dpi=100, facecolor='black')
+    plt.text(0.5, 0.5, r"$%s$" % sp.latex(exp), fontsize=24, ha='center', va='center', color='white')
+    plt.axis('off')
+    plt.savefig("z_transform.png")
+    return "z_transform.png" 

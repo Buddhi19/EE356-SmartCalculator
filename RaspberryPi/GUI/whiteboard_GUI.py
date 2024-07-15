@@ -113,6 +113,9 @@ class WhiteboardApp(tk.Frame):
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
 
+        if self.is_erasing:
+            self.draw_grid()
+
     def erase(self):
         self.is_erasing = not self.is_erasing
         self.erase_button.config(relief=tk.SUNKEN if self.is_erasing else tk.RAISED)

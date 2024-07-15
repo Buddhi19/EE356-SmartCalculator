@@ -8,6 +8,7 @@ from main import fourier_solver, fourier_transform_image
 from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 from main import calculate_exp
 from main import plot_graph, get_num_and_den
+from main import get_z_transform
 
 app = FastAPI()
 
@@ -111,6 +112,11 @@ async def transfer_function(data: dict):
     numerator, denominator = get_num_and_den(expression)
     return {"result": "pass", "numerator": str(numerator), "denominator" : str(denominator)}
     
+@app.post("/z_transform_image")
+async def z_transform_image(data: dict):
+    expression = data.get('expression')
+    path = get_z_transform(expression)
+    return FileResponse(path, media_type='image/png')
 
 if __name__ == '__main__':
     import uvicorn

@@ -11,16 +11,19 @@ class StartPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg="#293C4A")
+        self.wifi_label = None  # Initialize wifi_label
         self.create_widgets()
 
     def create_widgets(self):
-        label = tk.Label(self, text="Smart Calculator", bg="#293C4A", fg="white", font=("Arial", 30, "bold"))
+        label = tk.Label(self, text="Solvista", bg="#293C4A", fg="white", font=("Arial", 30, "bold"))
         label.grid(row=0, column=0, columnspan=2, pady=10)
+
+        self.wifi_logo()
 
         buttons = [
             ("Calculator", "Calculator_Frame", parent_dir + "\\icons\\calculator.png"),
             ("Graphing Calculator", "Graph_GUI", parent_dir + "\\icons\\graph.png"),
-            ("Write to Solve", "WhiteboardApp",parent_dir + "\\icons\\write.png"),
+            ("Write to Solve", "WhiteboardApp", parent_dir + "\\icons\\write.png"),
             ("Take a Photo to Solve", "CameraApp", parent_dir + "\\icons\\photo.png"),
             ("Simultaneous Solver", "Simultaneous_solver_Frame", parent_dir + "\\icons\\simultaneous.png"),
             ("PDFReader", "PDFReader", parent_dir + "\\icons\\pdf.png"),
@@ -48,7 +51,7 @@ class StartPage(tk.Frame):
 
                 button = tk.Button(self, text=text, image=photo, compound="top", command=lambda name=frame_name: self.controller.show_frame(name),
                                    font=("Arial", 13, "bold"), width=200, bg="#293C4A", borderwidth=0, highlightthickness=0,
-                                   fg="white",pady=10)
+                                   fg="white", pady=10)
                 button.image = photo  # keep a reference to the image
                 button.grid(row=(i//2) + 1, column=i % 2, pady=15, padx=10, sticky="nsew")
             except Exception as e:
@@ -69,7 +72,6 @@ class StartPage(tk.Frame):
                                      activebackground="#293C4A", activeforeground="white")
         next_page_button.grid(row=6, column=1, padx=1, sticky='w')
 
-
         close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
         close_button.grid(row=7, column=0, columnspan=2)
 
@@ -84,6 +86,29 @@ class StartPage(tk.Frame):
 
     def current_button(self):
         pass
+
+    def wifi_logo(self):
+        if self.controller.is_connected():
+            self.add_wifi_logo("wifi_on")
+        else:
+            self.add_wifi_logo("wifi_off")
+        self.after(2000, self.wifi_logo)
+
+    def add_wifi_logo(self, state):
+        wifi_image_path = parent_dir + f"\\icons\\{state}.png" if sys.platform == "win32" else parent_dir + f"/icons/{state}.png"
+        try:
+            wifi_image = Image.open(wifi_image_path)
+            wifi_image = wifi_image.resize((30, 30), Image.LANCZOS)
+            wifi_photo = ImageTk.PhotoImage(wifi_image)
+
+            if self.wifi_label is None:
+                self.wifi_label = tk.Label(self, image=wifi_photo, bg="#293C4A")
+                self.wifi_label.grid(row=0, column=1, sticky="ne", padx=10, pady=10)
+            else:
+                self.wifi_label.configure(image=wifi_photo)
+            self.wifi_label.image = wifi_photo  # keep a reference to the image
+        except Exception as e:
+            print(f"Error loading Wi-Fi logo: {e}")
 
 if __name__ == "__main__":
     root = tk.Tk()
