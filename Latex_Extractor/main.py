@@ -10,6 +10,7 @@ from model_load import for_test
 from PIL import Image, ImageTk
 import cv2
 import imutils
+import re
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\Latex_Extractor"
 
@@ -124,21 +125,28 @@ class Image2Text:
 		equations = self.predict_expressions(img)
 		#close all the windows
 		cv2.destroyAllWindows()
-		return equations
+		if re.search(r'_\{.*?\}', equations):
+			print("Pattern found, removing it.")
+			# Use regex to find and remove all occurrences of _{something}
+			cleaned_expression = re.sub(r'_\{.*?\}', '', equations)
+			return cleaned_expression
+		else:
+			print("Pattern not found.")
+			return equations
 	
 def convert_blackboard_image(img):
-	img = cv2.erode(img, np.ones((3,3),np.uint8), iterations = 1)
+	img = cv2.erode(img, np.ones((2,2),np.uint8), iterations = 3)
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	_, img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY) # 85 # 155	
+	_, img = cv2.threshold(img, 50, 255, cv2.THRESH_BINARY) # 85 # 155	
 	cv2.imshow("img",img)
 	cv2.waitKey(1000)
 
 	kernel = np.ones((7,7),np.uint8)
 
-	dilation = cv2.dilate(img, kernel, iterations = 7) #16
+	dilation = cv2.dilate(img, kernel, iterations = 8) #16
 
 	contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)	
 	contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.5]
@@ -150,7 +158,7 @@ def convert_blackboard_image(img):
 	rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 	img = img[y:y+h, x:x+w]
 
-	scale_factor = 0.6
+	scale_factor = 0.4
 	resized_image = cv2.resize(img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
 
 	resized_image = cv2.dilate(resized_image, np.ones((4,4),np.uint8), iterations = 1)

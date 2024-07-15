@@ -9,6 +9,7 @@ from tkinter import ttk
 import numpy as np
 from matrix_solver import MatrixSolver
 import math
+from PIL import ImageGrab
 class MatrixInputPage(tk.Toplevel):
     def __init__(self, parent, callback):
         super().__init__(parent)
@@ -44,6 +45,10 @@ class MatrixInputPage(tk.Toplevel):
         write_button = tk.Button(self, text="Write and add", command=self.on_write_click, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
         write_button.pack(pady=10)
 
+        back_button = tk.Button(self, text="Back", command=lambda: self.destroy(),
+                                font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000")
+        back_button.pack(pady=10)
+
     def on_write_click(self):
         Whiteboard(self)
 
@@ -69,9 +74,6 @@ class Whiteboard(tk.Toplevel):
         self.create_widgets()
 
     def create_widgets(self):
-        self.entry = tk.Entry(self, textvariable=self.display_var, font=('sans-serif', 20, 'bold'), justify='right', state='readonly')
-        self.entry.grid(row=0, column=0, columnspan=4, ipady=30, sticky="nsew")
-
         self.canvas = tk.Canvas(self, bg="black", highlightthickness=0, width=480, height=600)
         self.canvas.grid(row=1, column=0, columnspan=4, sticky="nsew")
 
@@ -294,16 +296,16 @@ class MatrixOperationPage(tk.Frame):
         self.solver = MatrixSolver(self.matrices['MatA'], self.matrices['MatB'], self.matrices['MatC'], self.matrices['MatD'], self.matrices['MatE'], self.matrices['MatF'])
 
         self.label = tk.Label(self, text="Matrix Operations", font=('sans-serif', 20, 'bold'), bg="#293C4A", fg="#BBB")
-        self.label.grid(row=0, column=0, columnspan=3, pady=20)
+        self.label.grid(row=0, column=0, columnspan=3, pady=20, padx=10)
 
         self.operation_entry = tk.Entry(self, textvariable=self.display_var, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=30)
-        self.operation_entry.grid(row=1, column=0, columnspan=3, pady=10)
+        self.operation_entry.grid(row=1, column=0, columnspan=3, pady=10,padx=10)
 
-        self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB")
+        self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="white", fg="#BBB", width=30)
         self.result_label.grid(row=2, column=0, columnspan=3, pady=10)
 
         self.operation_pad_frame = tk.Frame(self, bg="#293C4A")
-        self.operation_pad_frame.grid(row=3, column=0, columnspan=3, pady=10)
+        self.operation_pad_frame.grid(row=3, column=0, columnspan=3, pady=10,padx=(50,15))
 
     def create_widgets(self):
         self.button_params = {'fg': '#BBB', 'bg': '#3C3636', 'font': ('sans-serif', 11, 'bold')}

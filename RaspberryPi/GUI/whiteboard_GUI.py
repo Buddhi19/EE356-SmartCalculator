@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image, get_ans, get_plot_image
+from whiteboard_solver import post_image, get_ans, get_plot_image, get_transfer_function
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -17,6 +17,7 @@ class WhiteboardApp(tk.Frame):
         self.display_var = tk.StringVar()
         self.cell_size = 130
         self.grid_visible = True
+        self.is_erasing = False  # Flag to track eraser mode
 
         # Create widgets
         self.create_widgets()
@@ -84,7 +85,9 @@ class WhiteboardApp(tk.Frame):
         self.display_var.set(self.display_var.get()[:-1])
 
     def clear(self):
-        self.display_var.set("")
+        self.canvas.delete("all")
+        if self.grid_visible:
+            self.draw_grid()
 
     def set_mode(self, mode):
         self.mode = mode
@@ -96,6 +99,7 @@ class WhiteboardApp(tk.Frame):
 
     def draw(self, event):
         smooth_factor = 1  # Increase this value to make the lines smoother
+        color = "black" if self.is_erasing else "white"
         if self.previous_coords:
             x1, y1 = self.previous_coords
             x2, y2 = event.x, event.y
@@ -172,6 +176,17 @@ class WhiteboardApp(tk.Frame):
             else:
                 window.destroy()
                 messagebox.showinfo("Error", "Failed to generate plot image.")
+        if self.mode == "Transfer Function":
+            ans = get_transfer_function(self.answer)
+            if ans == "Error":
+                self.display_var.set(ans)
+            else:
+                self.controller.numerator = ans[0]
+                self.controller.denominator = ans[1]
+                print(self.controller.numerator, self.controller.denominator)
+                window.destroy()
+                self.controller.show_frame("TransferFunctionFrame")
+
 
 
     def retry_action(self, window):
