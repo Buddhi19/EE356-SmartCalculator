@@ -13,12 +13,13 @@ from Integral_Transformations.laplace import Laplace
 from Integral_Transformations.z_transform import z_transform
 from Graphing_Calculator.Graphing_calculator import plot_and_save
 import matplotlib.pyplot as plt
+import sympy as sp
 
 def process_image(img_location):
     I2T = Image2Text()
     img = cv2.imread(img_location)
-    cv2.imshow("img",img)
-    cv2.waitKey(1000)
+    # cv2.imshow("img",img)
+    # cv2.waitKey(1000)
     return(I2T.run_for_std_scenario(img))
 
 def process_image_for_whiteboard(img_location):

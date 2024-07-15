@@ -12,7 +12,7 @@ from main import get_z_transform
 
 app = FastAPI()
 
-host_url = '192.168.8.100'
+host_url = '192.168.1.4'
 
 @app.get("/")
 def read_root():
@@ -36,8 +36,6 @@ async def image_route(file: UploadFile = File(...)):
         ans = [f"Error in processing the image: {str(e)}"]
 
     # Clean up the file after processing
-    os.remove(file_path)
-
     return {"result": ans}
 
 @app.post("/image_whiteboard")
