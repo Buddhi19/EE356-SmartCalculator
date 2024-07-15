@@ -11,7 +11,7 @@ from main import plot_graph, get_num_and_den
 
 app = FastAPI()
 
-host_url = '192.168.1.4'
+host_url = '192.168.8.100'
 
 @app.get("/")
 def read_root():
@@ -108,8 +108,8 @@ async def transfer_function(data: dict):
     expression = data.get('expression')
     if not expression:
         return {"result": []}
-    ans = get_num_and_den(expression)
-    return {"result": ans}
+    numerator, denominator = get_num_and_den(expression)
+    return {"result": "pass", "numerator": str(numerator), "denominator" : str(denominator)}
     
 
 if __name__ == '__main__':

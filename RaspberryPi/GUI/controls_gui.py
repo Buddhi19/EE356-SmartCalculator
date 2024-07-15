@@ -94,6 +94,8 @@ class TransferFunctionFrame(tk.Frame):
         self.canvas.delete(self.den)
         self.numerator = "Transfer Function Numerator"
         self.denominator = "Transfer Function Denominator"
+        self.controller.numerator = self.numerator
+        self.controller.denominator = self.denominator
         self.num = self.canvas.create_text(170, 50, text=self.numerator, fill="white", font=('sans-serif', 10, 'bold'), anchor="s")
         self.den = self.canvas.create_text(170, 80, text=self.denominator, fill="white", font=('sans-serif', 10,'bold'), anchor="n")
 

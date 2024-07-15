@@ -88,4 +88,4 @@ def get_num_and_den(exp:str):
     exp = convert_to_sympy(exp)
     numerator = exp.as_numer_denom()[0]
     denominator = exp.as_numer_denom()[1]
-    return 
+    return (numerator,denominator)

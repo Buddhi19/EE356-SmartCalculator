@@ -171,11 +171,12 @@ class WhiteboardApp(tk.Frame):
                 messagebox.showinfo("Error", "Failed to generate plot image.")
         if self.mode == "Transfer Function":
             ans = get_transfer_function(self.answer)
-            if ans != "Error":
+            if ans == "Error":
                 self.display_var.set(ans)
             else:
-                self.controller.numerator = self.answer[0]
-                self.controller.denominator = self.answer[1]
+                self.controller.numerator = ans[0]
+                self.controller.denominator = ans[1]
+                print(self.controller.numerator, self.controller.denominator)
                 window.destroy()
                 self.controller.show_frame("TransferFunctionFrame")
 

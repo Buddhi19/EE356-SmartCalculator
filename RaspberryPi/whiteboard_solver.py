@@ -51,6 +51,9 @@ def get_transfer_function(exp: str):
     response = requests.post(url, json=data)
     if response.status_code == 200:
         result = response.json().get("result")
-        return result
+        numerator = response.json().get("numerator")
+        denominator = response.json().get("denominator")
+        print(numerator, denominator)
+        return numerator, denominator
     else:
         return "Error"
