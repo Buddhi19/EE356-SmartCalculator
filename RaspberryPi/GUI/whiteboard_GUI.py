@@ -33,17 +33,20 @@ class WhiteboardApp(tk.Frame):
 
         button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold'), 'height': 1}
         
-        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
-        self.erase_button.grid(row=2, column=0, sticky="nsew")
+        self.clear_button = tk.Button(self, text="Clear", command=self.clear, **button_params_main)
+        self.clear_button.grid(row=2, column=0, sticky="nsew")
 
         self.back_button = tk.Button(self, text="Back", command=self.back, **button_params_main)
-        self.back_button.grid(row=3, column=0, sticky="nsew")
+        self.back_button.grid(row=3, column=2, sticky="nsew")
+
+        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
+        self.erase_button.grid(row=3, column=0, sticky="nsew")
 
         self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
         self.mode_button.grid(row=3, column=1, sticky="nsew")
 
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
-        self.solve_button.grid(row=3, column=2,columnspan=2, sticky="nsew")
+        self.solve_button.grid(row=3, column=3, sticky="nsew")
 
         self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
         self.add_button.grid(row=2, column=1, sticky="nsew")
@@ -106,7 +109,7 @@ class WhiteboardApp(tk.Frame):
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
 
-    def erase(self):
+    def clear(self):
         self.canvas.delete("all")
         if self.grid_visible:
             self.draw_grid()
