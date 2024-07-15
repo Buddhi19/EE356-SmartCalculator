@@ -50,6 +50,7 @@ class Simultaneous_solver_Frame(tk.Frame):
 
     def add_equation(self, equation):
         self.equations.append(equation)
+        print(self.equations)
         self.update_equation_list()
 
     def remove_equation(self):

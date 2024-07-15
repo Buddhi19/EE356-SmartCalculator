@@ -301,7 +301,7 @@ class MatrixOperationPage(tk.Frame):
         self.operation_entry = tk.Entry(self, textvariable=self.display_var, font=('sans-serif', 15, 'bold'), bg="#BBB", fg="#000", justify='right', width=30)
         self.operation_entry.grid(row=1, column=0, columnspan=3, pady=10,padx=10)
 
-        self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="white", fg="#BBB", width=30)
+        self.result_label = tk.Label(self, text="", font=('sans-serif', 15, 'bold'), bg="#293C4A", fg="#BBB", width=30)
         self.result_label.grid(row=2, column=0, columnspan=3, pady=10)
 
         self.operation_pad_frame = tk.Frame(self, bg="#293C4A")
