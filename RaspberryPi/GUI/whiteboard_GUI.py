@@ -39,7 +39,7 @@ class WhiteboardApp(tk.Frame):
         self.back_button = tk.Button(self, text="Back", command=self.back, **button_params_main)
         self.back_button.grid(row=3, column=2, sticky="nsew")
 
-        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
+        self.erase_button = tk.Button(self, text="Erase", command=self.toggle_erase, **button_params_main)
         self.erase_button.grid(row=3, column=0, sticky="nsew")
 
         self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
@@ -101,14 +101,14 @@ class WhiteboardApp(tk.Frame):
             x2, y2 = event.x, event.y
             # Interpolate between the points to create a smoother line
             steps = max(abs(x2 - x1), abs(y2 - y1)) // smooth_factor
-            if steps!=0:
+            if steps != 0:
                 for i in range(steps + 1):
                     xi = x1 + (x2 - x1) * i / steps
                     yi = y1 + (y2 - y1) * i / steps
-                    self.canvas.create_line(x1, y1, xi, yi, fill="white", width=5, capstyle=tk.ROUND, smooth=True)
+                    color = "black" if self.erasing else "white"
+                    self.canvas.create_line(x1, y1, xi, yi, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
-
     def clear(self):
         self.canvas.delete("all")
         if self.grid_visible:
