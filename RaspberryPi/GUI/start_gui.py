@@ -72,8 +72,6 @@ class StartPage(tk.Frame):
                                      activebackground="#293C4A", activeforeground="white")
         next_page_button.grid(row=6, column=1, padx=1, sticky='w')
 
-        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
-        close_button.grid(row=7, column=0, columnspan=2)
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):

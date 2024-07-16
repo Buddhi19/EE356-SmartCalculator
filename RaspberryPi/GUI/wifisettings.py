@@ -63,44 +63,75 @@ class WiFiSettingsFrame(tk.Frame):
         keyboard_frame = tk.Frame(self, bg="#293C4A")
         keyboard_frame.pack(pady=10, expand=True)
 
+        self.is_shift_active = False
+
         keys = [
             '1234567890',
             'qwertyuiop',
             'asdfghjkl',
-            'zxcvbnm',
-            '!@#$%^&*()_+'
+            'zxcvbnm'
         ]
+
+        shift_keys = [
+            '!@#$%^&*()',
+            'QWERTYUIOP',
+            'ASDFGHJKL',
+            'ZXCVBNM'
+        ]
+
+        self.key_buttons = []
 
         for row, key_row in enumerate(keys):
             key_frame = tk.Frame(keyboard_frame, bg="#293C4A")
             key_frame.pack()
             for col, key in enumerate(key_row):
                 button = tk.Button(key_frame, text=key, width=3, height=2,
-                                   command=lambda x=key: self.key_press(x),
-                                   bg="#4A6572", fg="white", activebackground="#5A7682",
-                                   font=('Arial', 10, 'bold'))
+                                command=lambda x=key, r=row, c=col: self.key_press(x, r, c),
+                                bg="#4A6572", fg="white", activebackground="#5A7682",
+                                font=('Arial', 11, 'bold'))
                 button.pack(side=tk.LEFT, padx=2, pady=2)
+                self.key_buttons.append((button, key, shift_keys[row][col]))
 
-        # Space and backspace
+        # Space, backspace, and shift
         bottom_frame = tk.Frame(keyboard_frame, bg="#293C4A")
         bottom_frame.pack()
-        tk.Button(bottom_frame, text='Space', width=10, height=2,
-                  command=lambda: self.key_press(' '),
-                  bg="#4A6572", fg="white", activebackground="#5A7682",
-                  font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=2, pady=2)
-        tk.Button(bottom_frame, text='←', width=10, height=2,
-                  command=self.backspace,
-                  bg="#4A6572", fg="white", activebackground="#5A7682",
-                  font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=2, pady=2)
         
+        self.shift_button = tk.Button(bottom_frame, text='Shift', width=10, height=2,
+                                    command=self.toggle_shift,
+                                    bg="#4A6572", fg="white", activebackground="#5A7682",
+                                    font=('Arial', 10, 'bold'))
+        self.shift_button.pack(side=tk.LEFT, padx=2, pady=2)
+        
+        tk.Button(bottom_frame, text='Space', width=10, height=2,
+                command=lambda: self.key_press(' '),
+                bg="#4A6572", fg="white", activebackground="#5A7682",
+                font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=2, pady=2)
+        
+        tk.Button(bottom_frame, text='←', width=10, height=2,
+                command=self.backspace,
+                bg="#4A6572", fg="white", activebackground="#5A7682",
+                font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=2, pady=2)
+
         back_button = ttk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage2"), style='TButton')
         back_button.pack(pady=10)
 
-    def key_press(self, key):
+    def toggle_shift(self):
+        self.is_shift_active = not self.is_shift_active
+        for button, lower, upper in self.key_buttons:
+            button.config(text=upper if self.is_shift_active else lower)
+        self.shift_button.config(relief=tk.SUNKEN if self.is_shift_active else tk.RAISED)
+
+    def key_press(self, key, row=None, col=None):
+        if row is not None and col is not None and self.is_shift_active:
+            key = self.key_buttons[row * 10 + col][2]  # Get the shift version of the key
+        
         if self.focus_get() == self.ssid_entry:
             self.ssid_var.set(self.ssid_var.get() + key)
         elif self.focus_get() == self.pw_entry:
             self.pw_var.set(self.pw_var.get() + key)
+        
+        if self.is_shift_active:
+            self.toggle_shift()  # Turn off shift after one capital letter
 
     def backspace(self):
         if self.focus_get() == self.ssid_entry:
