@@ -132,7 +132,7 @@ class ShowPlot_cam(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.image_path = "camera/plot.png"
+        self.image_path = os.path.join(parent_dir, "camera", "plot.png")
         self.create_widgets()
 
     def create_widgets(self):

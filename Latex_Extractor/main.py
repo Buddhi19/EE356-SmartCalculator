@@ -24,9 +24,9 @@ class Expressions:
 		find different expressions or select the expression 
 		written area
 		"""
-		kernel = np.ones((10,10),np.uint8)  #10,10
+		kernel = np.ones((8,8),np.uint8)  #10,10
 
-		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
+		dilation = cv2.dilate(self.img, kernel, iterations = 8) #16
 
 		# dilation = cv2.morphologyEx(self.img, cv2.MORPH_OPEN, kernel)
 
@@ -44,17 +44,17 @@ class Expressions:
 			cropped = im2[y:y + h, x:x + w]
 			self.expressions.append(cropped)
 		
-		# cv2.imshow("img",im2)
-		# cv2.waitKey(1000)
+		cv2.imshow("img",im2)
+		cv2.waitKey(0)
 		return
 	
 	def get_expressions(self):
 		"""
 		Get all expression containing images
 		"""
-		# for image in self.expressions:
-		# 	cv2.imshow("img",image)
-		# 	cv2.waitKey(1000)
+		for image in self.expressions:
+			cv2.imshow("img",image)
+			cv2.waitKey(0)
 
 		return self.expressions
 
@@ -65,11 +65,11 @@ class Image2Text:
 		expressions in white
 		"""
 		img_test = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		_, img_test = cv2.threshold(img_test, 180, 255, cv2.THRESH_BINARY) # 85 # 155
+		_, img_test = cv2.threshold(img_test, 195, 255, cv2.THRESH_BINARY) # 85 # 155
 		img_test = cv2.bitwise_not(img_test)
 
-		# cv2.imshow("img",img_test)
-		# cv2.waitKey(1000)
+		cv2.imshow("img",img_test)
+		cv2.waitKey(0)
 
 		return img_test
 

@@ -3,11 +3,13 @@ from server_address import server_address
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(__file__))
 
 #post image to server
 def post_image():
-    image_path = "whiteboard/whiteboard.png"
+    image_path = os.path.join(parent_dir,"GUI", "whiteboard", "whiteboard.png")
     url = server_address+"/image_whiteboard"
     files = {'file': open(image_path, 'rb')}
     response = requests.post(url, files=files)
@@ -37,7 +39,7 @@ def get_plot_image(exp: str):
     data = {'expression': exp}
     response = requests.post(url, json=data)
     if response.status_code == 200:
-        with open('whiteboard/plot.png', 'wb') as f:
+        with open(os.path.join(parent_dir, "GUI" ,"whiteboard", "plot.png"), 'wb') as f:
             f.write(response.content)
         print("Plot image saved successfully.")
         return 1

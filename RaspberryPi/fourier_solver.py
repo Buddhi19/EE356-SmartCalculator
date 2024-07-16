@@ -4,6 +4,9 @@ from main_controller import Calculator
 import requests
 from server_address import server_address
 import re
+import os
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 class FourierSolver(Calculator):
     def __init__(self):
@@ -68,19 +71,19 @@ def get_fourier_transform(exp, t, w):
     print(data)
     response = requests.post(url, json=data)
     if response.status_code == 200:
-        with open('integrals/fourier_transform.png', 'wb') as f:
+        with open(os.path.join(parent_dir,"GUI","integrals","fourier_transform.png"), 'wb') as f:
             f.write(response.content)
         print("Fourier transform image saved successfully.")
     else:
         print("Failed to generate Fourier transform image.")
 
 def get_laplace_transform(exp, t, s):
-    url = server_address+'/laplace_transform_image'
+    url = server_address+'/lap_transform_image'
     data = {'expression': exp, 'a': t, 'b': s}
     print(data)
     response = requests.post(url, json=data)
     if response.status_code == 200:
-        with open('integrals/laplace_transform.png', 'wb') as f:
+        with open(os.path.join(parent_dir,"GUI","integrals","laplace_transform.png"), 'wb') as f:
             f.write(response.content)
         print("Laplace transform image saved successfully.")
     else:
@@ -90,9 +93,11 @@ def get_laplace_spectrum():
     url = server_address+'/laplace_spectrum_image'
     response = requests.get(url, json={"t":"t"})
     if response.status_code == 200:
-        with open('integrals/laplace_spectrum.png', 'wb') as f:
+        with open(os.path.join(parent_dir,"GUI","integrals","laplace_spectrum.png"), 'wb') as f:
             f.write(response.content)
         print("Laplace spectrum image saved successfully.")
+        return "Success"
     else:
         print("Failed to generate Laplace spectrum image.")
+        return "Error"
     
