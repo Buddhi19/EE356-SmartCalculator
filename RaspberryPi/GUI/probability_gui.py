@@ -11,73 +11,61 @@ class NormalDistributionCalculator(tk.Frame):
         self.parent = parent
         self.controller = controller
         
-        self.parent.configure(bg='#3C3636')
+        self.parent.configure(bg='#343434')
 
         # Create custom styles with larger font
         style = ttk.Style()
         style.theme_use('clam')
-        style.configure('TFrame', background='#3C3636')
-        style.configure('TLabel', background='#3C3636', foreground='#db701f', font=('TkDefaultFont', 12))
-        style.configure('TEntry', fieldbackground='#3C3636', foreground='#db701f', font=('TkDefaultFont', 12))
-        style.configure('TButton', background='#db701f', foreground='#3C3636', font=('TkDefaultFont', 12, 'bold'))
-        style.map('TButton', background=[('active', '#db701f')])
-        style.configure('TCombobox', fieldbackground='#3C3636', foreground='#3C3636', selectbackground='#db701f', font=('TkDefaultFont', 12))
+        style.configure('TFrame', background='#343434')
+        style.configure('TLabel', background='#343434', foreground='#FFFFFF', font=('TkDefaultFont', 12))
+        style.configure('TEntry', fieldbackground='#343434', foreground='#FFFFFF', font=('TkDefaultFont', 12))
+        style.configure('TButton', background='#343434', foreground='#FFFFFF', font=('TkDefaultFont', 12, 'bold'))
+        style.map('TButton', background=[('active', '#FF9500')])
+        style.configure('TCombobox', fieldbackground='#343434', foreground='#FFFFFF', selectbackground='#FF9500', font=('TkDefaultFont', 12))
 
         # Create main frame
         main_frame = ttk.Frame(self, padding="10")
         main_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
 
+        # Create graph (with reduced size)
+        self.figure, self.ax = plt.subplots(figsize=(3.5, 3), facecolor='#3C3636')
+        self.canvas = FigureCanvasTkAgg(self.figure, master=main_frame)
+        self.canvas.get_tk_widget().grid(row=0, column=0, columnspan=2, padx=5, pady=5)
+
         # Create input fields
-        ttk.Label(main_frame, text="Mean (μ):").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(main_frame, text="Mean (μ):").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
         self.mean_entry = ttk.Entry(main_frame, width=15)
-        self.mean_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.mean_entry.grid(row=1, column=1, padx=5, pady=5)
         self.mean_entry.insert(0, "0")
 
-        ttk.Label(main_frame, text="Standard Deviation (σ):").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(main_frame, text="Standard Deviation (σ):").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
         self.std_entry = ttk.Entry(main_frame, width=15)
-        self.std_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.std_entry.grid(row=2, column=1, padx=5, pady=5)
         self.std_entry.insert(0, "1")
 
         # Dropdown for selecting probability type
         self.prob_type = tk.StringVar(value="P(X > a)")
-        ttk.Label(main_frame, text="Probability type:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(main_frame, text="Probability type:").grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
         self.prob_type_dropdown = ttk.Combobox(main_frame, textvariable=self.prob_type, 
                                                values=("P(X > a)", "P(X < a)", "P(a < X < b)"), 
                                                state="readonly", width=15)
-        self.prob_type_dropdown.grid(row=2, column=1, padx=5, pady=5)
+        self.prob_type_dropdown.grid(row=3, column=1, padx=5, pady=5)
         self.prob_type_dropdown.bind("<<ComboboxSelected>>", self.update_entry_fields)
 
         # Lower bound entry
-        ttk.Label(main_frame, text="Lower bound (a):").grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(main_frame, text="Lower bound (a):").grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
         self.lower_entry = ttk.Entry(main_frame, width=15)
-        self.lower_entry.grid(row=3, column=1, padx=5, pady=5)
+        self.lower_entry.grid(row=4, column=1, padx=5, pady=5)
         self.lower_entry.insert(0, "1")
 
         # Upper bound entry (initially disabled)
-        ttk.Label(main_frame, text="Upper bound (b):").grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
+        ttk.Label(main_frame, text="Upper bound (b):").grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
         self.upper_entry = ttk.Entry(main_frame, width=15, state="disabled")
-        self.upper_entry.grid(row=4, column=1, padx=5, pady=5)
-
-        # Create calculate button
-        self.calculate_button = ttk.Button(main_frame, text="Calculate", command=self.calculate)
-        self.calculate_button.grid(row=5, column=0, columnspan=2, pady=10)
-
-        # Create result label
-        self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 14, 'bold'))
-        self.result_label.grid(row=6, column=0, columnspan=2, pady=5)
-
-        # Create back button
-        self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
-        self.back_button.grid(row=7, column=0, columnspan=2, pady=10)
-
-        # Create graph (with reduced size)
-        self.figure, self.ax = plt.subplots(figsize=(3.5, 3), facecolor='#3C3636')
-        self.canvas = FigureCanvasTkAgg(self.figure, master=main_frame)
-        self.canvas.get_tk_widget().grid(row=8, column=0, columnspan=2, padx=5, pady=5)
+        self.upper_entry.grid(row=5, column=1, padx=5, pady=5)
 
         # Create keypad
         keypad_frame = ttk.Frame(main_frame)
-        keypad_frame.grid(row=9, column=0, columnspan=2, padx=5, pady=5)
+        keypad_frame.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
 
         keypad_buttons = [
             '7', '8', '9',
@@ -97,7 +85,7 @@ class NormalDistributionCalculator(tk.Frame):
 
         # Add buttons to select which field to input to
         field_buttons_frame = ttk.Frame(main_frame)
-        field_buttons_frame.grid(row=10, column=0, columnspan=2, padx=5, pady=5)
+        field_buttons_frame.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
 
         field_buttons = [
             ("Mean (μ)", self.mean_entry),
@@ -109,6 +97,18 @@ class NormalDistributionCalculator(tk.Frame):
         for text, entry in field_buttons:
             cmd = lambda e=entry: self.set_active_entry(e)
             ttk.Button(field_buttons_frame, text=text, command=cmd, width=10).pack(side=tk.LEFT, padx=2)
+
+        # Create calculate button
+        self.calculate_button = ttk.Button(main_frame, text="Calculate", command=self.calculate)
+        self.calculate_button.grid(row=8, column=0, columnspan=2, pady=10)
+
+        # Create result label
+        self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 14, 'bold'))
+        self.result_label.grid(row=9, column=0, columnspan=2, pady=5)
+
+        # Create back button
+        self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
+        self.back_button.grid(row=10, column=0, columnspan=2, pady=10)
 
         self.active_entry = self.mean_entry
         self.update_graph()
@@ -167,12 +167,12 @@ class NormalDistributionCalculator(tk.Frame):
 
         x = np.linspace(mean - 4*std, mean + 4*std, 100)
         y = stats.norm.pdf(x, mean, std)
-        self.ax.plot(x, y, color='#db701f')
-        self.ax.set_facecolor('#3C3636')
-        self.ax.set_title("Normal Distribution", color='#db701f', fontsize=12)
-        self.ax.set_xlabel("X", color='#db701f', fontsize=10)
-        self.ax.set_ylabel("Probability Density", color='#db701f', fontsize=10)
-        self.ax.tick_params(colors='#db701f', labelsize=8)
+        self.ax.plot(x, y, color='#FF9500')
+        self.ax.set_facecolor('#343434')
+        self.ax.set_title("Normal Distribution", color='#FFFFFF', fontsize=12)
+        self.ax.set_xlabel("X", color='#FFFFFF', fontsize=10)
+        self.ax.set_ylabel("Probability Density", color='#FFFFFF', fontsize=10)
+        self.ax.tick_params(colors='#FFFFFF', labelsize=8)
         
         if prob_type == "P(X > a)":
             x_filled = np.linspace(lower, mean + 4*std, 100)
@@ -183,10 +183,10 @@ class NormalDistributionCalculator(tk.Frame):
             x_filled = np.linspace(lower, upper, 100)
         
         y_filled = stats.norm.pdf(x_filled, mean, std)
-        self.ax.fill_between(x_filled, y_filled, color='#db701f', alpha=0.3)
+        self.ax.fill_between(x_filled, y_filled, color='#FF9500', alpha=0.3)
 
         for spine in self.ax.spines.values():
-            spine.set_edgecolor('#db701f')
+            spine.set_edgecolor('#FFFFFF')
 
         self.figure.tight_layout()
         self.canvas.draw()
