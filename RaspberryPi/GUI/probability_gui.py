@@ -11,9 +11,6 @@ class NormalDistributionCalculator(tk.Frame):
         self.parent = parent
         self.controller = controller
         
-        # Set window size and colors
-        # window_width = 480
-        # window_height = 800
         self.parent.configure(bg='#3C3636')
 
         # Create custom styles with larger font
@@ -73,20 +70,69 @@ class NormalDistributionCalculator(tk.Frame):
         self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
         self.back_button.grid(row=7, column=0, columnspan=2, pady=10)
 
-        # Create graph
-        self.figure, self.ax = plt.subplots(figsize=(4.5, 4), facecolor='#3C3636')
+        # Create graph (with reduced size)
+        self.figure, self.ax = plt.subplots(figsize=(3.5, 3), facecolor='#3C3636')
         self.canvas = FigureCanvasTkAgg(self.figure, master=main_frame)
         self.canvas.get_tk_widget().grid(row=8, column=0, columnspan=2, padx=5, pady=5)
 
+        # Create keypad
+        keypad_frame = ttk.Frame(main_frame)
+        keypad_frame.grid(row=9, column=0, columnspan=2, padx=5, pady=5)
+
+        keypad_buttons = [
+            '7', '8', '9',
+            '4', '5', '6',
+            '1', '2', '3',
+            '0', '.', 'C'
+        ]
+
+        row, col = 0, 0
+        for button in keypad_buttons:
+            cmd = lambda x=button: self.keypad_click(x)
+            ttk.Button(keypad_frame, text=button, command=cmd, width=5).grid(row=row, column=col, padx=2, pady=2)
+            col += 1
+            if col > 2:
+                col = 0
+                row += 1
+
+        # Add buttons to select which field to input to
+        field_buttons_frame = ttk.Frame(main_frame)
+        field_buttons_frame.grid(row=10, column=0, columnspan=2, padx=5, pady=5)
+
+        field_buttons = [
+            ("Mean (μ)", self.mean_entry),
+            ("Std Dev (σ)", self.std_entry),
+            ("Lower (a)", self.lower_entry),
+            ("Upper (b)", self.upper_entry)
+        ]
+
+        for text, entry in field_buttons:
+            cmd = lambda e=entry: self.set_active_entry(e)
+            ttk.Button(field_buttons_frame, text=text, command=cmd, width=10).pack(side=tk.LEFT, padx=2)
+
+        self.active_entry = self.mean_entry
         self.update_graph()
+
+    def set_active_entry(self, entry):
+        self.active_entry = entry
+        if entry == self.upper_entry and self.prob_type.get() != "P(a < X < b)":
+            self.prob_type.set("P(a < X < b)")
+            self.update_entry_fields()
+
+    def keypad_click(self, key):
+        if key == 'C':
+            self.active_entry.delete(0, tk.END)
+        else:
+            self.active_entry.insert(tk.END, key)
 
     def update_entry_fields(self, event=None):
         if self.prob_type.get() == "P(a < X < b)":
             self.upper_entry.config(state="normal")
-            self.upper_entry.delete(0, tk.END)
-            self.upper_entry.insert(0, "2")
+            if not self.upper_entry.get():
+                self.upper_entry.insert(0, "2")
         else:
             self.upper_entry.config(state="disabled")
+            self.upper_entry.delete(0, tk.END)
 
     def calculate(self):
         try:
@@ -123,10 +169,10 @@ class NormalDistributionCalculator(tk.Frame):
         y = stats.norm.pdf(x, mean, std)
         self.ax.plot(x, y, color='#db701f')
         self.ax.set_facecolor('#3C3636')
-        self.ax.set_title("Normal Distribution", color='#db701f', fontsize=14)
-        self.ax.set_xlabel("X", color='#db701f', fontsize=12)
-        self.ax.set_ylabel("Probability Density", color='#db701f', fontsize=12)
-        self.ax.tick_params(colors='#db701f', labelsize=10)
+        self.ax.set_title("Normal Distribution", color='#db701f', fontsize=12)
+        self.ax.set_xlabel("X", color='#db701f', fontsize=10)
+        self.ax.set_ylabel("Probability Density", color='#db701f', fontsize=10)
+        self.ax.tick_params(colors='#db701f', labelsize=8)
         
         if prob_type == "P(X > a)":
             x_filled = np.linspace(lower, mean + 4*std, 100)
@@ -146,11 +192,10 @@ class NormalDistributionCalculator(tk.Frame):
         self.canvas.draw()
 
     def go_back(self):
-        # Define the action for the back button here
-        self.parent.destroy()
+        self.controller.show_frame("StartPage2")
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = NormalDistributionCalculator(root)
+    app = NormalDistributionCalculator(root, None)
     app.pack(fill="both", expand=True)
     root.mainloop()
