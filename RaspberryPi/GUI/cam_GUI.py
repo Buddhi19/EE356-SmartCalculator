@@ -72,7 +72,7 @@ class CameraApp(tk.Frame):
             
             # Restore preview configuration
             self.camera.stop()
-            messagebox.showinfo("Image Capture", "Image has been captured and saved as 'captured_image.jpg'")
+            messagebox.showinfo("Image Capture", "Image Saved")
             self.controller.show_frame("Camera_Result_Page")
 
         except Exception as e:
