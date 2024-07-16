@@ -24,7 +24,7 @@ class StartPage(tk.Frame):
             ("Calculator", "Calculator_Frame", parent_dir + "\\icons\\calculator.png"),
             ("Graphing Calculator", "Graph_GUI", parent_dir + "\\icons\\graph.png"),
             ("Write to Solve", "WhiteboardApp", parent_dir + "\\icons\\write.png"),
-            ("Take a Photo to Solve", "CameraApp", parent_dir + "\\icons\\photo.png"),
+            ("Take a Photo to Solve", "Camera_Result_Page", parent_dir + "\\icons\\photo.png"), ## THIS IS DONE TO SKIP CAMERA PAGE IN WINDOWS
             ("Simultaneous Solver", "Simultaneous_solver_Frame", parent_dir + "\\icons\\simultaneous.png"),
             ("PDFReader", "PDFReader", parent_dir + "\\icons\\pdf.png"),
             ("Controls", "TransferFunctionFrame", parent_dir + "\\icons\\controls.png"),

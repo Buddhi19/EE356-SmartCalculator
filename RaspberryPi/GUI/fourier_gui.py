@@ -1,6 +1,8 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
@@ -88,8 +90,8 @@ class FourierTransform(tk.Frame):
             exp = self.fourier_solver.final_expression()
             t = 't'  # assuming t is the initial variable
             w = 'w'  # assuming w is the final variable
-            transformed_expr = get_fourier_transform(exp, t, w)
-            self.display_var.set(transformed_expr)
+            get_fourier_transform(exp, t, w)
+            self.controller.show_frame("ShowFourierSpectrum")
             return
 
         if text in self.arrow_keys:
@@ -125,7 +127,7 @@ class ShowFourierSpectrum(tk.Frame):
 
     def create_widgets(self):
         # load image
-        img = tk.PhotoImage(file='integrals/fourier_transform.png')
+        img = tk.PhotoImage(file=os.path.join(parent_dir, "integrals", "fourier_transform.png"))
         label = tk.Label(self, image=img, borderwidth=0)
         label.image = img
         label.pack()

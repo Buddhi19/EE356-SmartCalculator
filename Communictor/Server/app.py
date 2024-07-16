@@ -12,7 +12,9 @@ from main import get_z_transform
 
 app = FastAPI()
 
-host_url = '192.168.8.100'
+# host_url = '192.168.1.4'
+# host_url = '10.30.1.107'
+host_url = '192.168.8.102'
 
 @app.get("/")
 def read_root():
@@ -36,8 +38,6 @@ async def image_route(file: UploadFile = File(...)):
         ans = [f"Error in processing the image: {str(e)}"]
 
     # Clean up the file after processing
-    os.remove(file_path)
-
     return {"result": ans}
 
 @app.post("/image_whiteboard")
@@ -74,7 +74,7 @@ async def fourier_transform(data: dict):
     path = fourier_transform_image()
     return FileResponse(path, media_type='image/png')
 
-@app.post("/laplace_transform_image")
+@app.post("/lap_transform_image")
 async def laplace_transform(data: dict):
     expression = data.get('expression')
     a = data.get('a')
@@ -85,6 +85,7 @@ async def laplace_transform(data: dict):
 
 @app.post("/laplace_spectrum_image")
 async def laplace_spectrum(data : dict):
+    exp = data.get('expression')
     path = laplace_spectrum_image()
     return FileResponse(path, media_type='image/png')
 

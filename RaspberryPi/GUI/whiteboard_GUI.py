@@ -1,6 +1,8 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
@@ -55,7 +57,7 @@ class WhiteboardApp(tk.Frame):
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
         self.DEL_button.grid(row=2, column=2, sticky="nsew")
 
-        self.AC_button = tk.Button(self, text="AC", command=self.clear, **button_params_main)
+        self.AC_button = tk.Button(self, text="AC", command=self.delete_all, **button_params_main)
         self.AC_button.grid(row=2, column=3, sticky="nsew")
 
         self.previous_coords = None
@@ -83,6 +85,9 @@ class WhiteboardApp(tk.Frame):
 
     def delete(self):
         self.display_var.set(self.display_var.get()[:-1])
+
+    def delete_all(self):
+        self.display_var.set("")
 
     def clear(self):
         self.canvas.delete("all")
@@ -124,7 +129,7 @@ class WhiteboardApp(tk.Frame):
         self.controller.show_frame("StartPage")
 
     def solver(self):
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir, "whiteboard", "whiteboard.png"))
         #answer = post_image()
         #AnswerDisplay(self, answer)
         # Add code for plotting here
@@ -147,7 +152,7 @@ class WhiteboardApp(tk.Frame):
             messagebox.showinfo("No Internet Connection", "Please connect to the internet to use this feature.")
             return
         
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir,"whiteboard", "whiteboard.png"))
         self.answer = post_image()
         self.show_custom_message(self.answer)
 
@@ -199,7 +204,7 @@ class ModeSelection_Whiteboard(tk.Toplevel):
         super().__init__(parent, bg="#293C4A")
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot", "Transfer Function", "Simultaneous Equations", "Matrix"
+            "Calculate", "Plot", "Transfer Function"
         ]
         self.create_widgets()
 
@@ -230,7 +235,7 @@ class ShowPlot(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.image_path = "whiteboard/plot.png"
+        self.image_path = os.path.join(parent_dir,"whiteboard", "plot.png")
         self.create_widgets()
 
     def create_widgets(self):

@@ -1,5 +1,8 @@
 import requests
 from server_address import server_address
+import os
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 #post image to server
 def post_image(image_path):
@@ -13,3 +16,17 @@ def post_image(image_path):
         print("Error sending image")
         print(response.text)
     return response.json().get("result")
+
+
+def get_plot_image_cam(exp: str):
+    url = server_address + '/plot_graph'
+    data = {'expression': exp}
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        with open(os.path.join(parent_dir, "GUI" ,"camera" ,"plot.png"), 'wb') as f:
+            f.write(response.content)
+        print("Plot image saved successfully.")
+        return 1
+    else:
+        print("Failed to generate plot image.")
+        return 0

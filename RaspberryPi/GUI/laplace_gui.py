@@ -1,6 +1,8 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
@@ -100,13 +102,14 @@ class LaplaceTransform(tk.Frame):
             self.function_var.set(self.function_var.get() + key)
 
     def compute_transform(self):
-        try:
-            t, s = symbols('t s')
-            expr = sympify(self.function_var.get())
-            result = get_laplace_transform(expr, t, s)
-            self.result_var.set(result)
-        except Exception as e:
-            self.result_var.set(f"Error: {str(e)}")
+        expr = self.function_var.get()
+        t = "t"
+        s = "s"
+        print(f"Expression: {expr}")
+        result = get_laplace_transform(expr, t, s)
+        if result == "Error":
+            self.result_var.set("Invalid input")
+        self.controller.show_frame("ShowLaplaceTransform")
 
     def show_help(self):
         help_text = """
@@ -146,7 +149,7 @@ class ShowLaplaceTransform(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        img = tk.PhotoImage(file="integrals/laplace_transform.png")
+        img = tk.PhotoImage(file=os.path.join(parent_dir, "integrals", "laplace_transform.png"))
         label = tk.Label(self, image=img, borderwidth=0)
         label.image = img
         label.pack()
@@ -158,7 +161,10 @@ class ShowLaplaceTransform(tk.Frame):
         show_button.pack()
 
     def show_spectrum(self):
-        get_laplace_spectrum()
+        ans = get_laplace_spectrum()
+        if ans == "Error":
+            print("Error in generating Laplace Spectrum")
+            return
         print("Showing Laplace Spectrum")
         self.controller.show_frame("ShowLaplaceSpectrum")
 
@@ -169,7 +175,7 @@ class ShowLaplaceSpectrum(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        img = tk.PhotoImage(file="integrals/laplace_spectrum.png")
+        img = tk.PhotoImage(file=os.path.join(parent_dir, "integrals", "laplace_spectrum.png"))
         label = tk.Label(self, image=img, borderwidth=0)
         label.image = img
         label.pack()
