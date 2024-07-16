@@ -23,15 +23,17 @@ class StartPage2(tk.Frame):
         buttons = [
             ("Fourier Transform", "FourierTransform", parent_dir + "\\icons\\integrals.png"),
             ("Laplace Transform", "LaplaceTransform", parent_dir + "\\icons\\laplace.png"),
-            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\laplace.png"),
-            ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "\\icons\\prob.png")
+            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\z_transform.png"),
+            ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "\\icons\\prob.png"),
+            ("Settings", "WiFiSettingsFrame", parent_dir + "\\icons\\settings.png")
         ]
         if sys.platform == "linux":
             buttons = [
                 ("Fourier Transform", "FourierTransform", parent_dir + "/icons/integrals.png"),
                 ("Laplace Transform", "LaplaceTransform", parent_dir + "/icons/laplace.png"),
-                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/laplace.png"),
-                ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "/icons/prob.png")
+                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/z_transform.png"),
+                ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "/icons/prob.png"),
+                ("Settings", "WiFiSettingsFrame", parent_dir + "/icons/settings.png")
             ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
@@ -62,9 +64,6 @@ class StartPage2(tk.Frame):
                                             activebackground="#293C4A", activeforeground="white")
         current_page_num_button.grid(row=6, column=1, padx=1, sticky='w')
 
-
-        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
-        close_button.grid(row=7, column=0, columnspan=2)
 
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):

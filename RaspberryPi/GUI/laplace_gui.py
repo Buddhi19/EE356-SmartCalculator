@@ -86,7 +86,7 @@ class LaplaceTransform(tk.Frame):
             if button == 'Help':
                 cmd = lambda x=button: self.show_help()
             else:
-                cmd = lambda x=button: self.controller.show_frame("StartPage")
+                cmd = lambda x=button: self.controller.show_frame("StartPage2")
             tk.Button(other_buttons_frame, text=button, command=cmd, **self.button_params_main,width=20).grid(row=0, column=i, sticky="ew")
 
     def click(self, key):
@@ -141,6 +141,9 @@ class LaplaceTransform(tk.Frame):
         
         help_label = tk.Label(help_window, text=help_text, justify=tk.LEFT, bg="#293C4A", fg="#BBB", font=('sans-serif', 10, 'bold'))
         help_label.pack(padx=10, pady=0)
+
+        close_button = tk.Button(help_window, text="Close", command=help_window.destroy, bg="#BBB", fg="#000", font=('sans-serif', 10, 'bold'))
+        close_button.pack(pady=10)
 
 class ShowLaplaceTransform(tk.Frame):
     def __init__(self, parent, controller):
