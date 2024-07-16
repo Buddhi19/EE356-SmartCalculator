@@ -2,17 +2,12 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from picamera2 import Picamera2
-from libcamera import controls
 import threading
-import io
 import time
 import RPi.GPIO as GPIO
 import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from cam_solver_server import post_image
-from whiteboard_solver import get_ans, get_plot_image, get_transfer_function
+import io
+import requests  # Add this import
 
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,7 +39,6 @@ class CameraApp(tk.Frame):
         self.preview_thread.daemon = True
         self.preview_thread.start()
         
-       
         # Setup GPIO
         self.flash_pin = 12
         GPIO.setmode(GPIO.BCM)
@@ -60,9 +54,6 @@ class CameraApp(tk.Frame):
         self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
         self.mode_button.grid(row=3, column=0, sticky="nsew")
         
-        #self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
-        #self.add_button.grid(row=2, column=1, sticky="nsew")
-
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
         self.DEL_button.grid(row=3, column=1, sticky="nsew")
 
@@ -120,62 +111,53 @@ class CameraApp(tk.Frame):
             # Flip the image vertically and horizontally
             image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
             
-            image.save("/captured_image.png")
+            image_path = os.path.join(parent_dir, "captured_image.png")
+            image.save(image_path)
             
             # Restore preview configuration
             self.camera.stop()
-
             self.camera.configure(self.camera.create_preview_configuration(main={"size": (640, 480)}))
             self.camera.start()
             
             # Flash OFF
             GPIO.output(self.flash_pin, GPIO.LOW)
-
-        except:
-            messagebox.showerror("Camera Error")
             
+            # Post the image to the server
+            with open(image_path, 'rb') as img_file:
+                response = requests.post('http://your-server-url/upload', files={'file': img_file})
+                response_data = response.json()
+                
+            if response.status_code == 200 and 'equations' in response_data:
+                self.show_equations(response_data['equations'])
+            else:
+                messagebox.showerror("Error", "Failed to process the image. Please try again.")
+            
+        except Exception as e:
+            messagebox.showerror("Capture Error", str(e))
+        finally:
+            GPIO.output(self.flash_pin, GPIO.LOW)  # Ensure the flash is turned off
     
-    def get_answer(self):
-        self.answer = post_image("/captured_image.png")
-        self.show_custom_message(self.answer)
+    def show_equations(self, equations):
+        def add_equations():
+            self.display_var.set(" + ".join(equations))
+            eq_window.destroy()
 
-    def show_custom_message(self, answer):
-        custom_message_window = tk.Tk()
-        custom_message_window.title("Processed Image")
-        answer_label = tk.Label(custom_message_window, text=answer)
-        answer_label.pack()
-        
-        add_button = tk.Button(custom_message_window, text="Add", command=lambda: self.add_action(custom_message_window))
-        add_button.pack(side=tk.LEFT)
-        
-        retry_button = tk.Button(custom_message_window, text="Retry", command=lambda: self.retry_action(custom_message_window))
-        retry_button.pack(side=tk.RIGHT)
-        
-        custom_message_window.mainloop()
+        def retry_capture():
+            eq_window.destroy()
+            self.capture_image()
 
-    def add_action(self, window):
-        if self.mode == "Calculate":
-            ans = get_ans(self.answer)
-            self.display_var.set(ans)
-            window.destroy()
-        if self.mode == "Plot":
-            if get_plot_image(self.answer) == 1:
-                window.destroy()
-                self.controller.show_frame("ShowPlot")
-            else:
-                window.destroy()
-                messagebox.showinfo("Error", "Failed to generate plot image.")
-        if self.mode == "Transfer Function":
-            ans = get_transfer_function(self.answer)
-            if ans == "Error":
-                self.display_var.set(ans)
-            else:
-                self.controller.numerator = ans[0]
-                self.controller.denominator = ans[1]
-                print(self.controller.numerator, self.controller.denominator)
-                window.destroy()
-                self.controller.show_frame("TransferFunctionFrame")
-
+        eq_window = tk.Toplevel(self)
+        eq_window.title("Equations Found")
+        eq_window.geometry("400x300")
+        
+        msg = tk.Message(eq_window, text="\n".join(equations), width=380)
+        msg.pack(pady=10)
+        
+        add_button = tk.Button(eq_window, text="Add", command=add_equations)
+        add_button.pack(side=tk.LEFT, padx=10, pady=10)
+        
+        retry_button = tk.Button(eq_window, text="Retry", command=retry_capture)
+        retry_button.pack(side=tk.RIGHT, padx=10, pady=10)
 
     def pack(self, **kwargs):
         super().pack(**kwargs)
@@ -215,12 +197,6 @@ class CameraApp(tk.Frame):
             self.camera.close()
             self.camera = None
 
-    def on_show(self):
-        self.start_camera()
-    
-    def on_hide(self):
-        self.stop_camera()
-    
     def __del__(self):
         self.stop_camera()
         GPIO.cleanup()
@@ -243,3 +219,5 @@ class ModeSelection_Whiteboard(tk.Toplevel):
     def select_mode(self, mode):
         self.callback(mode)
         self.destroy()
+
+# Make sure to replace 'http://your-server-url/upload' with your actual server URL
