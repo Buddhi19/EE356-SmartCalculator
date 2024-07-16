@@ -12,7 +12,7 @@ class DiscreteSignalCalculator(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, bg="#293C4A")
         self.controller = controller
-        self.current_input = ""
+        self.current_input = tk.StringVar()
         self.signal = []
 
         self.create_widgets()
@@ -29,7 +29,7 @@ class DiscreteSignalCalculator(tk.Frame):
         display_frame.grid(row=0, column=0, pady=20, sticky="ew", ipady=10)
         display_frame.columnconfigure(1, weight=1)
 
-        self.display = tk.Entry(display_frame, font=('sans-serif', 20, 'bold'), justify='right')
+        self.display = tk.Entry(display_frame, font=('sans-serif', 20, 'bold'), justify='right', textvariable=self.current_input)
         self.display.grid(row=0, column=0, columnspan=4, sticky="ew")
 
         # Buttons
@@ -66,53 +66,30 @@ class DiscreteSignalCalculator(tk.Frame):
                 row += 1
 
         # Compute Z Transform button
-        tk.Button(self, text="Compute Z Transform", command=self.calculate_z_transform, **self.button_params_main, width=20,height =2).grid(row=3, column=0, pady=10)
+        tk.Button(self, text="Compute Z Transform", command=self.calculate_z_transform, **self.button_params_main, width=20, height=2).grid(row=3, column=0, pady=10)
 
         # Back button
-        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main, width=15,height=2).grid(row=4, column=0, pady=10)
-
-        #self.signal_display = tk.Text(self, height=4, width=40, font=('sans-serif', 12))
-        #self.signal_display.grid(row=5, column=0, pady=10, padx=10, sticky="ew")
+        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main, width=15, height=2).grid(row=4, column=0, pady=10)
 
     def click(self, key):
         if key == 'AC':
-            self.current_input = ""
+            self.current_input.set("")
         elif key == 'DEL':
-            self.current_input = self.current_input[:-1]
+            self.current_input.set(self.current_input.get()[:-1])
         elif key == 'n':
-            if self.current_input and self.current_input[-1].isdigit():
-                self.current_input += '*n'
+            if self.current_input.get() and self.current_input.get()[-1].isdigit():
+                self.current_input.set(self.current_input.get() + '*n')
             else:
-                self.current_input += 'n'
-        elif key in ['sin', 'cos', 'tan','sqrt']:
-            self.function_var.set(self.function_var.get() + key + '(')
+                self.current_input.set(self.current_input.get() + 'n')
+        elif key in ['sin', 'cos', 'tan', 'sqrt']:
+            self.current_input.set(self.current_input.get() + key + '(')
         elif key == '^':
-            if self.current_input and self.current_input[-1] in ('n', ')', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
-                self.current_input += '^'
+            if self.current_input.get() and self.current_input.get()[-1] in ('n', ')', ']', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'):
+                self.current_input.set(self.current_input.get() + '^')
             else:
                 messagebox.showerror("Error", "^ must follow n or a number")
         else:
-            self.current_input += str(key)
-        self.update_display()
-
-    def clear(self):
-        self.current_input = ""
-        self.update_display()
-
-    def update_display(self):
-        self.display.delete(1.0, tk.END)
-        self.display.insert(tk.END, self.current_input)
-
-    def add_to_signal(self):
-        self.signal.append(self.current_input)
-        self.update_signal_display()
-        self.current_input = ""
-        self.update_display()
-
-    def update_signal_display(self):
-        self.signal_display.delete(1.0, tk.END)
-        for item in self.signal:
-            self.signal_display.insert(tk.END, f"x[n] = {item}\n")
+            self.current_input.set(self.current_input.get() + str(key))
 
     def calculate_z_transform(self):
         try:
@@ -120,6 +97,7 @@ class DiscreteSignalCalculator(tk.Frame):
             messagebox.showinfo("Z-Transform Result", result)
         except Exception as e:
             messagebox.showerror("Error", f"Error calculating Z-transform: {e}")
+
 
 if __name__ == "__main__":
     root = tk.Tk()

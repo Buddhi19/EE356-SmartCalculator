@@ -55,7 +55,7 @@ class WhiteboardApp(tk.Frame):
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
         self.DEL_button.grid(row=2, column=2, sticky="nsew")
 
-        self.AC_button = tk.Button(self, text="AC", command=self.clear, **button_params_main)
+        self.AC_button = tk.Button(self, text="AC", command=self.delete_all, **button_params_main)
         self.AC_button.grid(row=2, column=3, sticky="nsew")
 
         self.previous_coords = None
@@ -83,6 +83,9 @@ class WhiteboardApp(tk.Frame):
 
     def delete(self):
         self.display_var.set(self.display_var.get()[:-1])
+
+    def delete_all(self):
+        self.display_var.set("")
 
     def clear(self):
         self.canvas.delete("all")
@@ -112,6 +115,9 @@ class WhiteboardApp(tk.Frame):
                     self.canvas.create_line(x1, y1, xi, yi, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
+
+        if self.is_erasing:
+            self.draw_grid()
 
     def erase(self):
         self.is_erasing = not self.is_erasing
@@ -196,7 +202,7 @@ class ModeSelection_Whiteboard(tk.Toplevel):
         super().__init__(parent, bg="#293C4A")
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot", "Transfer Function", "Simultaneous Equations", "Matrix"
+            "Calculate", "Plot", "Transfer Function"
         ]
         self.create_widgets()
 

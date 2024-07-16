@@ -15,6 +15,7 @@ from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot, StepR
 from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
+from GUI.cam_result_gui import Camera_Result_Page, ShowPlot_cam
 from GUI.loading_gui import Loading_GUI
 from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 from GUI.laplace_gui import LaplaceTransform, ShowLaplaceTransform, ShowLaplaceSpectrum
@@ -51,7 +52,7 @@ class MainApplication(tk.Tk):
         if self.current_frame and self.current_frame not in ["StartPage"]:
             if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot","StepResponsePlot",
                                        "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp",
-                                       "CameraApp","ShowPlot"] or (self.current_frame in ["TransferFunctionFrame"]
+                                       "CameraApp","ShowPlot","ShowPlot_cam"] or (self.current_frame in ["TransferFunctionFrame"]
                                                                    and name == "StartPage"):
                 if self.current_frame == "CameraApp":
                     self.frames[self.current_frame].on_hide()
