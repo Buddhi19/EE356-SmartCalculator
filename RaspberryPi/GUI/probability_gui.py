@@ -85,7 +85,7 @@ class NormalDistributionCalculator(tk.Frame):
 
         # Add buttons to select which field to input to
         field_buttons_frame = ttk.Frame(main_frame)
-        field_buttons_frame.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+        field_buttons_frame.grid(row=7, column=0, columnspan=2, padx=0, pady=5, sticky=tk.W)
 
         field_buttons = [
             ("Mean (μ)", self.mean_entry),
@@ -96,19 +96,19 @@ class NormalDistributionCalculator(tk.Frame):
 
         for text, entry in field_buttons:
             cmd = lambda e=entry: self.set_active_entry(e)
-            ttk.Button(field_buttons_frame, text=text, command=cmd, width=10).pack(side=tk.LEFT, padx=2)
+            ttk.Button(field_buttons_frame, text=text, command=cmd, width=8).pack(side=tk.LEFT, padx=2)
 
         # Create calculate button
         self.calculate_button = ttk.Button(main_frame, text="Calculate", command=self.calculate)
-        self.calculate_button.grid(row=8, column=0, columnspan=2, pady=10)
+        self.calculate_button.grid(row=8, column=0, padx=5, pady=10, sticky=tk.W)
 
         # Create result label
         self.result_label = ttk.Label(main_frame, text="", font=('TkDefaultFont', 14, 'bold'))
-        self.result_label.grid(row=9, column=0, columnspan=2, pady=5)
+        self.result_label.grid(row=8, column=1, padx=5, pady=10, sticky=tk.W)
 
         # Create back button
         self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
-        self.back_button.grid(row=10, column=0, columnspan=2, pady=10)
+        self.back_button.grid(row=9, column=0, columnspan=2, pady=10)
 
         self.active_entry = self.mean_entry
         self.update_graph()
