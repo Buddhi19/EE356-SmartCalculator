@@ -21,6 +21,7 @@ from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 from GUI.laplace_gui import LaplaceTransform, ShowLaplaceTransform, ShowLaplaceSpectrum
 from GUI.z_transform_GUI import DiscreteSignalCalculator
 from GUI.probability_gui import NormalDistributionCalculator
+from GUI.wifisettings import WiFiSettingsFrame
 
 import socket
 
