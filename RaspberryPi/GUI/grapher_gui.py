@@ -134,7 +134,7 @@ class Graph_Frame2D(tk.Frame):
         # Add other controls here if needed
 
         # Close button
-        self.update_button = ttk.Button(self, text="Close", command=self.close)
+        self.update_button = ttk.Button(self, text="Close",  command=self.close)
         self.update_button.grid(row=3, column=0, pady=10, sticky="nw")
 
     def close(self):

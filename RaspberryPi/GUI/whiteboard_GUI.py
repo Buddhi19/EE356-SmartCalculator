@@ -1,12 +1,14 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image, get_ans
+from whiteboard_solver import post_image, get_ans, get_plot_image, get_transfer_function
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -17,6 +19,7 @@ class WhiteboardApp(tk.Frame):
         self.display_var = tk.StringVar()
         self.cell_size = 130
         self.grid_visible = True
+        self.is_erasing = False  # Flag to track eraser mode
 
         # Create widgets
         self.create_widgets()
@@ -33,17 +36,20 @@ class WhiteboardApp(tk.Frame):
 
         button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold'), 'height': 1}
         
-        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
-        self.erase_button.grid(row=2, column=0, sticky="nsew")
+        self.clear_button = tk.Button(self, text="Clear", command=self.clear, **button_params_main)
+        self.clear_button.grid(row=2, column=0, sticky="nsew")
 
         self.back_button = tk.Button(self, text="Back", command=self.back, **button_params_main)
-        self.back_button.grid(row=3, column=0, sticky="nsew")
+        self.back_button.grid(row=3, column=2, sticky="nsew")
+
+        self.erase_button = tk.Button(self, text="Erase", command=self.erase, **button_params_main)
+        self.erase_button.grid(row=3, column=0, sticky="nsew")
 
         self.mode_button = tk.Button(self, text="Mode", command=lambda: ModeSelection_Whiteboard(self, self.set_mode), **button_params_main)
         self.mode_button.grid(row=3, column=1, sticky="nsew")
 
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
-        self.solve_button.grid(row=3, column=2, sticky="nsew")
+        self.solve_button.grid(row=3, column=3, sticky="nsew")
 
         self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
         self.add_button.grid(row=2, column=1, sticky="nsew")
@@ -51,7 +57,7 @@ class WhiteboardApp(tk.Frame):
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
         self.DEL_button.grid(row=2, column=2, sticky="nsew")
 
-        self.AC_button = tk.Button(self, text="AC", command=self.clear, **button_params_main)
+        self.AC_button = tk.Button(self, text="AC", command=self.delete_all, **button_params_main)
         self.AC_button.grid(row=2, column=3, sticky="nsew")
 
         self.previous_coords = None
@@ -80,8 +86,13 @@ class WhiteboardApp(tk.Frame):
     def delete(self):
         self.display_var.set(self.display_var.get()[:-1])
 
-    def clear(self):
+    def delete_all(self):
         self.display_var.set("")
+
+    def clear(self):
+        self.canvas.delete("all")
+        if self.grid_visible:
+            self.draw_grid()
 
     def set_mode(self, mode):
         self.mode = mode
@@ -93,6 +104,7 @@ class WhiteboardApp(tk.Frame):
 
     def draw(self, event):
         smooth_factor = 1  # Increase this value to make the lines smoother
+        color = "black" if self.is_erasing else "white"
         if self.previous_coords:
             x1, y1 = self.previous_coords
             x2, y2 = event.x, event.y
@@ -102,20 +114,22 @@ class WhiteboardApp(tk.Frame):
                 for i in range(steps + 1):
                     xi = x1 + (x2 - x1) * i / steps
                     yi = y1 + (y2 - y1) * i / steps
-                    self.canvas.create_line(x1, y1, xi, yi, fill="white", width=5, capstyle=tk.ROUND, smooth=True)
+                    self.canvas.create_line(x1, y1, xi, yi, fill=color, width=5, capstyle=tk.ROUND, smooth=True)
                     x1, y1 = xi, yi
         self.previous_coords = event.x, event.y
 
-    def erase(self):
-        self.canvas.delete("all")
-        if self.grid_visible:
+        if self.is_erasing:
             self.draw_grid()
+
+    def erase(self):
+        self.is_erasing = not self.is_erasing
+        self.erase_button.config(relief=tk.SUNKEN if self.is_erasing else tk.RAISED)
 
     def back(self):
         self.controller.show_frame("StartPage")
 
     def solver(self):
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir, "whiteboard", "whiteboard.png"))
         #answer = post_image()
         #AnswerDisplay(self, answer)
         # Add code for plotting here
@@ -138,7 +152,7 @@ class WhiteboardApp(tk.Frame):
             messagebox.showinfo("No Internet Connection", "Please connect to the internet to use this feature.")
             return
         
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir,"whiteboard", "whiteboard.png"))
         self.answer = post_image()
         self.show_custom_message(self.answer)
 
@@ -158,26 +172,46 @@ class WhiteboardApp(tk.Frame):
 
     def add_action(self, window):
         #add answer to display
-        ans = get_ans(self.answer)
-        self.display_var.set(ans)
-        window.destroy()
+        if self.mode == "Calculate":
+            ans = get_ans(self.answer)
+            self.display_var.set(ans)
+            window.destroy()
+        if self.mode == "Plot":
+            if get_plot_image(self.answer) == 1:
+                window.destroy()
+                self.controller.show_frame("ShowPlot")
+            else:
+                window.destroy()
+                messagebox.showinfo("Error", "Failed to generate plot image.")
+        if self.mode == "Transfer Function":
+            ans = get_transfer_function(self.answer)
+            if ans == "Error":
+                self.display_var.set(ans)
+            else:
+                self.controller.numerator = ans[0]
+                self.controller.denominator = ans[1]
+                print(self.controller.numerator, self.controller.denominator)
+                window.destroy()
+                self.controller.show_frame("TransferFunctionFrame")
+
+
 
     def retry_action(self, window):
         window.destroy()
-        
 
 class ModeSelection_Whiteboard(tk.Toplevel):
     def __init__(self, parent, callback):
-        super().__init__(parent)
+        super().__init__(parent, bg="#293C4A")
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot", "Transfer Function", "Simultaneous Equations", "Matrix"
+            "Calculate", "Plot", "Transfer Function"
         ]
         self.create_widgets()
 
     def create_widgets(self):
+        button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 10, 'bold')}
         for mode in self.mode_list:
-            button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m))
+            button = tk.Button(self, text=mode, command=lambda m=mode: self.select_mode(m),**button_params_main)
             button.pack(fill=tk.X, pady=5)
 
     def select_mode(self, mode):
@@ -195,6 +229,21 @@ class AnswerDisplay(tk.Toplevel):
         label.pack()
 
         close_button = tk.Button(self, text="Close", command=self.destroy)
+        close_button.pack()
+
+class ShowPlot(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.image_path = os.path.join(parent_dir,"whiteboard", "plot.png")
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.plot_image = tk.PhotoImage(file=self.image_path)
+        self.plot_label = tk.Label(self, image=self.plot_image)
+        self.plot_label.pack()
+
+        close_button = tk.Button(self, text="Close", command=lambda: self.controller.show_frame("WhiteboardApp"))
         close_button.pack()
 
 # Example usage:

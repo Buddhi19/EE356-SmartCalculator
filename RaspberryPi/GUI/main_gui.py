@@ -10,15 +10,18 @@ from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
 # from GUI.pdf_reader_GUI import PDFReader
-from GUI.whiteboard_GUI import WhiteboardApp
-from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot
+from GUI.whiteboard_GUI import WhiteboardApp, ShowPlot
+from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot, StepResponsePlot
 from GUI.matrix_solver_gui import  MatrixOperationPage
 if sys.platform == "linux":
     from GUI.cam_GUI import CameraApp
+from GUI.cam_result_gui import Camera_Result_Page, ShowPlot_cam
 from GUI.loading_gui import Loading_GUI
 from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 from GUI.laplace_gui import LaplaceTransform, ShowLaplaceTransform, ShowLaplaceSpectrum
-from GUI.z_transform_GUI import ZTransformCalculator
+from GUI.z_transform_GUI import DiscreteSignalCalculator
+from GUI.probability_gui import NormalDistributionCalculator
+
 import socket
 
 class MainApplication(tk.Tk):
@@ -28,6 +31,8 @@ class MainApplication(tk.Tk):
         self.attributes('-fullscreen', True)
         self.WIFI = self.is_connected()
         self.configure(bg="#293C4A")
+        self.numerator = "Transfer Function Numerator"
+        self.denominator = "Transfer Function Denominator"
 
         self.container = tk.Frame(self)
         self.container.pack(fill="both")
@@ -45,8 +50,10 @@ class MainApplication(tk.Tk):
     def show_frame(self, name, data=None):
         print(f"Switching to frame: {name}")
         if self.current_frame and self.current_frame not in ["StartPage"]:
-            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot",
-                                       "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp","CameraApp"]:
+            if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot","StepResponsePlot",
+                                       "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp",
+                                       "CameraApp","ShowPlot","ShowPlot_cam", "Camera_Result_Page"] or (self.current_frame in ["TransferFunctionFrame"]
+                                                                   and name == "StartPage"):
                 if self.current_frame == "CameraApp":
                     self.frames[self.current_frame].on_hide()
                 self.frames[self.current_frame].destroy()

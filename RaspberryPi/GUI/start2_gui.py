@@ -11,22 +11,27 @@ class StartPage2(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg="#293C4A")
+        self.wifi_label = None  # Initialize wifi_label
         self.create_widgets2()
 
     def create_widgets2(self):
-        label = tk.Label(self, text="Smart Calculator", bg="#293C4A", fg="white", font=("Arial", 30, "bold"))
+        label = tk.Label(self, text="Solvista", bg="#293C4A", fg="white", font=("Arial", 30, "bold"))
         label.grid(row=0, column=0, columnspan=2, pady=10)
+
+        self.wifi_logo()
 
         buttons = [
             ("Fourier Transform", "FourierTransform", parent_dir + "\\icons\\integrals.png"),
             ("Laplace Transform", "LaplaceTransform", parent_dir + "\\icons\\laplace.png"),
-            ("Z Transform", "ZTransformCalculator", parent_dir + "\\icons\\z_transform.png"),
+            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\laplace.png"),
+            ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "\\icons\\prob.png")
         ]
         if sys.platform == "linux":
             buttons = [
                 ("Fourier Transform", "FourierTransform", parent_dir + "/icons/integrals.png"),
                 ("Laplace Transform", "LaplaceTransform", parent_dir + "/icons/laplace.png"),
-                ("Z Transform", "ZTransformCalculator", parent_dir + "/icons/z_transform.png"),
+                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/laplace.png"),
+                ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "/icons/prob.png")
             ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
@@ -72,6 +77,29 @@ class StartPage2(tk.Frame):
 
     def current_button(self):
         pass
+
+    def wifi_logo(self):
+        if self.controller.is_connected():
+            self.add_wifi_logo("wifi_on")
+        else:
+            self.add_wifi_logo("wifi_off")
+        self.after(2000, self.wifi_logo)
+
+    def add_wifi_logo(self, state):
+        wifi_image_path = parent_dir + f"\\icons\\{state}.png" if sys.platform == "win32" else parent_dir + f"/icons/{state}.png"
+        try:
+            wifi_image = Image.open(wifi_image_path)
+            wifi_image = wifi_image.resize((30, 30), Image.LANCZOS)
+            wifi_photo = ImageTk.PhotoImage(wifi_image)
+
+            if self.wifi_label is None:
+                self.wifi_label = tk.Label(self, image=wifi_photo, bg="#293C4A")
+                self.wifi_label.grid(row=0, column=1, sticky="ne", padx=10, pady=10)
+            else:
+                self.wifi_label.configure(image=wifi_photo)
+            self.wifi_label.image = wifi_photo  # keep a reference to the image
+        except Exception as e:
+            print(f"Error loading Wi-Fi logo: {e}")
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -7,9 +7,13 @@ from main import process_image, calculate_expression, process_image_for_whiteboa
 from main import fourier_solver, fourier_transform_image
 from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 from main import calculate_exp
+from main import plot_graph, get_num_and_den
+from main import get_z_transform
 
 app = FastAPI()
 
+# host_url = '192.168.1.4'
+# host_url = '10.30.1.107'
 host_url = '192.168.8.102'
 
 @app.get("/")
@@ -34,8 +38,6 @@ async def image_route(file: UploadFile = File(...)):
         ans = [f"Error in processing the image: {str(e)}"]
 
     # Clean up the file after processing
-    os.remove(file_path)
-
     return {"result": ans}
 
 @app.post("/image_whiteboard")
@@ -72,7 +74,7 @@ async def fourier_transform(data: dict):
     path = fourier_transform_image()
     return FileResponse(path, media_type='image/png')
 
-@app.post("/laplace_transform_image")
+@app.post("/lap_transform_image")
 async def laplace_transform(data: dict):
     expression = data.get('expression')
     a = data.get('a')
@@ -83,6 +85,7 @@ async def laplace_transform(data: dict):
 
 @app.post("/laplace_spectrum_image")
 async def laplace_spectrum(data : dict):
+    exp = data.get('expression')
     path = laplace_spectrum_image()
     return FileResponse(path, media_type='image/png')
 
@@ -93,7 +96,28 @@ async def calculate(data: dict):
         return {"result": []}
     ans = calculate_exp(expression)
     return {"result": ans}
+
+@app.post("/plot_graph")
+async def send_plot(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    path = plot_graph(expression)
+    return FileResponse(path, media_type='image/png') 
+
+@app.post("/transfer_function")
+async def transfer_function(data: dict):
+    expression = data.get('expression')
+    if not expression:
+        return {"result": []}
+    numerator, denominator = get_num_and_den(expression)
+    return {"result": "pass", "numerator": str(numerator), "denominator" : str(denominator)}
     
+@app.post("/z_transform_image")
+async def z_transform_image(data: dict):
+    expression = data.get('expression')
+    path = get_z_transform(expression)
+    return FileResponse(path, media_type='image/png')
 
 if __name__ == '__main__':
     import uvicorn

@@ -2,9 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from picamera2 import Picamera2
-from libcamera import controls
 import threading
-import io
 import time
 import RPi.GPIO as GPIO
 import os
@@ -61,31 +59,20 @@ class CameraApp(tk.Frame):
                 messagebox.showwarning("Camera Error", "Camera is not active")
                 return
             
-            # Flash ON
-            GPIO.output(self.flash_pin, GPIO.HIGH)
-            time.sleep(0.1)  # Short delay to ensure flash is on before capture
-            
             # Capture high-resolution image
-            self.camera.stop()
-            self.camera.configure(self.camera.create_still_configuration(main={"size": (1920, 1080)}))
-            self.camera.start()
             frame = self.camera.capture_array()
             image = Image.fromarray(frame)
             
             # Flip the image vertically and horizontally
             image = image.transpose(Image.FLIP_TOP_BOTTOM).transpose(Image.FLIP_LEFT_RIGHT)
             
-            image.save(parent_dir+"/captured_image.png")
+            image.save(parent_dir+"/camera/captured_image.png")
             
             # Restore preview configuration
             self.camera.stop()
-            self.camera.configure(self.camera.create_preview_configuration(main={"size": (640, 480)}))
-            self.camera.start()
-            
-            # Flash OFF
-            GPIO.output(self.flash_pin, GPIO.LOW)
-            
-            messagebox.showinfo("Image Capture", "Image has been captured and saved as 'captured_image.jpg'")
+            messagebox.showinfo("Image Capture", "Image Saved")
+            self.controller.show_frame("Camera_Result_Page")
+
         except Exception as e:
             messagebox.showerror("Capture Error", str(e))
         finally:
@@ -129,12 +116,8 @@ class CameraApp(tk.Frame):
             self.camera.close()
             self.camera = None
 
-    def on_show(self):
-        self.start_camera()
-    
-    def on_hide(self):
-        self.stop_camera()
-    
     def __del__(self):
         self.stop_camera()
         GPIO.cleanup()
+        GPIO.cleanup()
+    
