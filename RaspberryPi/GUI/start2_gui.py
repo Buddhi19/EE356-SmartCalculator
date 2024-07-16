@@ -23,14 +23,14 @@ class StartPage2(tk.Frame):
         buttons = [
             ("Fourier Transform", "FourierTransform", parent_dir + "\\icons\\integrals.png"),
             ("Laplace Transform", "LaplaceTransform", parent_dir + "\\icons\\laplace.png"),
-            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\laplace.png"),
+            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\z_transform.png"),
             ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "\\icons\\prob.png")
         ]
         if sys.platform == "linux":
             buttons = [
                 ("Fourier Transform", "FourierTransform", parent_dir + "/icons/integrals.png"),
                 ("Laplace Transform", "LaplaceTransform", parent_dir + "/icons/laplace.png"),
-                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/laplace.png"),
+                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/z_transform.png"),
                 ("Normal Distribution", "NormalDistributionCalculator", parent_dir + "/icons/prob.png")
             ]
 
