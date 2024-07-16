@@ -173,11 +173,12 @@ class WhiteboardApp(tk.Frame):
     def add_action(self, window):
         #add answer to display
         if self.mode == "Calculate":
-            ans = get_ans(self.answer)
             if "x" in ans:
-                ans = ans.replace("x", "\times")
+                self.answer = self.answer.replace("x", "\times")
+                print(ans)
             if "X" in ans:
-                ans = ans.replace("X", "\times")
+                self.answer = self.answer.replace("X", "\times")
+            ans = get_ans(self.answer)
             self.display_var.set(ans)
             window.destroy()
         if self.mode == "Plot":
