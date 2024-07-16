@@ -1,6 +1,8 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tkinter as tk
@@ -127,7 +129,7 @@ class WhiteboardApp(tk.Frame):
         self.controller.show_frame("StartPage")
 
     def solver(self):
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir, "whiteboard", "whiteboard.png"))
         #answer = post_image()
         #AnswerDisplay(self, answer)
         # Add code for plotting here
@@ -150,7 +152,7 @@ class WhiteboardApp(tk.Frame):
             messagebox.showinfo("No Internet Connection", "Please connect to the internet to use this feature.")
             return
         
-        self.save_whiteboard("whiteboard/whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir,"whiteboard", "whiteboard.png"))
         self.answer = post_image()
         self.show_custom_message(self.answer)
 
@@ -233,7 +235,7 @@ class ShowPlot(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.image_path = "whiteboard/plot.png"
+        self.image_path = os.path.join(parent_dir,"whiteboard", "plot.png")
         self.create_widgets()
 
     def create_widgets(self):
