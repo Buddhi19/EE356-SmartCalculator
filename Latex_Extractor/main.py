@@ -26,13 +26,16 @@ class Expressions:
 		"""
 		kernel = np.ones((8,8),np.uint8)  #10,10
 
-		dilation = cv2.dilate(self.img, kernel, iterations = 8) #16
+		dilation = cv2.dilate(self.img, kernel, iterations = 16) #16
 
 		# dilation = cv2.morphologyEx(self.img, cv2.MORPH_OPEN, kernel)
 
 		contours, _ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=1.0]
+		contours = [cnt for cnt in contours if (cv2.boundingRect(cnt)[2] / cv2.boundingRect(cnt)[3])>=0.50]
+
+		#find the largest contour
+		contours = sorted(contours, key=cv2.contourArea, reverse=True)[:1]
 
 		im2 = self.img.copy()
 		print(contours)
@@ -42,6 +45,13 @@ class Expressions:
 			
 			rect = cv2.rectangle(im2, (x, y), (x + w, y + h), (255, 0, 0), 0)
 			cropped = im2[y:y + h, x:x + w]
+			
+			scale_factor = 0.7
+			cropped = cv2.resize(cropped, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
+
+			cv2.imshow("img",cropped)
+			cv2.waitKey(1000)
+
 			self.expressions.append(cropped)
 		
 		cv2.imshow("img",im2)
@@ -65,11 +75,16 @@ class Image2Text:
 		expressions in white
 		"""
 		img_test = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		_, img_test = cv2.threshold(img_test, 195, 255, cv2.THRESH_BINARY) # 85 # 155
+		_, img_test = cv2.threshold(img_test, 200, 255, cv2.THRESH_BINARY) # 85 # 155
 		img_test = cv2.bitwise_not(img_test)
 
 		cv2.imshow("img",img_test)
 		cv2.waitKey(0)
+
+		# img_test = cv2.erode(img_test, np.ones((2,2),np.uint8), iterations = 3)
+
+		# cv2.imshow("img",img_test)
+		# cv2.waitKey(0)
 
 		return img_test
 

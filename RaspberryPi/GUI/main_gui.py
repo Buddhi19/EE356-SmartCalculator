@@ -52,7 +52,7 @@ class MainApplication(tk.Tk):
         if self.current_frame and self.current_frame not in ["StartPage"]:
             if self.current_frame in ["Graph_Frame2D", "Graph_Frame3D","BODEplot","StepResponsePlot",
                                        "NyquistPlot","ShowFourierSpectrum","ShowLaplaceTransform","WhiteboardApp",
-                                       "CameraApp","ShowPlot","ShowPlot_cam"] or (self.current_frame in ["TransferFunctionFrame"]
+                                       "CameraApp","ShowPlot","ShowPlot_cam", "Camera_Result_Page"] or (self.current_frame in ["TransferFunctionFrame"]
                                                                    and name == "StartPage"):
                 if self.current_frame == "CameraApp":
                     self.frames[self.current_frame].on_hide()
