@@ -18,7 +18,7 @@ if sys.platform == "linux":
 from GUI.loading_gui import Loading_GUI
 from GUI.fourier_gui import FourierTransform,ShowFourierSpectrum
 from GUI.laplace_gui import LaplaceTransform, ShowLaplaceTransform, ShowLaplaceSpectrum
-from GUI.z_transform_GUI import DiscreteSignalCalculator
+from GUI.z_transform_GUI import ZTransformCalculator
 import socket
 
 class MainApplication(tk.Tk):

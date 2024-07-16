@@ -20,13 +20,13 @@ class StartPage2(tk.Frame):
         buttons = [
             ("Fourier Transform", "FourierTransform", parent_dir + "\\icons\\integrals.png"),
             ("Laplace Transform", "LaplaceTransform", parent_dir + "\\icons\\laplace.png"),
-            ("Z Transform", "DiscreteSignalCalculator", parent_dir + "\\icons\\laplace.png"),
+            ("Z Transform", "ZTransformCalculator", parent_dir + "\\icons\\z_transform.png"),
         ]
         if sys.platform == "linux":
             buttons = [
                 ("Fourier Transform", "FourierTransform", parent_dir + "/icons/integrals.png"),
                 ("Laplace Transform", "LaplaceTransform", parent_dir + "/icons/laplace.png"),
-                ("Z Transform", "DiscreteSignalCalculator", parent_dir + "/icons/laplace.png"),
+                ("Z Transform", "ZTransformCalculator", parent_dir + "/icons/z_transform.png"),
             ]
 
         for i, (text, frame_name, image_path) in enumerate(buttons):
