@@ -1,6 +1,8 @@
 import os
 import sys
 
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 #from main_controller import Calculator
@@ -164,7 +166,7 @@ class Whiteboard(tk.Toplevel):
         self.destroy()
 
     def solver(self):
-        self.save_whiteboard("whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir, "whiteboard_matrix.png"))
         # Add solver logic here
 
     def save_whiteboard(self, filename):
@@ -181,7 +183,7 @@ class Whiteboard(tk.Toplevel):
         self.previous_coords = None
 
     def add(self):
-        self.save_whiteboard("whiteboard.png")
+        self.save_whiteboard(os.path.join(parent_dir, "whiteboard_matrix.png"))
         # Add logic to process and add content here
 
 class ModeSelection_Whiteboard(tk.Toplevel):

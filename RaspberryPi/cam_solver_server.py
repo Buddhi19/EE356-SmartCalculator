@@ -1,5 +1,8 @@
 import requests
 from server_address import server_address
+import os
+
+parent_dir = os.path.dirname(os.path.abspath(__file__))
 
 #post image to server
 def post_image(image_path):
@@ -20,7 +23,7 @@ def get_plot_image_cam(exp: str):
     data = {'expression': exp}
     response = requests.post(url, json=data)
     if response.status_code == 200:
-        with open('camera/plot.png', 'wb') as f:
+        with open(os.path.join(parent_dir, "GUI" ,"camera" ,"plot.png"), 'wb') as f:
             f.write(response.content)
         print("Plot image saved successfully.")
         return 1
