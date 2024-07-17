@@ -85,7 +85,7 @@ class WiFiSettingsFrame(tk.Frame):
             key_frame = tk.Frame(keyboard_frame, bg="#293C4A")
             key_frame.pack()
             for col, key in enumerate(key_row):
-                button = tk.Button(key_frame, text=key, width=3, height=2,
+                button = tk.Button(key_frame, text=key, width=2, height=2,
                                 command=lambda x=key, r=row, c=col: self.key_press(x, r, c),
                                 bg="#4A6572", fg="white", activebackground="#5A7682",
                                 font=('Arial', 11, 'bold'))

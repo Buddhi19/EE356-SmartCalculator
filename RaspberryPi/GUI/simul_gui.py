@@ -24,16 +24,16 @@ class Simultaneous_solver_Frame(tk.Frame):
 
         button_params_main = {'fg': '#000', 'bg': '#BBB', 'font': ('sans-serif', 13, 'bold')}
 
-        add_button = tk.Button(self, text="Add Equation", command=lambda: Simultaneous_Frame(self, self.add_equation), **button_params_main, width=15)
+        add_button = tk.Button(self, text="Add Equation", command=lambda: Simultaneous_Frame(self, self.add_equation), **button_params_main, width=20)
         add_button.grid(row=1, column=0, sticky="nsew")
 
-        remove_button = tk.Button(self, text="Remove Equation", command=self.remove_equation, **button_params_main, width=14)
+        remove_button = tk.Button(self, text="Remove Equation", command=self.remove_equation, **button_params_main, width=20)
         remove_button.grid(row=1, column=1, sticky="nsew")
 
-        solve_equations_button = tk.Button(self, text="Solve Equations", command=self.solve_equations, **button_params_main, width=15)
+        solve_equations_button = tk.Button(self, text="Solve Equations", command=self.solve_equations, **button_params_main, width=20)
         solve_equations_button.grid(row=2, column=0, sticky="nsew")
 
-        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **button_params_main, width=14)
+        back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **button_params_main, width=20)
         back_button.grid(row=2, column=1, sticky="nsew")
 
         start_again_button = tk.Button(self, text="Start Again", command=self.clear_all_equations, **button_params_main, width=30)
