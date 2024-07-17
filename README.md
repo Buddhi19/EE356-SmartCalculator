@@ -18,7 +18,7 @@ The SOLVISTA Smart Calculator is an advanced multi-functional device designed to
 
 ## User Manual
 
-[Find the user manual here](docs/calculator_user manual.pdf)
+[Find the user manual here](https://github.com/Buddhi19/EE356-SmartCalculator/blob/main/docs/calculator_user%20manual.pdf)
 
 
 ## Features
@@ -36,9 +36,9 @@ The SOLVISTA Smart Calculator is an advanced multi-functional device designed to
 - **PDF Reader:** Provides the ability to read PDF documents, useful for referencing and studying.
 ## Demo
 
-<div style="display: grid; grid-template-columns: repeat(4, 2fr); gap: 1spx;">
-  <img src="docs/images/StartPage1.png" alt="Photo 1" style="width: 40%; height: auto;"/>
-  <img src="docs/images/Graph3d.png" alt="Photo 2" style="width: 40%; height: auto;"/>
-  <img src="docs/images/WriteToSolve2.png" alt="Photo 3" style="width: 40%; height: auto;"/>
-  <img src="docs/images/Controls1.png" alt="Photo 4" style="width: 40%; height: auto;"/>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+  <img src="docs/images/StartPage1.png" alt="Photo 1" style="width: 20%; height: auto;"/>
+  <img src="docs/images/Graph3d.png" alt="Photo 2" style="width: 20%; height: auto;"/>
+  <img src="docs/images/WriteToSolve2.png" alt="Photo 3" style="width: 20%; height: auto;"/>
+  <img src="docs/images/Controls1.png" alt="Photo 4" style="width: 20%; height: auto;"/>
 </div>
