@@ -74,6 +74,6 @@ class Cal(formatter):
         return expression
 
 if __name__ == '__main__':
-    exp = r"\frac{1}{1+j}"
+    exp = r"\frac{1}{1+567}"
     cal = Cal()
-    print(cal.complex_calculator(exp))
+    print(cal.calculate(exp))

@@ -9,7 +9,8 @@ from GUI.start2_gui import StartPage2
 from GUI.calculator_gui import Calculator_Frame
 from GUI.grapher_gui import Graph_Frame2D, Graph_Frame3D, Graph_GUI
 from GUI.simul_gui import Simultaneous_solver_Frame, Simultaneous_Frame
-# from GUI.pdf_reader_GUI import PDFReader
+if sys.platform != "linux":
+    from GUI.pdf_reader_GUI import PDFReader
 from GUI.whiteboard_GUI import WhiteboardApp, ShowPlot
 from GUI.controls_gui import TransferFunctionFrame, BODEplot, NyquistPlot, StepResponsePlot
 from GUI.matrix_solver_gui import  MatrixOperationPage
