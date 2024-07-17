@@ -108,7 +108,7 @@ class NormalDistributionCalculator(tk.Frame):
 
         # Create back button
         self.back_button = ttk.Button(main_frame, text="Back", command=self.go_back)
-        self.back_button.grid(row=9, column=0,padx=5, pady=10, sticky=tk.W)
+        self.back_button.grid(row=9, column=0,padx=5, pady=3, sticky=tk.W)
 
         self.active_entry = self.mean_entry
         self.update_graph()

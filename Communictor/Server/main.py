@@ -70,6 +70,7 @@ def laplace_spectrum_image():
 
 def calculate_exp(exp:str):
     cal = Cal()
+    print(exp)
     return cal.calculate(exp)
 
 def plot_graph(exp:str):

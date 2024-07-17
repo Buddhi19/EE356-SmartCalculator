@@ -39,7 +39,7 @@ class FourierTransform(tk.Frame):
         self.row3b = ['tan', 'sin', 'cos', 'tan\u207b\xb9', 'sin\u207b\xb9', 'cos\u207b\xb9']
         self.row5_buttons = ['4', '5', '6', '+', '-', "AC"]
         self.row6_buttons = ['1', '2', '3', "*", "/", 'DEL']
-        self.row7_buttons = ['0', '.', 'e', 'x\u207b\xb9', 'Transform']
+        self.row7_buttons = ['0', '.', 'e', 'x\u207b\xb9', 'Plot']
 
         self.row4_mappings = {
             'tan\u207b\xb9': 'atan', 'sin\u207b\xb9': 'asin', 'cos\u207b\xb9': 'acos', 'x!': '!', 'x\u207b\xb9': '^(-1)'
@@ -59,11 +59,11 @@ class FourierTransform(tk.Frame):
             col = 0
             for button in row_buttons:
                 if button in self.arrow_keys:
-                    b = tk.Button(self, text=button, **self.button_params_main, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_main, width=5, height=3)
                 elif button in special_buttons:
-                    b = tk.Button(self, text=button, **self.button_params_other, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params_other, width=5, height=3)
                 else:
-                    b = tk.Button(self, text=button, **self.button_params, width=6, height=3)
+                    b = tk.Button(self, text=button, **self.button_params, width=5, height=3)
 
                 b.grid(row=row, column=col, sticky="nsew")
                 b.bind("<Button-1>", self.on_click)
@@ -79,7 +79,7 @@ class FourierTransform(tk.Frame):
             self.grid_columnconfigure(i)
 
         back_button = tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage2"), **self.button_params_main)
-        back_button.grid(row=19, column=0, columnspan=2, sticky="nsew")
+        back_button.grid(row=18, column=0, columnspan=2, sticky="nsew")
 
     def on_click(self, event):
         text = event.widget.cget("text")

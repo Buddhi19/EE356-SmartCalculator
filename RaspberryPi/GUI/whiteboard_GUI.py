@@ -17,7 +17,7 @@ class WhiteboardApp(tk.Frame):
         self.configure(bg="#293C4A")
         self.mode = "Calculate"
         self.display_var = tk.StringVar()
-        self.cell_size = 130
+        self.cell_size = 110
         self.grid_visible = True
         self.is_erasing = False  # Flag to track eraser mode
 
@@ -139,7 +139,7 @@ class WhiteboardApp(tk.Frame):
         x0 = self.winfo_rootx() + 15
         y0 = self.winfo_rooty() + 140
         x1 = x0 + 480
-        y1 = y0 + 580
+        y1 = y0 + 560
 
         # Use these coordinates to grab the screenshot and save it
         ImageGrab.grab(bbox=(x0, y0, x1, y1)).save(filename)
@@ -173,10 +173,20 @@ class WhiteboardApp(tk.Frame):
     def add_action(self, window):
         #add answer to display
         if self.mode == "Calculate":
+            if "x" in self.answer:
+                self.answer = self.answer.replace("x", r"\times")
+            if "X" in self.answer:
+                self.answer = self.answer.replace("X", r"\times")
             ans = get_ans(self.answer)
             self.display_var.set(ans)
             window.destroy()
         if self.mode == "Plot":
+            if "X" in self.answer:
+                self.answer.replace("X", "x")
+            if "Y" in self.answer:
+                self.answer.replace("Y", "y")
+            if "Z" in self.answer:
+                self.answer.replace("Z", "z")
             if get_plot_image(self.answer) == 1:
                 window.destroy()
                 self.controller.show_frame("ShowPlot")

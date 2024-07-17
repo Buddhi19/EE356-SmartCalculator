@@ -65,9 +65,6 @@ class StartPage2(tk.Frame):
         current_page_num_button.grid(row=6, column=1, padx=1, sticky='w')
 
 
-        close_button = tk.Button(self, text="Close", command=self.quit, font=("sans-serif", 15, "bold"), width=15)
-        close_button.grid(row=7, column=0, columnspan=2)
-
         # Make the grid cells expand proportionally
         for row in range((len(buttons)//2) + 3):
             if row == 6 or row == 7:

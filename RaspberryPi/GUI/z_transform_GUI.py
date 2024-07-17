@@ -71,7 +71,7 @@ class DiscreteSignalCalculator(tk.Frame):
         tk.Button(self, text="Compute Z Transform", command=self.calculate_z_transform, **self.button_params_main, width=20, height=2).grid(row=3, column=0, pady=10)
 
         # Back button
-        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage"), **self.button_params_main, width=15, height=2).grid(row=4, column=0, pady=10)
+        tk.Button(self, text="Back", command=lambda: self.controller.show_frame("StartPage2"), **self.button_params_main, width=15, height=2).grid(row=4, column=0, pady=10)
 
     def click(self, key):
         if key == 'AC':
