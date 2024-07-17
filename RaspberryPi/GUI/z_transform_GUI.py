@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from z_transform_solver import get_z_transform
+import sympy as sp
 
 class DiscreteSignalCalculator(tk.Frame):
     def __init__(self, parent, controller):
@@ -95,10 +96,26 @@ class DiscreteSignalCalculator(tk.Frame):
 
     def calculate_z_transform(self):
         try:
-            result = get_z_transform(self.signal)
-            messagebox.showinfo("Z-Transform Result", result)
+            expr = self.current_input.get()
+            n = sp.Symbol('n')
+            z = sp.Symbol('z')
+            f = sp.sympify(expr)
+            
+            # Use Z-transform definition directly
+            z_transform = sp.Sum(f * z**(-n), (n, 0, sp.oo))
+            
+            # Try to evaluate the sum
+            z_transform_eval = z_transform.doit()
+            
+            if z_transform_eval != z_transform:
+                # If we got a closed form
+                return z_transform_eval
+            else:
+                # If closed form doesn't exist, calculate polynomial up to n^10
+                series = sum(f.subs(n, k) * z**(-k) for k in range(11))
+                return series
         except Exception as e:
-            messagebox.showerror("Error", f"Error calculating Z-transform: {e}")
+            return f"Error: {str(e)}"
 
 
 if __name__ == "__main__":
