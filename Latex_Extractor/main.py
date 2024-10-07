@@ -120,9 +120,13 @@ class Image2Text:
 
 	def run_for_std_scenario(self,img):
 		# img_test = cv2.imread("./test_images/test12.png")
-		img_test = self.pre_process(img)
+		# img_test = self.pre_process(img)
 
-		EXPRESSIONS = Expressions(img_test)
+		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		cv2.imshow("img",img)
+		cv2.waitKey(1000)
+
+		EXPRESSIONS = Expressions(img)
 		EXPRESSIONS.draw_contours()
 		images = EXPRESSIONS.get_expressions()
 
@@ -188,7 +192,7 @@ def convert_blackboard_image(img):
 
 
 def test1():
-	img = cv2.imread(parent_dir+"./Pi_Images/captured_image_8.png")
+	img = cv2.imread(parent_dir+"./test_images/processed_image.png")
 	I2T = Image2Text()
 	equations = I2T.run_for_std_scenario(img)
 	print(equations)

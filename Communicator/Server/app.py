@@ -12,9 +12,9 @@ from main import get_z_transform
 
 app = FastAPI()
 
-# host_url = '192.168.1.4'
+host_url = '192.168.1.5'
 # host_url = '10.30.1.107'
-host_url = '192.168.8.103'
+# host_url = '192.168.8.103'
 
 @app.get("/")
 def read_root():
