@@ -63,8 +63,8 @@ class Camera_Result_Page(tk.Frame):
         self.update_image()
 
         # P Slider
-        slider_frame = tk.Frame(self, bg="#293C4A",height=50)
-        slider_frame.grid(row=2, column=0, pady=10)
+        slider_frame = tk.Frame(self, bg="#293C4A",height=100)
+        slider_frame.grid(row=2, column=0, pady=5)
         
         slider_label = tk.Label(slider_frame, text="P value:", bg="#293C4A", fg="white")
         slider_label.pack(side=tk.LEFT, padx=(0, 50))
@@ -75,7 +75,7 @@ class Camera_Result_Page(tk.Frame):
         
         # Iteration Slider
         iteration_frame = tk.Frame(self, bg="#293C4A", height=50)
-        iteration_frame.grid(row=3, column=0, pady=10)
+        iteration_frame.grid(row=3, column=0, pady=5)
 
         iteration_label = tk.Label(iteration_frame, text="Iterations:", bg="#293C4A", fg="white")
         iteration_label.pack(side=tk.LEFT, padx=(0, 50))
@@ -86,7 +86,7 @@ class Camera_Result_Page(tk.Frame):
 
         # Kernel Size Slider
         kernel_frame = tk.Frame(self, bg="#293C4A", height=50)
-        kernel_frame.grid(row=4, column=0, pady=10)
+        kernel_frame.grid(row=4, column=0, pady=5)
 
         kernel_label = tk.Label(kernel_frame, text="Kernel Size:", bg="#293C4A", fg="white")
         kernel_label.pack(side=tk.LEFT, padx=(0, 50))
