@@ -63,33 +63,36 @@ class Camera_Result_Page(tk.Frame):
         self.update_image()
 
         # P Slider
-        slider_frame = tk.Frame(self, bg="#293C4A")
+        slider_frame = tk.Frame(self, bg="#293C4A",height=50)
         slider_frame.grid(row=2, column=0, pady=10)
         
         slider_label = tk.Label(slider_frame, text="P value:", bg="#293C4A", fg="white")
         slider_label.pack(side=tk.LEFT, padx=(0, 50))
         
-        self.p_slider = ttk.Scale(slider_frame, from_=0, to=255, orient=tk.HORIZONTAL, variable=self.P, command=self.update_image)
+        self.p_slider = ttk.Scale(slider_frame, from_=0, to=255, orient=tk.HORIZONTAL, variable=self.P, command=self.update_image
+                                  , length=300)
         self.p_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
         
         # Iteration Slider
-        iteration_frame = tk.Frame(self, bg="#293C4A")
+        iteration_frame = tk.Frame(self, bg="#293C4A", height=50)
         iteration_frame.grid(row=3, column=0, pady=10)
 
         iteration_label = tk.Label(iteration_frame, text="Iterations:", bg="#293C4A", fg="white")
         iteration_label.pack(side=tk.LEFT, padx=(0, 50))
 
-        self.iteration_slider = ttk.Scale(iteration_frame, from_=1, to=20, orient=tk.HORIZONTAL, variable=self.ITERATION, command=self.update_image)
+        self.iteration_slider = ttk.Scale(iteration_frame, from_=1, to=20, orient=tk.HORIZONTAL, variable=self.ITERATION, command=self.update_image,
+                                          length=300)
         self.iteration_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Kernel Size Slider
-        kernel_frame = tk.Frame(self, bg="#293C4A")
+        kernel_frame = tk.Frame(self, bg="#293C4A", height=50)
         kernel_frame.grid(row=4, column=0, pady=10)
 
         kernel_label = tk.Label(kernel_frame, text="Kernel Size:", bg="#293C4A", fg="white")
         kernel_label.pack(side=tk.LEFT, padx=(0, 50))
 
-        self.kernel_slider = ttk.Scale(kernel_frame, from_=1, to=10, orient=tk.HORIZONTAL, variable=self.KERNEL_SIZE, command=self.update_image)
+        self.kernel_slider = ttk.Scale(kernel_frame, from_=1, to=10, orient=tk.HORIZONTAL, variable=self.KERNEL_SIZE, command=self.update_image,
+                                       length=300)
         self.kernel_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Button frame
