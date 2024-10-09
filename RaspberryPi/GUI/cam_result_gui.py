@@ -14,6 +14,37 @@ from cam_solver_server import post_image, get_plot_image_cam
 from whiteboard_solver import get_ans, get_transfer_function
 
 
+class CircularButton(tk.Canvas):
+    def __init__(self, parent, width, height, color, command=None):
+        super().__init__(parent, width=width, height=height, highlightthickness=0, bg="#293C4A")
+        self.command = command
+        self.is_pressed = False
+        self.after_id = None
+
+        # Create circle
+        padding = 4
+        self.create_oval(padding, padding, width-padding, height-padding, fill=color, outline="")
+
+        self.bind("<ButtonPress-1>", self._on_press)
+        self.bind("<ButtonRelease-1>", self._on_release)
+
+    def _on_press(self, event):
+        self.config(relief="sunken")
+        self.is_pressed = True
+        self._repeat_command()
+
+    def _on_release(self, event):
+        self.config(relief="raised")
+        self.is_pressed = False
+        if self.after_id:
+            self.after_cancel(self.after_id)
+
+    def _repeat_command(self):
+        if self.is_pressed and self.command:
+            self.command()
+            self.after_id = self.after(100, self._repeat_command)
+
+
 def DRAW_CONTOURS(img, ITERATIONS, KERNEL_SIZE):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     kernel = np.ones((KERNEL_SIZE,KERNEL_SIZE), np.uint8)
@@ -62,38 +93,18 @@ class Camera_Result_Page(tk.Frame):
         self.original_img = cv2.imread(self.img_path)
         self.update_image()
 
-        # P Slider
-        slider_frame = tk.Frame(self, bg="#293C4A",height=100)
-        slider_frame.grid(row=2, column=0, pady=5)
-        
-        slider_label = tk.Label(slider_frame, text="P value:", bg="#293C4A", fg="white")
-        slider_label.pack(side=tk.LEFT, padx=(0, 50))
-        
-        self.p_slider = ttk.Scale(slider_frame, from_=0, to=255, orient=tk.HORIZONTAL, variable=self.P, command=self.update_image
-                                  , length=300)
-        self.p_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
-        
-        # Iteration Slider
-        iteration_frame = tk.Frame(self, bg="#293C4A", height=50)
-        iteration_frame.grid(row=3, column=0, pady=5)
+        control_frame = tk.Frame(self, bg="#293C4A")
+        control_frame.grid(row=2, column=0, pady=10)
 
-        iteration_label = tk.Label(iteration_frame, text="Iterations:", bg="#293C4A", fg="white")
-        iteration_label.pack(side=tk.LEFT, padx=(0, 50))
+        # P Value Controls
+        self.create_control_group(control_frame, "P value:", self.P, 0, 255, 0)
 
-        self.iteration_slider = ttk.Scale(iteration_frame, from_=1, to=20, orient=tk.HORIZONTAL, variable=self.ITERATION, command=self.update_image,
-                                          length=300)
-        self.iteration_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
+        # Iteration Controls
+        self.create_control_group(control_frame, "Iterations:", self.ITERATION, 1, 20, 1)
 
-        # Kernel Size Slider
-        kernel_frame = tk.Frame(self, bg="#293C4A", height=50)
-        kernel_frame.grid(row=4, column=0, pady=5)
+        # Kernel Size Controls
+        self.create_control_group(control_frame, "Kernel Size:", self.KERNEL_SIZE, 1, 10, 2)
 
-        kernel_label = tk.Label(kernel_frame, text="Kernel Size:", bg="#293C4A", fg="white")
-        kernel_label.pack(side=tk.LEFT, padx=(0, 50))
-
-        self.kernel_slider = ttk.Scale(kernel_frame, from_=1, to=10, orient=tk.HORIZONTAL, variable=self.KERNEL_SIZE, command=self.update_image,
-                                       length=300)
-        self.kernel_slider.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Button frame
         button_frame = tk.Frame(self, bg="#293C4A")
@@ -113,6 +124,27 @@ class Camera_Result_Page(tk.Frame):
 
         self.solve_button = tk.Button(button_frame, text=self.current_mode, command=self.solve, **button_style)
         self.solve_button.grid(row=1, column=1, padx=5, pady=5)
+
+    def create_control_group(self, parent, label_text, variable, min_val, max_val, row):
+        frame = tk.Frame(parent, bg="#293C4A")
+        frame.grid(row=row, column=0, pady=5, padx=5)
+
+        tk.Label(frame, text=label_text, bg="#293C4A", fg="white", width=10, anchor="e").pack(side=tk.LEFT, padx=(0, 10))
+        
+        minus_btn = CircularButton(frame, 60, 60, "#FF6B6B", command=lambda: self.update_value(variable, -1, min_val, max_val))
+        minus_btn.pack(side=tk.LEFT)
+
+        value_label = tk.Label(frame, textvariable=variable, bg="#293C4A", fg="white", width=5)
+        value_label.pack(side=tk.LEFT, padx=10)
+
+        plus_btn = CircularButton(frame, 60, 60, "#4ECB71", command=lambda: self.update_value(variable, 1, min_val, max_val))
+        plus_btn.pack(side=tk.LEFT)
+
+    def update_value(self, var, change, min_val, max_val):
+        new_value = var.get() + change
+        if min_val <= new_value <= max_val:
+            var.set(new_value)
+            self.update_image()
 
     def update_image(self, *args):
         processed_img = PRE_PROCESS(self.original_img, self.P.get())
