@@ -31,13 +31,14 @@ class CameraApp(tk.Frame):
 
         button_frame = tk.Frame(self, bg="#293C4A")
         button_frame.pack(side="bottom", fill="x")
+        
         button_style = {'bg': "#4A6572", 'fg': "white", 'font': ('Helvetica', 12), 'width': 15, 'height': 2, 'borderwidth': 0}
 
         self.capture_button = tk.Button(button_frame, text="Capture", command=self.capture_image, **button_style)
         self.capture_button.pack(side="left", padx=10)
 
         self.back_button = tk.Button(button_frame, text="Back", command=self.back, **button_style)
-        self.back_button.pack(side="right", padx=10)
+        self.back_button.pack(side="left", padx=10)
 
 
         self.stop_event = threading.Event()
