@@ -21,12 +21,25 @@ class CameraApp(tk.Frame):
         
         self.label = tk.Label(self)
         self.label.pack()
+
+
+        # self.capture_button = tk.Button(self, text="Capture", command=self.capture_image)
+        # self.capture_button.pack()
         
-        self.capture_button = tk.Button(self, text="Capture", command=self.capture_image)
-        self.capture_button.pack()
-        
-        self.back_button = tk.Button(self, text="Back", command=self.back)
-        self.back_button.pack()
+        # self.back_button = tk.Button(self, text="Back", command=self.back)
+        # self.back_button.pack()
+
+        button_frame = tk.Frame(self, bg="#293C4A")
+        button_frame.grid(row=4,column=0,pady=10)
+
+        button_style = {'bg': "#4A6572", 'fg': "white", 'font': ('Helvetica', 12), 'width': 15, 'height': 2, 'borderwidth': 0}
+
+        self.capture_button = tk.Button(button_frame, text="Capture", command=self.capture_image, **button_style)
+        self.capture_button.grid(row=0, column=0, padx=10)
+
+        self.back_button = tk.Button(button_frame, text="Back", command=self.back, **button_style)
+        self.back_button.grid(row=0, column=1, padx=10)
+
 
         self.stop_event = threading.Event()
         self.preview_thread = threading.Thread(target=self.update_preview)

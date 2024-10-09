@@ -192,7 +192,7 @@ def convert_blackboard_image(img):
 
 
 def test1():
-	img = cv2.imread(parent_dir+"./test_images/processed_image.png")
+	img = cv2.imread(parent_dir+"./test_images/image.png")
 	I2T = Image2Text()
 	equations = I2T.run_for_std_scenario(img)
 	print(equations)
