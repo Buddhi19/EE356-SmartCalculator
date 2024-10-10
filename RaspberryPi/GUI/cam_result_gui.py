@@ -11,7 +11,7 @@ parent_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from cam_solver_server import post_image, get_plot_image_cam
-from whiteboard_solver import get_ans, get_transfer_function
+from whiteboard_solver import get_ans, get_transfer_function, solve_for_x
 
 
 class CircularButton(tk.Canvas):
@@ -213,6 +213,9 @@ class Camera_Result_Page(tk.Frame):
                 self.controller.denominator = ans[1]
                 print(self.controller.numerator, self.controller.denominator)
                 self.controller.show_frame("TransferFunctionFrame")
+        elif self.current_mode == "Solve for x":
+            result = solve_for_x(self.answer)
+            self.display_var.set(result)
 
 
 class ModeSelection_Camera(tk.Toplevel):
