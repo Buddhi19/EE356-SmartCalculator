@@ -64,5 +64,6 @@ def get_transfer_function(exp: str):
 
 def solve_for_x(exp:str):
     x = sp.symbols('x')
-    eq = sp.sympify(exp)
+    lhs, rhs = exp.split("=")
+    eq = sp.sympify(lhs) - sp.sympify(rhs)
     return sp.solve(eq, x)
