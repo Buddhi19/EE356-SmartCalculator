@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageGrab
-from whiteboard_solver import post_image, get_ans, get_plot_image, get_transfer_function
+from whiteboard_solver import post_image, get_ans, get_plot_image, get_transfer_function, solve_for_x
 
 class WhiteboardApp(tk.Frame):
     def __init__(self, parent, controller):
@@ -203,6 +203,10 @@ class WhiteboardApp(tk.Frame):
                 print(self.controller.numerator, self.controller.denominator)
                 window.destroy()
                 self.controller.show_frame("TransferFunctionFrame")
+        if self.mode == "Solve for x":
+            ans = solve_for_x(self.answer)
+            self.display_var.set(ans)
+            window.destroy()
 
 
 
@@ -214,7 +218,7 @@ class ModeSelection_Whiteboard(tk.Toplevel):
         super().__init__(parent, bg="#293C4A")
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot", "Transfer Function"
+            "Calculate", "Plot", "Transfer Function", "Solve for x"
         ]
         self.create_widgets()
 

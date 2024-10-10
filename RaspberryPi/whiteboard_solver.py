@@ -2,6 +2,7 @@ import requests
 from server_address import server_address
 import os
 import sys
+import sympy as sp
 
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,3 +60,9 @@ def get_transfer_function(exp: str):
         return numerator, denominator
     else:
         return "Error"
+
+
+def solve_for_x(exp:str):
+    x = sp.symbols('x')
+    eq = sp.sympify(exp)
+    return sp.solve(eq, x)

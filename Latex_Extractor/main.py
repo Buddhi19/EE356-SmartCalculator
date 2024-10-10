@@ -121,11 +121,6 @@ class Image2Text:
 	def run_for_std_scenario(self,img):
 		# img_test = cv2.imread("./test_images/test12.png")
 		# img_test = self.pre_process(img)
-
-		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		cv2.imshow("img",img)
-		cv2.waitKey(1000)
-
 		EXPRESSIONS = Expressions(img)
 		EXPRESSIONS.draw_contours()
 		images = EXPRESSIONS.get_expressions()
@@ -191,10 +186,39 @@ def convert_blackboard_image(img):
 	return resized_image
 
 
+def convert_camera_image(img):
+	img = cv2.dilate(img, np.ones((2,2),np.uint8), iterations = 1)
+	cv2.imshow("img",img)
+	cv2.waitKey(1000)
+
+	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+	kernel = np.ones((7,7),np.uint8)
+	dilation = cv2.dilate(img, kernel, iterations = 8) #16
+
+	contours,_ = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	
+	largest_contour = max(contours, key=cv2.contourArea)
+	x, y, w, h = cv2.boundingRect(largest_contour)
+	img = img[y:y+h, x:x+w]
+
+	scale_factor = 0.4
+	resized_image = cv2.resize(img, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)
+
+	cv2.imshow("img",resized_image)
+	cv2.waitKey(1000)
+
+	return resized_image
+
+
+
+
+
 def test1():
 	img = cv2.imread(parent_dir+"./test_images/image.png")
+	img = convert_camera_image(img)
 	I2T = Image2Text()
-	equations = I2T.run_for_std_scenario(img)
+	equations = I2T.run_for_training_scenario(img)
 	print(equations)
 
 def test2():

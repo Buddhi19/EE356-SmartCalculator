@@ -85,7 +85,7 @@ class Camera_Result_Page(tk.Frame):
         self.rowconfigure(1, weight=1)
 
         # Entry widget
-        self.entry = tk.Entry(self, textvariable=self.display_var, font=('Helvetica', 20, 'bold'), justify='right', state='readonly', bg="#1E2A38", fg="white", insertbackground="white")
+        self.entry = tk.Entry(self, textvariable=self.display_var, font=('Helvetica', 20, 'bold'), justify='right', state='readonly', bg="#1E2A38", fg="black", insertbackground="white")
         self.entry.grid(row=0, column=0, sticky="nsew", padx=10, pady=10, ipady=10)
 
         # Image display
