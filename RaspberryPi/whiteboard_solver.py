@@ -63,7 +63,11 @@ def get_transfer_function(exp: str):
 
 
 def solve_for_x(exp:str):
-    x = sp.symbols('x')
-    lhs, rhs = exp.split("=")
-    eq = sp.sympify(lhs) - sp.sympify(rhs)
-    return sp.solve(eq, x)
+    url = server_address + '/solve_for_x'
+    data = {'expression': exp}
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        result = response.json().get("result")
+        return result
+    else:
+        return "Error"

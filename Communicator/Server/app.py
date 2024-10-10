@@ -9,6 +9,7 @@ from main import laplace_solver, laplace_equation_image, laplace_spectrum_image
 from main import calculate_exp
 from main import plot_graph, get_num_and_den
 from main import get_z_transform
+from main import solve_for_x
 
 app = FastAPI()
 
@@ -114,6 +115,12 @@ async def z_transform_image(data: dict):
     expression = data.get('expression')
     path = get_z_transform(expression)
     return FileResponse(path, media_type='image/png')
+
+@app.post("/solve_for_x")
+async def solving_for_x(data: dict):
+    expression = data.get('expression')
+    ans = solve_for_x(expression)
+    return {"result": ans}
 
 if __name__ == '__main__':
     import uvicorn
