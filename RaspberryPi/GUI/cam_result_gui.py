@@ -190,7 +190,7 @@ class Camera_Result_Page(tk.Frame):
         self.solve_button.config(text=self.current_mode)
 
     def process(self):
-        self.answer = post_image(self.save_path)[0]
+        self.answer = post_image(self.save_path)
         print(self.answer)
         self.display_var.set(self.answer)
 
@@ -220,7 +220,7 @@ class ModeSelection_Camera(tk.Toplevel):
         super().__init__(parent)
         self.callback = callback
         self.mode_list = [
-            "Calculate", "Plot", "Transfer Function", "Simultaneous Equations"
+            "Calculate", "Plot", "Transfer Function", "Solve for x"
         ]
         self.title("Select Mode")
         self.geometry("300x350")

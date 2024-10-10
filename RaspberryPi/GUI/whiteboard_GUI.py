@@ -51,7 +51,7 @@ class WhiteboardApp(tk.Frame):
         self.solve_button = tk.Button(self, text=self.mode, command=self.solver, **button_params_main)
         self.solve_button.grid(row=3, column=3, sticky="nsew")
 
-        self.add_button = tk.Button(self, text="Add", command=self.add, **button_params_main)
+        self.add_button = tk.Button(self, text="Process", command=self.add, **button_params_main)
         self.add_button.grid(row=2, column=1, sticky="nsew")
 
         self.DEL_button = tk.Button(self, text="DEL", command=self.delete, **button_params_main)
@@ -162,7 +162,7 @@ class WhiteboardApp(tk.Frame):
         answer_label = tk.Label(custom_message_window, text=answer)
         answer_label.pack()
         
-        add_button = tk.Button(custom_message_window, text="Add", command=lambda: self.add_action(custom_message_window))
+        add_button = tk.Button(custom_message_window, text="Solve", command=lambda: self.add_action(custom_message_window))
         add_button.pack(side=tk.LEFT)
         
         retry_button = tk.Button(custom_message_window, text="Retry", command=lambda: self.retry_action(custom_message_window))

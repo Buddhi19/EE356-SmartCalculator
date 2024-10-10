@@ -32,13 +32,9 @@ async def image_route(file: UploadFile = File(...)):
         f.write(file.file.read())
 
     result = process_image(file_path)
-    try:
-        ans = calculate_expression(result)
-    except Exception as e:
-        ans = [f"Error in processing the image: {str(e)}"]
 
     # Clean up the file after processing
-    return {"result": ans}
+    return {"result": result}
 
 @app.post("/image_whiteboard")
 async def image_route_whiteboard(file: UploadFile = File(...)):
