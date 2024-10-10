@@ -110,4 +110,7 @@ def solve_for_x(expression:str):
     lhs, rhs = expression.split("=")
     lhs, rhs = convert_to_sympy(lhs), convert_to_sympy(rhs) 
     eq = lhs - rhs
-    return sp.solve(eq, x)
+    ans = sp.solve(eq, x)
+    if type(ans) == list:
+        return ",".join(str(p) for p in ans)
+    return str(ans)

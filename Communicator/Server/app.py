@@ -13,9 +13,10 @@ from main import solve_for_x
 
 app = FastAPI()
 
-host_url = '192.168.1.5'
+# host_url = '192.168.1.5'
 # host_url = '10.30.1.107'
 # host_url = '192.168.8.103'
+host_url = '192.168.8.100'
 
 @app.get("/")
 def read_root():
@@ -119,6 +120,8 @@ async def z_transform_image(data: dict):
 @app.post("/solve_for_x")
 async def solving_for_x(data: dict):
     expression = data.get('expression')
+    if not expression:
+        return {"result": "No expression provided"}
     ans = solve_for_x(expression)
     return {"result": ans}
 
