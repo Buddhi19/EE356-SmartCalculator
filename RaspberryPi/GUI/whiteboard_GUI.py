@@ -205,6 +205,8 @@ class WhiteboardApp(tk.Frame):
                 self.controller.show_frame("TransferFunctionFrame")
         if self.mode == "Solve for x":
             ans = solve_for_x(self.answer)
+            if type(ans) == list:
+                ans = ", ".join(ans)
             self.display_var.set(ans)
             window.destroy()
 
